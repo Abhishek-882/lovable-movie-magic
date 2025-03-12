@@ -1,11 +1,15 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthModal from "@/components/AuthModal";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   // Handle scroll events to change navbar appearance
   useEffect(() => {
@@ -67,12 +71,37 @@ const Navbar = () => {
             >
               Search
             </Link>
-            <Link 
-              to="/tickets"
-              className="flex items-center justify-center h-10 px-5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all shadow-sm hover:shadow"
-            >
-              Book Tickets
-            </Link>
+            
+            {isAuthenticated ? (
+              <div className="relative group">
+                <button className="flex items-center justify-center h-10 px-4 text-sm font-medium text-gray-700 hover:text-primary transition-colors">
+                  {user?.name.split(' ')[0] || 'Account'}
+                </button>
+                <div className="absolute right-0 top-full mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                  <div className="py-1">
+                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      My Profile
+                    </Link>
+                    <Link to="/bookings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      My Bookings
+                    </Link>
+                    <button 
+                      onClick={logout}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center justify-center h-10 px-5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all shadow-sm hover:shadow"
+              >
+                Sign In
+              </button>
+            )}
           </div>
           
           {/* Mobile Menu Button */}
@@ -123,16 +152,43 @@ const Navbar = () => {
           <MobileNavLink to="/search" isActive={location.pathname === "/search"}>
             Search
           </MobileNavLink>
-          <div className="pt-2 pb-1">
-            <Link 
-              to="/tickets"
-              className="flex items-center justify-center w-full h-12 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all shadow-sm hover:shadow"
-            >
-              Book Tickets
-            </Link>
-          </div>
+          
+          {isAuthenticated ? (
+            <>
+              <MobileNavLink to="/profile" isActive={location.pathname === "/profile"}>
+                My Profile
+              </MobileNavLink>
+              <MobileNavLink to="/bookings" isActive={location.pathname === "/bookings"}>
+                My Bookings
+              </MobileNavLink>
+              <div className="pt-2 pb-1">
+                <button 
+                  onClick={logout}
+                  className="flex items-center justify-center w-full h-12 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600 transition-all"
+                >
+                  Sign Out
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="pt-2 pb-1">
+              <button 
+                onClick={() => setIsAuthModalOpen(true)}
+                className="flex items-center justify-center w-full h-12 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all"
+              >
+                Sign In
+              </button>
+            </div>
+          )}
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        initialTab="login"
+      />
     </header>
   );
 };

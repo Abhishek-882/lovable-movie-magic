@@ -24,6 +24,7 @@ export interface Showtime {
   time: string;
   price: number;
   seatsAvailable: number;
+  seatsTotal?: number;
 }
 
 export interface Review {
@@ -54,3 +55,33 @@ export type Genre =
   | 'Thriller'
   | 'War'
   | 'Western';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  isVerified: boolean;
+  profileComplete: boolean;
+}
+
+export interface Seat {
+  id: string;
+  row: string;
+  number: number;
+  category: 'Regular' | 'Premium' | 'VIP' | 'Recliner';
+  price: number;
+  isAvailable: boolean;
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  movieId: string;
+  showtimeId: string;
+  seats: string[];
+  totalAmount: number;
+  bookingDate: string;
+  status: 'confirmed' | 'pending' | 'cancelled';
+  qrCode?: string;
+}

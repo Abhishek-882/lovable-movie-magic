@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Movie, Showtime, Review } from "@/lib/types";
+import { useAuth } from "@/contexts/AuthContext";
+import AuthModal from "@/components/AuthModal";
 
 interface MovieDetailProps {
   movie: Movie;
@@ -10,9 +12,12 @@ interface MovieDetailProps {
 }
 
 const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) => {
+  const { isAuthenticated } = useAuth();
   const [selectedDate, setSelectedDate] = useState<string | null>(
     showtimes.length > 0 ? showtimes[0].date : null
   );
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [selectedShowtime, setSelectedShowtime] = useState<string | null>(null);
   
   // Get unique dates from showtimes
   const uniqueDates = Array.from(new Set(showtimes.map(st => st.date)));
@@ -30,6 +35,21 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
     acc[showtime.theater].push(showtime);
     return acc;
   }, {} as Record<string, Showtime[]>);
+  
+  const handleShowtimeClick = (showtimeId: string) => {
+    if (!isAuthenticated) {
+      setSelectedShowtime(showtimeId);
+      setIsAuthModalOpen(true);
+    } else {
+      window.location.href = `/booking/${movie.id}/${showtimeId}`;
+    }
+  };
+  
+  const handleAuthSuccess = () => {
+    if (selectedShowtime) {
+      window.location.href = `/booking/${movie.id}/${selectedShowtime}`;
+    }
+  };
   
   return (
     <div className="mx-auto max-w-screen-xl px-4 md:px-6">
@@ -180,14 +200,14 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
                 
                 <div className="flex flex-wrap gap-3">
                   {times.map(time => (
-                    <Link
+                    <button
                       key={time.id}
-                      to={`/booking/${movie.id}/${time.id}`}
                       className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition-all hover:bg-gray-50 hover:shadow"
+                      onClick={() => handleShowtimeClick(time.id)}
                     >
                       {time.time}
                       <span className="ml-2 text-xs text-gray-500">${time.price}</span>
-                    </Link>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -245,6 +265,13 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
           </div>
         </div>
       </section>
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   );
 };
