@@ -20,34 +20,34 @@ const BookingPage = () => {
   const movie = movieId ? getMovieById(movieId) : null;
   const showtime = showtimeId ? getShowtimeById(showtimeId) : null;
   
-  // Redirect if not authenticated
+  // Check authentication status
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
       toast({
         title: "Authentication required",
         description: "Please login to book tickets",
         variant: "destructive",
       });
+      navigate("/");
+      return;
+    }
+    
+    if (!isProfileComplete) {
+      toast({
+        title: "Profile completion required",
+        description: "Please complete your profile before booking tickets",
+        variant: "destructive",
+      });
+      navigate("/profile");
+      return;
     }
     
     // Scroll to top when the component mounts
     window.scrollTo(0, 0);
-  }, [isAuthenticated, navigate, toast]);
-  
-  // Redirect if profile is not complete
-  useEffect(() => {
-    if (isAuthenticated && !isProfileComplete) {
-      navigate("/profile");
-      toast({
-        title: "Profile completion required",
-        description: "Please complete your profile before booking tickets",
-      });
-    }
   }, [isAuthenticated, isProfileComplete, navigate, toast]);
   
   // If no movie or showtime, or not authenticated, show nothing
-  if (!movie || !showtime || !isAuthenticated) {
+  if (!movie || !showtime || !isAuthenticated || !isProfileComplete) {
     return null;
   }
   
@@ -97,13 +97,13 @@ const BookingPage = () => {
   // Mock seats for demonstration
   const rows = ["A", "B", "C", "D", "E", "F", "G"];
   const seatCategories = {
-    "A": { name: "Premium", price: showtime.price + 4 },
-    "B": { name: "Premium", price: showtime.price + 4 },
+    "A": { name: "Premium", price: showtime.price + 150 },
+    "B": { name: "Premium", price: showtime.price + 150 },
     "C": { name: "Regular", price: showtime.price },
     "D": { name: "Regular", price: showtime.price },
     "E": { name: "Regular", price: showtime.price },
-    "F": { name: "Budget", price: showtime.price - 2 },
-    "G": { name: "Budget", price: showtime.price - 2 },
+    "F": { name: "Budget", price: showtime.price - 50 },
+    "G": { name: "Budget", price: showtime.price - 50 },
   };
   
   const totalAmount = selectedSeats.reduce((total, seat) => {
@@ -112,27 +112,27 @@ const BookingPage = () => {
   }, 0);
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-background to-accent/30">
       <Navbar />
       
       <main className="container mx-auto px-4 py-24 md:px-6">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold md:text-3xl">{movie.title}</h1>
+          <div className="mb-8 bg-white/50 backdrop-blur-sm p-6 rounded-xl shadow-md">
+            <h1 className="text-2xl font-bold md:text-3xl text-gradient">{movie.title}</h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600">
-              <span>{showtime.theater}</span>
+              <span className="bg-primary/10 px-3 py-1 rounded-full text-primary">{showtime.theater}</span>
               <span>{new Date(showtime.date).toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 month: 'long', 
                 day: 'numeric' 
               })}</span>
-              <span>{showtime.time}</span>
+              <span className="font-semibold">{showtime.time}</span>
             </div>
           </div>
           
-          <div className="mb-8 rounded-lg border bg-white p-6 shadow-sm">
+          <div className="mb-8 bg-white/70 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg">
             <div className="mb-6 flex items-center justify-center">
-              <div className="w-full max-w-md rounded-lg bg-gray-800 px-4 py-8 text-center text-white">
+              <div className="w-full max-w-md rounded-lg bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-8 text-center text-white">
                 <p className="mb-6 text-sm font-medium">SCREEN</p>
                 <div className="space-y-3">
                   {rows.map(row => (
@@ -149,7 +149,7 @@ const BookingPage = () => {
                             key={seatId}
                             className={`h-7 w-7 rounded-t-md text-xs font-medium transition-colors ${
                               isSelected
-                                ? "bg-primary text-white"
+                                ? "bg-primary text-white pulse-primary"
                                 : isAvailable
                                 ? "bg-gray-600 text-white hover:bg-gray-500"
                                 : "bg-gray-400 cursor-not-allowed"
@@ -185,13 +185,13 @@ const BookingPage = () => {
             
             <div className="space-y-2 text-center">
               <p className="text-sm text-gray-600">
-                Premium: ${(showtime.price + 4).toFixed(2)} | Regular: ${showtime.price.toFixed(2)} | Budget: ${(showtime.price - 2).toFixed(2)}
+                Premium: ₹{(seatCategories.A.price).toFixed(0)} | Regular: ₹{showtime.price.toFixed(0)} | Budget: ₹{(seatCategories.F.price).toFixed(0)}
               </p>
             </div>
           </div>
           
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-bold">Booking Summary</h2>
+          <div className="bg-white/70 backdrop-blur-sm rounded-xl border border-white/20 p-6 shadow-lg">
+            <h2 className="mb-4 text-xl font-bold text-gradient">Booking Summary</h2>
             
             <div className="mb-4 space-y-2">
               <div className="flex justify-between">
@@ -219,7 +219,7 @@ const BookingPage = () => {
             <div className="mb-4 border-t border-b py-4">
               <div className="flex justify-between text-lg font-bold">
                 <span>Total Amount</span>
-                <span>${totalAmount.toFixed(2)}</span>
+                <span className="text-primary">₹{totalAmount.toFixed(0)}</span>
               </div>
               {!isEmailVerified && (
                 <p className="mt-2 text-sm text-amber-500">
@@ -232,7 +232,7 @@ const BookingPage = () => {
               <Button 
                 onClick={handleBooking} 
                 disabled={selectedSeats.length === 0 || isLoading}
-                className="w-full md:w-auto"
+                className="w-full md:w-auto bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
               >
                 {isLoading ? "Processing..." : "Proceed to Payment"}
               </Button>

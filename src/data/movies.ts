@@ -231,18 +231,48 @@ export const movies: Movie[] = [
 ];
 
 // Generate theaters based on popular chains in India
-const theaters = [
-  "PVR ICON: Hyderabad",
-  "INOX: GVK One Mall",
-  "Cinepolis: Sudha Multiplex",
-  "AMB Cinemas",
-  "Prasads Multiplex",
-  "Asian Mukta Cinemas",
-  "Sudarshan 35MM",
-  "Devi 70MM: RTC X Roads",
-  "Sandhya 70MM",
-  "Shanti Multiplex"
-];
+const theaters = {
+  "Hyderabad": [
+    "PVR ICON: GVK One Mall",
+    "INOX: Hyderabad Central",
+    "Cinepolis: Sudha Multiplex",
+    "AMB Cinemas: Gachibowli",
+    "Prasads Multiplex: Tank Bund",
+    "Asian Mukta Cinemas: Miyapur",
+    "Sudarshan 35MM: RTC X Roads",
+    "Devi 70MM: RTC X Roads",
+    "Sandhya 70MM: RTC X Roads",
+    "PVR: Irrum Manzil"
+  ],
+  "Bangalore": [
+    "PVR: Forum Mall",
+    "INOX: Garuda Mall",
+    "Cinepolis: Orion Mall",
+    "PVR Gold: Phoenix Mall",
+    "Innovative Multiplex: Marathahalli"
+  ],
+  "Mumbai": [
+    "PVR ICON: Phoenix Palladium",
+    "INOX: R-City Mall",
+    "Cinepolis: Andheri West",
+    "PVR: Juhu",
+    "Carnival Cinemas: IMAX Wadala"
+  ],
+  "Chennai": [
+    "PVR: VR Mall",
+    "SPI Cinemas: Sathyam",
+    "INOX: Phoenix Market City",
+    "Palazzo Cinemas: Forum Vijaya Mall",
+    "AGS Cinemas: T. Nagar"
+  ],
+  "Delhi": [
+    "PVR: Select Citywalk",
+    "PVR Director's Cut: Ambience Mall",
+    "INOX: Nehru Place",
+    "Cinepolis: DLF Place",
+    "Wave Cinemas: Raja Garden"
+  ]
+};
 
 // Generate sample showtimes for each movie
 export const showtimes: Showtime[] = [];
@@ -278,20 +308,32 @@ const generateDates = () => {
 
 const dates = generateDates();
 
+// Get user location from localStorage (defaults to Hyderabad if not set)
+const getUserLocation = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('userLocation') || 'Hyderabad';
+  }
+  return 'Hyderabad';
+};
+
 // Generate showtimes for each movie
 let showtimeId = 1;
 movies.forEach(movie => {
   if (movie.status === 'now_showing') {
-    // Create 2-4 theaters for each movie
+    // Create theaters for each movie based on city
+    const userLocation = getUserLocation();
+    const selectedTheaters = theaters[userLocation as keyof typeof theaters] || theaters.Hyderabad;
+    
+    // Use 3-5 random theaters for each movie
     const numTheaters = Math.floor(Math.random() * 3) + 2;
-    const selectedTheaters = [];
+    const movieTheaters = [];
     
     for (let i = 0; i < numTheaters; i++) {
-      const randomTheaterIndex = Math.floor(Math.random() * theaters.length);
-      const theater = theaters[randomTheaterIndex];
+      const randomTheaterIndex = Math.floor(Math.random() * selectedTheaters.length);
+      const theater = selectedTheaters[randomTheaterIndex];
       
-      if (!selectedTheaters.includes(theater)) {
-        selectedTheaters.push(theater);
+      if (!movieTheaters.includes(theater)) {
+        movieTheaters.push(theater);
         
         // Generate showtimes for each date
         dates.forEach(date => {
@@ -375,7 +417,17 @@ export const getMovieById = (id: string): Movie | null => {
 };
 
 export const getShowtimesForMovie = (movieId: string): Showtime[] => {
-  return showtimes.filter(showtime => showtime.movieId === movieId);
+  // Get all showtimes for the movie
+  const allShowtimes = showtimes.filter(showtime => showtime.movieId === movieId);
+  
+  // Get user's current location
+  const userLocation = getUserLocation();
+  const cityTheaters = theaters[userLocation as keyof typeof theaters] || theaters.Hyderabad;
+  
+  // Filter showtimes by theaters in user's location
+  return allShowtimes.filter(showtime => 
+    cityTheaters.includes(showtime.theater)
+  );
 };
 
 export const getShowtimeById = (showtimeId: string): Showtime | null => {

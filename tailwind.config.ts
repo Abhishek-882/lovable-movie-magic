@@ -96,6 +96,11 @@ export default {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.85' },
 				},
+				'color-shift': {
+					'0%': { filter: 'hue-rotate(0deg)' },
+					'50%': { filter: 'hue-rotate(20deg)' },
+					'100%': { filter: 'hue-rotate(0deg)' },
+				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -107,6 +112,7 @@ export default {
 				'scale-in': 'scale-in 0.5s ease-out',
 				'floating': 'floating 3s ease-in-out infinite',
 				'pulse-subtle': 'pulse-subtle 4s ease-in-out infinite',
+				'color-shift': 'color-shift 5s ease-in-out infinite',
 			}
 		}
 	},

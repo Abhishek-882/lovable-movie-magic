@@ -1,9 +1,9 @@
-
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Movie, Showtime, Review } from "@/lib/types";
 import { useAuth } from "@/contexts/AuthContext";
 import AuthModal from "@/components/AuthModal";
+import { useToast } from "@/hooks/use-toast";
 
 interface MovieDetailProps {
   movie: Movie;
@@ -12,7 +12,9 @@ interface MovieDetailProps {
 }
 
 const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isProfileComplete } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<string | null>(
     showtimes.length > 0 ? showtimes[0].date : null
   );
@@ -40,14 +42,21 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
     if (!isAuthenticated) {
       setSelectedShowtime(showtimeId);
       setIsAuthModalOpen(true);
+    } else if (!isProfileComplete) {
+      toast({
+        title: "Profile incomplete",
+        description: "Please complete your profile before booking tickets",
+        variant: "destructive",
+      });
+      navigate("/profile");
     } else {
-      window.location.href = `/booking/${movie.id}/${showtimeId}`;
+      navigate(`/booking/${movie.id}/${showtimeId}`);
     }
   };
   
   const handleAuthSuccess = () => {
     if (selectedShowtime) {
-      window.location.href = `/booking/${movie.id}/${selectedShowtime}`;
+      navigate(`/booking/${movie.id}/${selectedShowtime}`);
     }
   };
   
@@ -206,7 +215,7 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
                       onClick={() => handleShowtimeClick(time.id)}
                     >
                       {time.time}
-                      <span className="ml-2 text-xs text-gray-500">${time.price}</span>
+                      <span className="ml-2 text-xs text-gray-500">₹{time.price}</span>
                     </button>
                   ))}
                 </div>
