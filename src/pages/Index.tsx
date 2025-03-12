@@ -7,9 +7,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import { 
-  moviesData, 
-  getNowShowingMovies, 
-  getComingSoonMovies 
+  movies, 
+  getMoviesByStatus
 } from "@/data/movies";
 
 const Index = () => {
@@ -19,11 +18,11 @@ const Index = () => {
   }, []);
   
   // Get movies for different sections
-  const nowShowingMovies = getNowShowingMovies();
-  const comingSoonMovies = getComingSoonMovies();
+  const nowShowingMovies = getMoviesByStatus('now_showing');
+  const comingSoonMovies = getMoviesByStatus('coming_soon');
   
-  // Get featured movies for the hero (could be curated in a real app)
-  const featuredMovies = moviesData.slice(0, 3);
+  // Get featured movies for the hero (first 3 movies from the movies array)
+  const featuredMovies = movies.slice(0, 3);
   
   return (
     <div className="min-h-screen bg-background">

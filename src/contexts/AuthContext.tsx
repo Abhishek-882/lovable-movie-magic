@@ -59,8 +59,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: '1',
         name: 'Test User',
         email,
-        isVerified: false,
-        profileComplete: false,
+        isEmailVerified: false,
+        isProfileComplete: false,
       };
       
       setUser(mockUser);
@@ -88,8 +88,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: Date.now().toString(),
         name,
         email,
-        isVerified: false,
-        profileComplete: false,
+        isEmailVerified: false,
+        isProfileComplete: false,
       };
       
       setUser(mockUser);
@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const updatedUser = {
         ...user,
         ...userData,
-        profileComplete: true,
+        isProfileComplete: true,
       };
       
       setUser(updatedUser);
@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const verifiedUser = {
         ...user,
-        isVerified: true,
+        isEmailVerified: true,
       };
       
       setUser(verifiedUser);
@@ -175,8 +175,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       value={{
         user,
         isAuthenticated: !!user,
-        isProfileComplete: user?.profileComplete || false,
-        isEmailVerified: user?.isVerified || false,
+        isProfileComplete: user?.isProfileComplete || false,
+        isEmailVerified: user?.isEmailVerified || false,
         login,
         signup,
         logout,

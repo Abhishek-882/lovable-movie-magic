@@ -16,6 +16,7 @@ export interface Movie {
   genres: Genre[];
   cast: string[];
   status: 'now_showing' | 'coming_soon';
+  trailerUrl?: string; // Added trailerUrl as optional property
 }
 
 export interface Showtime {
@@ -56,4 +57,5 @@ export interface Booking {
   totalAmount: number;
   bookingDate: string;
   status: 'confirmed' | 'cancelled' | 'pending';
+  qrCode?: string; // Added qrCode as optional property
 }

@@ -10,10 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, ClockIcon, MapPinIcon, TicketIcon } from "lucide-react";
 
+interface ExtendedBooking extends Booking {
+  movie: Movie | null;
+}
+
 const BookingHistoryPage = () => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
-  const [bookings, setBookings] = useState<(Booking & { movie: Movie | null })[]>([]);
+  const [bookings, setBookings] = useState<ExtendedBooking[]>([]);
   
   useEffect(() => {
     if (!isAuthenticated) {
