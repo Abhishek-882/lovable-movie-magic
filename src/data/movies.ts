@@ -1,4 +1,3 @@
-
 import { Movie, Showtime, Review } from "@/lib/types";
 
 export const moviesData: Movie[] = [
@@ -164,7 +163,6 @@ export const moviesData: Movie[] = [
   }
 ];
 
-// Sample showtimes data
 export const showtimesData: Showtime[] = [
   { id: "st1", movieId: "1", theater: "Grand Cinema", date: "2023-09-15", time: "18:30", price: 15, seatsAvailable: 48 },
   { id: "st2", movieId: "1", theater: "Grand Cinema", date: "2023-09-15", time: "21:00", price: 15, seatsAvailable: 62 },
@@ -178,7 +176,6 @@ export const showtimesData: Showtime[] = [
   { id: "st10", movieId: "10", theater: "Royal Cineplex", date: "2023-09-15", time: "19:00", price: 16, seatsAvailable: 45 }
 ];
 
-// Sample reviews data
 export const reviewsData: Review[] = [
   {
     id: "r1",
@@ -232,4 +229,8 @@ export const getShowtimesForMovie = (movieId: string) => {
 
 export const getReviewsForMovie = (movieId: string) => {
   return reviewsData.filter(review => review.movieId === movieId);
+};
+
+export const getShowtimeById = (id: string) => {
+  return showtimesData.find(showtime => showtime.id === id);
 };
