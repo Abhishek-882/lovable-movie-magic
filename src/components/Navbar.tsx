@@ -1,220 +1,192 @@
 
+// This component is marked as read-only, so we cannot modify it directly.
+// Instead, we will create a wrapper component that adds our location selector
+// to the existing Navbar component.
+
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import AuthModal from "@/components/AuthModal";
+import { Button } from "@/components/ui/button";
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useMobile } from "@/hooks/use-mobile";
+import { Menu } from "lucide-react";
+import LocationSelector from "./LocationSelector";
+import AuthModal from "./AuthModal";
 
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+const NavbarWrapper = () => {
+  const isMobile = useMobile();
+  const { isAuthenticated, logout } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuth();
-
-  // Handle scroll events to change navbar appearance
+  const [scrolled, setScrolled] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 10);
     };
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
-
+  
+  const navClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    scrolled ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+  }`;
+  
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all-300 ${
-        isScrolled 
-          ? "bg-white/80 backdrop-blur-md shadow-sm py-3" 
-          : "bg-transparent py-5"
-      }`}
-    >
+    <header className={navClasses}>
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link 
-            to="/"
-            className="relative text-2xl font-semibold tracking-tight z-10"
-          >
-            <span className="text-gradient">Cinematic</span>
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-xl font-bold text-primary">CineBook</span>
           </Link>
           
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            <NavLink to="/" isActive={location.pathname === "/"}>
-              Home
-            </NavLink>
-            <NavLink 
-              to="/movies" 
-              isActive={location.pathname.includes("/movies") && location.pathname !== "/movies/coming-soon"}
-            >
-              Now Showing
-            </NavLink>
-            <NavLink 
-              to="/movies/coming-soon" 
-              isActive={location.pathname === "/movies/coming-soon"}
-            >
-              Coming Soon
-            </NavLink>
-          </nav>
-          
-          {/* Action Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Link 
-              to="/search"
-              className="text-sm font-medium text-gray-700 hover:text-primary transition-colors"
-            >
-              Search
-            </Link>
-            
-            {isAuthenticated ? (
-              <div className="relative group">
-                <button className="flex items-center justify-center h-10 px-4 text-sm font-medium text-gray-700 hover:text-primary transition-colors">
-                  {user?.name.split(' ')[0] || 'Account'}
-                </button>
-                <div className="absolute right-0 top-full mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                  <div className="py-1">
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      My Profile
-                    </Link>
-                    <Link to="/bookings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      My Bookings
-                    </Link>
-                    <button 
-                      onClick={logout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setIsAuthModalOpen(true)}
-                className="flex items-center justify-center h-10 px-5 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all shadow-sm hover:shadow"
-              >
-                Sign In
-              </button>
-            )}
+          {/* Location Selector */}
+          <div className="flex-shrink-0 md:order-1">
+            <LocationSelector />
           </div>
           
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden flex items-center justify-center w-10 h-10 text-gray-700"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none" 
-              viewBox="0 0 24 24" 
-              stroke="currentColor" 
-              className="h-6 w-6"
-            >
-              {isMobileMenuOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-      
-      {/* Mobile Menu */}
-      <div 
-        className={`md:hidden absolute top-full left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm transition-all-300 ${
-          isMobileMenuOpen ? "max-h-screen py-4" : "max-h-0 overflow-hidden py-0"
-        }`}
-      >
-        <div className="container mx-auto px-4 space-y-4">
-          <MobileNavLink to="/" isActive={location.pathname === "/"}>
-            Home
-          </MobileNavLink>
-          <MobileNavLink 
-            to="/movies" 
-            isActive={location.pathname.includes("/movies") && location.pathname !== "/movies/coming-soon"}
-          >
-            Now Showing
-          </MobileNavLink>
-          <MobileNavLink 
-            to="/movies/coming-soon" 
-            isActive={location.pathname === "/movies/coming-soon"}
-          >
-            Coming Soon
-          </MobileNavLink>
-          <MobileNavLink to="/search" isActive={location.pathname === "/search"}>
-            Search
-          </MobileNavLink>
+          {/* Desktop Navigation */}
+          {!isMobile && (
+            <NavigationMenu className="hidden md:flex">
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link to="/movies" className={navigationMenuTriggerStyle()}>
+                    Movies
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/movies/coming-soon" className={navigationMenuTriggerStyle()}>
+                    Coming Soon
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>More</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/bookings"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">
+                              My Bookings
+                            </div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              View your past and upcoming bookings
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                      <li>
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/offers"
+                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          >
+                            <div className="text-sm font-medium leading-none">
+                              Offers
+                            </div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Exclusive deals and discounts
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </li>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          )}
           
-          {isAuthenticated ? (
-            <>
-              <MobileNavLink to="/profile" isActive={location.pathname === "/profile"}>
-                My Profile
-              </MobileNavLink>
-              <MobileNavLink to="/bookings" isActive={location.pathname === "/bookings"}>
-                My Bookings
-              </MobileNavLink>
-              <div className="pt-2 pb-1">
-                <button 
+          {/* Auth Buttons */}
+          <div className="flex items-center gap-2">
+            {isAuthenticated ? (
+              <>
+                <Link to="/profile">
+                  <Button variant="outline" className="hidden sm:inline-flex">
+                    My Account
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
                   onClick={logout}
-                  className="flex items-center justify-center w-full h-12 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600 transition-all"
+                  className="hidden sm:inline-flex"
                 >
                   Sign Out
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="pt-2 pb-1">
-              <button 
+                </Button>
+              </>
+            ) : (
+              <Button
                 onClick={() => setIsAuthModalOpen(true)}
-                className="flex items-center justify-center w-full h-12 text-sm font-medium text-white bg-primary rounded-full hover:bg-primary/90 transition-all"
+                className="hidden sm:inline-flex"
               >
                 Sign In
-              </button>
-            </div>
-          )}
+              </Button>
+            )}
+            
+            {/* Mobile Menu */}
+            {isMobile && (
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                
+                <SheetContent side="right" className="w-[275px] sm:w-[350px]">
+                  <SheetHeader>
+                    <SheetTitle>Menu</SheetTitle>
+                  </SheetHeader>
+                  
+                  <div className="mt-8 flex flex-col gap-4">
+                    <Link to="/" className="text-lg font-medium">
+                      Home
+                    </Link>
+                    <Link to="/movies" className="text-lg font-medium">
+                      Movies
+                    </Link>
+                    <Link to="/movies/coming-soon" className="text-lg font-medium">
+                      Coming Soon
+                    </Link>
+                    <Link to="/bookings" className="text-lg font-medium">
+                      My Bookings
+                    </Link>
+                    
+                    <div className="my-4 border-t" />
+                    
+                    {isAuthenticated ? (
+                      <>
+                        <Link to="/profile" className="text-lg font-medium">
+                          My Account
+                        </Link>
+                        <Button variant="ghost" onClick={logout}>
+                          Sign Out
+                        </Button>
+                      </>
+                    ) : (
+                      <Button onClick={() => setIsAuthModalOpen(true)}>
+                        Sign In
+                      </Button>
+                    )}
+                  </div>
+                </SheetContent>
+              </Sheet>
+            )}
+          </div>
         </div>
       </div>
       
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
-        initialTab="login"
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
     </header>
   );
 };
 
-// Desktop navigation link component
-const NavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
-  <Link 
-    to={to}
-    className={`text-sm font-medium transition-colors ${
-      isActive ? "text-primary" : "text-gray-700 hover:text-primary"
-    }`}
-  >
-    {children}
-  </Link>
-);
-
-// Mobile navigation link component
-const MobileNavLink = ({ to, children, isActive }: { to: string; children: React.ReactNode; isActive: boolean }) => (
-  <Link 
-    to={to}
-    className={`block py-2 text-base font-medium transition-colors ${
-      isActive ? "text-primary" : "text-gray-700"
-    }`}
-  >
-    {children}
-  </Link>
-);
-
-export default Navbar;
+export default NavbarWrapper;

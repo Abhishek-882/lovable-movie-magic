@@ -34,7 +34,7 @@ const ProfilePage = () => {
           <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">My Account</h1>
           
           {(!isProfileComplete || !isEmailVerified) && (
-            <Alert variant="warning" className="mb-6 bg-amber-50 text-amber-800 border-amber-200">
+            <Alert variant="destructive" className="mb-6 bg-amber-50 text-amber-800 border-amber-200">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Account Setup Required</AlertTitle>
               <AlertDescription>
