@@ -12,10 +12,26 @@ interface AuthContextType {
   signup: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
-  verifyEmail: () => Promise<boolean>;
+  verifyEmail: (otp: string) => Promise<boolean>;
+  sendVerificationEmail: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Local storage key for users
+const USERS_STORAGE_KEY = 'registered_users';
+const CURRENT_USER_KEY = 'current_user';
+
+// Mock function to get registered users
+const getRegisteredUsers = (): Record<string, User & { password: string }> => {
+  const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+  return storedUsers ? JSON.parse(storedUsers) : {};
+};
+
+// Mock function to save registered users
+const saveRegisteredUsers = (users: Record<string, User & { password: string }>) => {
+  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -28,16 +44,17 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const { toast } = useToast();
+  const [verificationCode, setVerificationCode] = useState<string | null>(null);
 
-  // Load user from localStorage on initial render
+  // Load current user from localStorage on initial render
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem(CURRENT_USER_KEY);
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error('Failed to parse stored user data:', error);
-        localStorage.removeItem('user');
+        localStorage.removeItem(CURRENT_USER_KEY);
       }
     }
   }, []);
@@ -45,30 +62,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Update localStorage whenever user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      localStorage.removeItem(CURRENT_USER_KEY);
     }
   }, [user]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // In a real app, this would be an API call
     try {
-      // Mock successful login for now
-      const mockUser: User = {
-        id: '1',
-        name: 'Test User',
-        email,
-        isEmailVerified: false,
-        isProfileComplete: false,
-      };
+      const users = getRegisteredUsers();
       
-      setUser(mockUser);
-      toast({
-        title: "Login successful",
-        description: "Welcome back to Cinematic!",
-      });
-      return true;
+      // Check if the user exists and password matches
+      if (users[email] && users[email].password === password) {
+        // Create user object without the password
+        const { password: _, ...userWithoutPassword } = users[email];
+        setUser(userWithoutPassword);
+        
+        toast({
+          title: "Login successful",
+          description: "Welcome back to Cinematic!",
+        });
+        return true;
+      } else {
+        toast({
+          title: "Login failed",
+          description: "Email or password is incorrect. Please try again or signup.",
+          variant: "destructive",
+        });
+        return false;
+      }
     } catch (error) {
       console.error('Login failed:', error);
       toast({
@@ -81,18 +103,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // In a real app, this would be an API call
     try {
-      // Mock successful signup
-      const mockUser: User = {
+      const users = getRegisteredUsers();
+      
+      // Check if the user already exists
+      if (users[email]) {
+        toast({
+          title: "Signup failed",
+          description: "Email already registered. Please login instead.",
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      // Create a new user
+      const newUser: User & { password: string } = {
         id: Date.now().toString(),
         name,
         email,
         isEmailVerified: false,
         isProfileComplete: false,
+        password
       };
       
-      setUser(mockUser);
+      // Save the new user to storage
+      users[email] = newUser;
+      saveRegisteredUsers(users);
+      
+      // Set the current user (without password)
+      const { password: _, ...userWithoutPassword } = newUser;
+      setUser(userWithoutPassword);
+      
       toast({
         title: "Account created",
         description: "Welcome to Cinematic! Please verify your email.",
@@ -111,6 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem(CURRENT_USER_KEY);
     toast({
       title: "Logged out",
       description: "You have been successfully logged out.",
@@ -128,6 +170,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       
       setUser(updatedUser);
+      
+      // Also update the user in the registered users
+      if (user.email) {
+        const users = getRegisteredUsers();
+        if (users[user.email]) {
+          users[user.email] = { ...users[user.email], ...userData, isProfileComplete: true };
+          saveRegisteredUsers(users);
+        }
+      }
+      
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
@@ -144,21 +196,64 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const verifyEmail = async (): Promise<boolean> => {
+  const sendVerificationEmail = async (): Promise<boolean> => {
     try {
       if (!user) return false;
       
-      const verifiedUser = {
-        ...user,
-        isEmailVerified: true,
-      };
+      // Generate a 6-digit OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      setVerificationCode(otp);
       
-      setUser(verifiedUser);
       toast({
-        title: "Email verified",
-        description: "Your email has been successfully verified.",
+        title: "Verification code sent",
+        description: `Your verification code is: ${otp}`,
       });
       return true;
+    } catch (error) {
+      console.error('Failed to send verification email:', error);
+      toast({
+        title: "Failed to send code",
+        description: "Could not send verification code. Please try again.",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
+  const verifyEmail = async (otp: string): Promise<boolean> => {
+    try {
+      if (!user || !verificationCode) return false;
+      
+      if (otp === verificationCode) {
+        const verifiedUser = {
+          ...user,
+          isEmailVerified: true,
+        };
+        
+        setUser(verifiedUser);
+        
+        // Also update the user in the registered users
+        if (user.email) {
+          const users = getRegisteredUsers();
+          if (users[user.email]) {
+            users[user.email] = { ...users[user.email], isEmailVerified: true };
+            saveRegisteredUsers(users);
+          }
+        }
+        
+        toast({
+          title: "Email verified",
+          description: "Your email has been successfully verified.",
+        });
+        return true;
+      } else {
+        toast({
+          title: "Verification failed",
+          description: "Invalid verification code. Please try again.",
+          variant: "destructive",
+        });
+        return false;
+      }
     } catch (error) {
       console.error('Email verification failed:', error);
       toast({
@@ -182,6 +277,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         updateProfile,
         verifyEmail,
+        sendVerificationEmail,
       }}
     >
       {children}

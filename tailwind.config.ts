@@ -53,6 +53,21 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// BookMyShow-inspired colors
+				bms: {
+					red: '#e03444',
+					darkRed: '#cc0000',
+					lightRed: '#ff5f74',
+					gold: '#f5c518',
+					darkGold: '#d4a017',
+					lightGold: '#ffd700',
+					navy: '#1a2a4a',
+					darkNavy: '#131a27',
+					lightGray: '#f5f5fa',
+					gray: '#999999',
+					darkGray: '#333333',
+					black: '#1c1c1c',
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -100,7 +115,15 @@ export default {
 					'0%': { filter: 'hue-rotate(0deg)' },
 					'50%': { filter: 'hue-rotate(20deg)' },
 					'100%': { filter: 'hue-rotate(0deg)' },
-				}
+				},
+				'marquee': {
+					'0%': { transform: 'translateX(0%)' },
+					'100%': { transform: 'translateX(-100%)' },
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-200% 0' },
+					'100%': { backgroundPosition: '200% 0' },
+				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -113,7 +136,15 @@ export default {
 				'floating': 'floating 3s ease-in-out infinite',
 				'pulse-subtle': 'pulse-subtle 4s ease-in-out infinite',
 				'color-shift': 'color-shift 5s ease-in-out infinite',
-			}
+				'marquee': 'marquee 25s linear infinite',
+				'shimmer': 'shimmer 2s infinite',
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gold-gradient': 'linear-gradient(to right, #f5c518, #ffd700)',
+				'red-gradient': 'linear-gradient(to right, #e03444, #ff5f74)',
+				'cinema-pattern': 'url("/cinema-pattern.svg")',
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
