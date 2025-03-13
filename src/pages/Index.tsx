@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import { 
-  movies, 
+  getAllMovies,
   getMoviesByStatus
 } from "@/data/movies";
 
@@ -21,8 +21,8 @@ const Index = () => {
   const nowShowingMovies = getMoviesByStatus('now_showing');
   const comingSoonMovies = getMoviesByStatus('coming_soon');
   
-  // Get featured movies for the hero (first 3 movies from the movies array)
-  const featuredMovies = movies.slice(0, 3);
+  // Get featured movies for the hero (first 3 movies from now showing)
+  const featuredMovies = nowShowingMovies.slice(0, 3);
   
   return (
     <div className="min-h-screen bg-background">
@@ -38,12 +38,12 @@ const Index = () => {
       />
       
       {/* Feature Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-gradient-to-r from-red-50 to-white py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div className="flex flex-col justify-center">
               <div className="animate-fade-in">
-                <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-red-600 md:text-4xl">
                   Experience Cinema Like Never Before
                 </h2>
                 <p className="mb-6 text-lg text-gray-600">
@@ -71,7 +71,7 @@ const Index = () => {
                 <div className="mt-8">
                   <Link
                     to="/movies"
-                    className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-medium text-white shadow-sm transition-all hover:bg-primary/90"
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-500 px-6 text-sm font-medium text-white shadow-sm transition-all hover:from-red-700 hover:to-red-600"
                   >
                     Explore Movies
                   </Link>
@@ -80,8 +80,8 @@ const Index = () => {
             </div>
             <div className="mx-auto flex max-w-md items-center justify-center lg:max-w-none">
               <div className="relative animate-floating">
-                <div className="absolute -left-6 -top-6 h-64 w-64 rounded-xl bg-primary/10"></div>
-                <div className="absolute -bottom-8 -right-8 h-64 w-64 rounded-xl bg-primary/5"></div>
+                <div className="absolute -left-6 -top-6 h-64 w-64 rounded-xl bg-red-100"></div>
+                <div className="absolute -bottom-8 -right-8 h-64 w-64 rounded-xl bg-red-50"></div>
                 <div className="relative overflow-hidden rounded-xl bg-white shadow-xl">
                   <img
                     src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
@@ -96,12 +96,12 @@ const Index = () => {
       </section>
       
       {/* Coming Soon Section */}
-      <section className="py-12 md:py-16">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-red-50">
         <div className="container mx-auto px-4 md:px-6">
-          <h2 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">Coming Soon</h2>
+          <h2 className="mb-6 text-3xl font-bold tracking-tight text-red-600 md:text-4xl">Coming Soon</h2>
           
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {comingSoonMovies.slice(0, 3).map(movie => (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {comingSoonMovies.slice(0, 4).map(movie => (
               <div key={movie.id} className="animate-fade-in">
                 <MovieCard movie={movie} featured />
               </div>
@@ -120,7 +120,7 @@ const Index = () => {
       </section>
       
       {/* CTA Section */}
-      <section className="bg-primary py-16">
+      <section className="bg-gradient-to-r from-red-600 to-red-500 py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
@@ -131,7 +131,7 @@ const Index = () => {
             </p>
             <Link
               to="/movies"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-medium text-primary shadow-sm transition-all hover:bg-gray-100"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-medium text-red-600 shadow-sm transition-all hover:bg-gray-100"
             >
               Book Tickets Now
             </Link>
@@ -147,7 +147,7 @@ const Index = () => {
 // Helper component for feature items
 const FeatureItem = ({ title, description }: { title: string; description: string }) => (
   <div className="flex">
-    <div className="mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <div className="mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
         <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
       </svg>

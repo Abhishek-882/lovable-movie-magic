@@ -44,11 +44,17 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
     if (!isAuthenticated) {
       setSelectedShowtime(showtimeId);
       setIsAuthModalOpen(true);
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to book tickets",
+        duration: 3000,
+      });
     } else if (!isProfileComplete) {
       toast({
         title: "Profile incomplete",
         description: "Please complete your profile before booking tickets",
         variant: "destructive",
+        duration: 3000,
       });
       navigate("/profile");
     } else {
@@ -57,9 +63,31 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
   };
   
   const handleAuthSuccess = () => {
+    setIsAuthModalOpen(false);
     if (selectedShowtime) {
-      navigate(`/booking/${movie.id}/${selectedShowtime}`);
+      // Check if profile is complete before navigating
+      if (isProfileComplete) {
+        navigate(`/booking/${movie.id}/${selectedShowtime}`);
+      } else {
+        toast({
+          title: "Profile incomplete",
+          description: "Please complete your profile before booking tickets",
+          variant: "destructive",
+          duration: 3000,
+        });
+        navigate("/profile");
+      }
     }
+  };
+  
+  // Format the date properly
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-IN', { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric'
+    });
   };
   
   return (
@@ -112,7 +140,7 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
               </h1>
               
               <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600">
-                <span>{new Date(movie.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                <span>{new Date(movie.releaseDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 <span>{movie.runtime} minutes</span>
                 <span>{movie.language}</span>
                 <div className="flex items-center gap-1 rounded-full bg-red-600/10 px-2 py-0.5 text-red-600">
@@ -142,16 +170,39 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
                 </div>
               </div>
               
-              {movie.status === 'now_showing' && (
-                <div className="flex">
+              <div className="flex flex-wrap gap-3">
+                {movie.status === 'now_showing' && (
                   <a
                     href="#showtimes"
                     className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-500 px-6 py-3 text-sm font-medium text-white transition-all hover:from-red-700 hover:to-red-600"
                   >
                     View Showtimes
                   </a>
-                </div>
-              )}
+                )}
+                
+                {movie.trailerUrl && (
+                  <a
+                    href={movie.trailerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-full bg-white border border-red-200 px-6 py-3 text-sm font-medium text-red-600 transition-all hover:bg-red-50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="mr-2 h-5 w-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Watch Trailer
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +212,7 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
       <section className="mb-12">
         <h2 className="mb-6 text-2xl font-bold text-red-600">Cast & Crew</h2>
         
-        <div className="flex flex-wrap gap-4">
+        <div className="flex overflow-x-auto pb-4 gap-4">
           {movie.cast.map((actor, index) => (
             <CastMember key={index} name={actor} />
           ))}
@@ -175,35 +226,29 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
           
           {/* Date Selection */}
           {uniqueDates.length > 0 && (
-            <div className="mb-6 flex flex-wrap gap-2">
-              {uniqueDates.map(date => {
-                const formattedDate = new Date(date).toLocaleDateString('en-US', { 
-                  weekday: 'short', 
-                  month: 'short', 
-                  day: 'numeric' 
-                });
-                
-                return (
+            <div className="mb-6 flex overflow-x-auto pb-2">
+              <div className="flex gap-2">
+                {uniqueDates.map(date => (
                   <button
                     key={date}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition-all whitespace-nowrap ${
                       selectedDate === date
                         ? "bg-red-600 text-white"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                     onClick={() => setSelectedDate(date)}
                   >
-                    {formattedDate}
+                    {formatDate(date)}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
           )}
           
           {/* Showtimes by Theater */}
           <div className="space-y-6">
             {Object.entries(showtimesByTheater).map(([theater, times]) => (
-              <div key={theater} className="rounded-lg border bg-white p-6 shadow-sm">
+              <div key={theater} className="rounded-lg border border-red-100 bg-white p-6 shadow-sm">
                 <h3 className="mb-4 text-lg font-semibold">{theater}</h3>
                 
                 <div className="flex flex-wrap gap-3">
@@ -250,7 +295,7 @@ const MovieDetail = ({ movie, showtimes = [], reviews = [] }: MovieDetailProps) 
                 </div>
                 <p className="text-sm text-gray-700">{review.comment}</p>
                 <div className="mt-2 text-xs text-gray-500">
-                  {new Date(review.date).toLocaleDateString('en-US', { 
+                  {new Date(review.date).toLocaleDateString('en-IN', { 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric' 

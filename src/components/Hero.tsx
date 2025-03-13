@@ -44,6 +44,9 @@ const Hero = ({ featuredMovies }: HeroProps) => {
               src={movie.backdropUrl}
               alt={movie.title}
               className="h-full w-full object-cover object-center opacity-60"
+              onError={(e) => {
+                e.currentTarget.src = "https://via.placeholder.com/1920x1080?text=Movie+Backdrop";
+              }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20" />
           </div>
@@ -103,26 +106,29 @@ const Hero = ({ featuredMovies }: HeroProps) => {
                     </Link>
                   )}
                   
-                  <a
-                    href={movie.trailerUrl || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-12 items-center justify-center rounded-full bg-white/10 px-6 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="mr-2 h-5 w-5"
+                  {/* Only show trailer button if trailerUrl exists */}
+                  {movie.trailerUrl && (
+                    <a
+                      href={movie.trailerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex h-12 items-center justify-center rounded-full bg-white/10 px-6 text-sm font-medium text-white backdrop-blur-sm transition-all hover:bg-white/20"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Watch Trailer
-                  </a>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="mr-2 h-5 w-5"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      Watch Trailer
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

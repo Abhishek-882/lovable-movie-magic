@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 interface CastMemberProps {
@@ -6,44 +5,71 @@ interface CastMemberProps {
   image?: string;
 }
 
-// Mock dataset of actor images
-const ACTOR_IMAGES = {
-  "N.T. Rama Rao Jr.": "https://m.media-amazon.com/images/M/MV5BZGEwMjFhYzYtMWUwMC00NTk2LTk2YWEtYmIyZmE0Y2EyOGRkXkEyXkFqcGdeQXVyMjkxNzQ1NDI@._V1_.jpg",
-  "Ram Charan": "https://m.media-amazon.com/images/M/MV5BYTQwNGJlNDMtNjNmOC00NDIyLTk4MmUtZjkxNjY4ZDUxZGJmXkEyXkFqcGdeQXVyMTE0MzY0NjE1._V1_.jpg",
-  "Ajay Devgn": "https://m.media-amazon.com/images/M/MV5BMTY4NzM0MzE5N15BMl5BanBnXkFtZTcwNzE5NTM3Mw@@._V1_.jpg",
-  "Alia Bhatt": "https://m.media-amazon.com/images/M/MV5BMjEzNjAzMTgzMV5BMl5BanBnXkFtZTgwNjU2NjEwMDI@._V1_.jpg",
-  "Olivia Morris": "https://m.media-amazon.com/images/M/MV5BMTgxNTI5MDkyN15BMl5BanBnXkFtZTgwOTI3MzA2MDE@._V1_.jpg",
-  "Prabhas": "https://m.media-amazon.com/images/M/MV5BMTY5MzYwNDM5OV5BMl5BanBnXkFtZTgwNDY3MzA2MDE@._V1_.jpg",
-  "Rana Daggubati": "https://m.media-amazon.com/images/M/MV5BMjQ2MzkwNDItNmUxYy00ZTRiLWE4MDQtZGJjYTk0YjVlYzdjXkEyXkFqcGdeQXVyMjkxNzQ1NDI@._V1_.jpg",
-  "Anushka Shetty": "https://m.media-amazon.com/images/M/MV5BMzEyMDVmZGYtOGJmZS00MmNlLTkzNmItMmE5NWRmYzU4MjE0XkEyXkFqcGdeQXVyNDc2NzU1MTA@._V1_.jpg",
-  "Tamannaah Bhatia": "https://m.media-amazon.com/images/M/MV5BMTc2MDkxNDAyN15BMl5BanBnXkFtZTgwMzc5NDg3MDE@._V1_.jpg",
-  "Ramya Krishnan": "https://m.media-amazon.com/images/M/MV5BZGQzYmU0ODAtZGVkOS00ZmJlLWFlYjQtMmVkYmU1ZWEwZWVmXkEyXkFqcGdeQXVyMjYwMDk5NjE@._V1_.jpg",
-  "Allu Arjun": "https://m.media-amazon.com/images/M/MV5BMjAyNTQ3NTAxN15BMl5BanBnXkFtZTgwNDcyODAzMTE@._V1_.jpg",
-  "Fahadh Faasil": "https://m.media-amazon.com/images/M/MV5BMjg1YmJjYTctODQ3ZC00ZjFjLTgzYTctZGQ0ZjAyYmFmYjZlXkEyXkFqcGdeQXVyMjkxNzQ1NDI@._V1_.jpg",
-  "Rashmika Mandanna": "https://m.media-amazon.com/images/M/MV5BM2FiNzk3YWYtOWQxYi00Zjg0LTkwMDYtNGYyY2JmNzk2MzRiXkEyXkFqcGdeQXVyMjkxNzQ1NDI@._V1_.jpg",
-  "Vijay Deverakonda": "https://m.media-amazon.com/images/M/MV5BODg4NGFiMDAtZWRkOS00NzcwLWFkNDctOWNiNjJiY2ExZTc2XkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg"
+// Updated dataset of actor images with more comprehensive coverage
+const ACTOR_IMAGES: Record<string, string> = {
+  // RRR Cast
+  "N.T. Rama Rao Jr.": "https://static.toiimg.com/photo/msid-89812267/89812267.jpg",
+  "Ram Charan": "https://static.toiimg.com/photo/95440640.cms",
+  "Ajay Devgn": "https://static.toiimg.com/photo/msid-89812299/89812299.jpg",
+  "Alia Bhatt": "https://static.toiimg.com/photo/msid-89812306/89812306.jpg",
+  "Olivia Morris": "https://static.toiimg.com/photo/msid-90086344/90086344.jpg",
+  
+  // Baahubali Cast
+  "Prabhas": "https://static.toiimg.com/photo/msid-100581209/100581209.jpg",
+  "Rana Daggubati": "https://static.toiimg.com/photo/msid-80554187/80554187.jpg",
+  "Anushka Shetty": "https://static.toiimg.com/photo/msid-89521463/89521463.jpg",
+  "Tamannaah Bhatia": "https://static.toiimg.com/photo/msid-101109528/101109528.jpg",
+  "Ramya Krishnan": "https://static.toiimg.com/photo/msid-72293279/72293279.jpg",
+  
+  // Pushpa Cast
+  "Allu Arjun": "https://static.toiimg.com/photo/msid-88669346/88669346.jpg",
+  "Fahadh Faasil": "https://static.toiimg.com/photo/msid-95971465/95971465.jpg",
+  "Rashmika Mandanna": "https://static.toiimg.com/photo/msid-96389886/96389886.jpg",
+  "Sunil": "https://static.toiimg.com/photo/msid-96389886/96389886.jpg",
+  "Dhananjaya": "https://static.toiimg.com/photo/msid-88669346/88669346.jpg",
+  
+  // Other popular Telugu actors
+  "Vijay Deverakonda": "https://static.toiimg.com/photo/msid-93592265/93592265.jpg",
+  "Mahesh Babu": "https://static.toiimg.com/photo/msid-96333400/96333400.jpg",
+  "Nani": "https://static.toiimg.com/photo/msid-100083477/100083477.jpg",
+  "Samantha Ruth Prabhu": "https://static.toiimg.com/photo/msid-96195635/96195635.jpg",
+  "Kajal Aggarwal": "https://static.toiimg.com/photo/msid-78238298/78238298.jpg",
+  "Nagarjuna": "https://static.toiimg.com/photo/msid-93850344/93850344.jpg",
+  "Jr NTR": "https://static.toiimg.com/photo/msid-89812267/89812267.jpg",
+  "Chiranjeevi": "https://static.toiimg.com/photo/msid-95279853/95279853.jpg",
+  "Venkatesh": "https://static.toiimg.com/photo/msid-96264043/96264043.jpg",
+  "Naga Chaitanya": "https://static.toiimg.com/photo/msid-92410480/92410480.jpg",
+  "Ravi Teja": "https://static.toiimg.com/photo/msid-95653542/95653542.jpg",
+  "Sai Pallavi": "https://static.toiimg.com/photo/msid-92003988/92003988.jpg",
+  "Pooja Hegde": "https://static.toiimg.com/photo/msid-96160766/96160766.jpg",
+  "Nikhil Siddhartha": "https://static.toiimg.com/photo/msid-93681248/93681248.jpg",
+  "Naga Shaurya": "https://static.toiimg.com/photo/msid-96096329/96096329.jpg",
+  "Krithi Shetty": "https://static.toiimg.com/photo/msid-87526133/87526133.jpg",
+  "Sree Leela": "https://static.toiimg.com/photo/msid-96160766/96160766.jpg"
 };
 
 const CastMember = ({ name, image }: CastMemberProps) => {
   const [imageError, setImageError] = useState(false);
   
-  // Try to get image from our mock dataset if not provided
-  const imageUrl = image || ACTOR_IMAGES[name as keyof typeof ACTOR_IMAGES];
+  // Try to get image from our dataset if not provided
+  const imageUrl = image || ACTOR_IMAGES[name] || ACTOR_IMAGES[name.split(' ')[0]];
   
   // Fallback to a default placeholder if no image is available or if there's an error
   const handleImageError = () => {
+    console.log(`Image failed to load for: ${name}`);
     setImageError(true);
   };
   
   return (
     <div className="flex flex-col items-center">
-      <div className="mb-2 h-24 w-24 overflow-hidden rounded-full bg-gray-200">
+      <div className="mb-2 h-24 w-24 overflow-hidden rounded-full shadow-md bg-gradient-to-r from-red-100 to-red-50">
         {!imageError && imageUrl ? (
           <img 
             src={imageUrl} 
             alt={name} 
             className="h-full w-full object-cover"
             onError={handleImageError}
+            loading="lazy"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-red-100 to-red-50 text-red-400">

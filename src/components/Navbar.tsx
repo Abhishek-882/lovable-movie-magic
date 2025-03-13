@@ -48,20 +48,10 @@ const NavbarWrapper = () => {
             <LocationSelector />
           </div>
           
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - Remove Movies and Coming Soon buttons */}
           {!isMobile && (
             <NavigationMenu className="hidden md:flex">
               <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link to="/movies" className={navigationMenuTriggerStyle()}>
-                    Movies
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/movies/coming-soon" className={navigationMenuTriggerStyle()}>
-                    Coming Soon
-                  </Link>
-                </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger>More</NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -146,12 +136,6 @@ const NavbarWrapper = () => {
                   <div className="mt-8 flex flex-col gap-4">
                     <Link to="/" className="text-lg font-medium">
                       Home
-                    </Link>
-                    <Link to="/movies" className="text-lg font-medium">
-                      Movies
-                    </Link>
-                    <Link to="/movies/coming-soon" className="text-lg font-medium">
-                      Coming Soon
                     </Link>
                     <Link to="/bookings" className="text-lg font-medium">
                       My Bookings
