@@ -10,8 +10,6 @@ export type Genre =
   | "Sci-Fi" 
   | "Crime" 
   | "Historical" 
-  | "Political"
-  | "Period"
   | "Adventure"
   | "Mystery"
   | "Animation"
@@ -19,7 +17,9 @@ export type Genre =
   | "Documentary"
   | "Biography"
   | "Musical"
-  | "War";
+  | "War"
+  | "Political"
+  | "Period";
 
 export interface Movie {
   id: string;

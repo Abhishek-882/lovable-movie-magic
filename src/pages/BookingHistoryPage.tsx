@@ -79,13 +79,19 @@ const BookingHistoryPage = () => {
             };
           }) : undefined;
           
+          // Ensure status is of the correct type
+          const validStatus = (booking.status === "confirmed" || booking.status === "cancelled" || booking.status === "pending") 
+            ? booking.status as "confirmed" | "cancelled" | "pending" 
+            : "pending" as const;
+          
           return {
             ...booking,
+            status: validStatus,
             movieTitle: movie?.title || "Unknown Movie",
             theaterName: showtime?.theater || "Unknown Theater",
             showDate: showtime?.date || booking.bookingDate.split(" ")[0],
             showTime: showtime?.time || "Unknown Time",
-            posterUrl: movie?.posterUrl || "https://via.placeholder.com/500x750?text=Movie+Poster",
+            posterUrl: movie?.posterUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=400&fit=crop",
             qrCode: qrCodeUrl,
             snackDetails
           };
@@ -114,7 +120,7 @@ const BookingHistoryPage = () => {
             ],
             totalAmount: 1160,
             bookingDate: "2023-07-15",
-            status: "confirmed",
+            status: "confirmed" as "confirmed",
             movieTitle: "RRR",
             theaterName: "PVR ICON: GVK One Mall",
             showDate: "2023-07-20",
@@ -125,6 +131,46 @@ const BookingHistoryPage = () => {
               { name: "Large Popcorn", quantity: 1, price: 250 },
               { name: "Cola (Large)", quantity: 2, price: 360 }
             ]
+          },
+          {
+            id: "2",
+            userId: user?.id || "",
+            movieId: "5",
+            showtimeId: "8",
+            seats: ["D12", "D13", "D14"],
+            snacks: [
+              { snackId: "8", quantity: 2, price: 450 }
+            ],
+            totalAmount: 1800,
+            bookingDate: "2023-08-20",
+            status: "confirmed" as "confirmed",
+            movieTitle: "K.G.F: Chapter 2",
+            theaterName: "INOX: Hyderabad Central",
+            showDate: "2023-08-25",
+            showTime: "3:30 PM",
+            posterUrl: "https://m.media-amazon.com/images/M/MV5BMjMwNDU5ZjItMjk3ZS00NzJlLWE1Y2MtZmY1Zjk1OGYxZGJiXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg",
+            qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-2-KGF-INOX",
+            snackDetails: [
+              { name: "Combo 1 (Popcorn + Cola)", quantity: 2, price: 900 }
+            ]
+          },
+          {
+            id: "3",
+            userId: user?.id || "",
+            movieId: "3",
+            showtimeId: "15",
+            seats: ["A1", "A2"],
+            snacks: [],
+            totalAmount: 600,
+            bookingDate: "2023-09-10",
+            status: "cancelled" as "cancelled",
+            movieTitle: "Pushpa: The Rise",
+            theaterName: "PVR: Forum Mall",
+            showDate: "2023-09-15",
+            showTime: "9:30 PM",
+            posterUrl: "https://m.media-amazon.com/images/M/MV5BMmQ4YmM3NjgtNTExNC00ZTZhLWEwZTctYjdhOWI4ZWFlMDk2XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg",
+            qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-3-PUSHPA-PVR",
+            snackDetails: []
           }
         ];
         setBookings(mockBookings);
