@@ -12,19 +12,22 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Define a type for the extended booking with UI-specific properties
+type EnhancedBooking = Booking & {
+  movieTitle: string;
+  theaterName: string;
+  showDate: string;
+  showTime: string;
+  posterUrl: string;
+  qrCode: string;
+  snackDetails?: { name: string; quantity: number; price: number }[];
+};
+
 const BookingHistoryPage = () => {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [bookings, setBookings] = useState<(Booking & {
-    movieTitle: string;
-    theaterName: string;
-    showDate: string;
-    showTime: string;
-    posterUrl: string;
-    qrCode: string;
-    snackDetails?: { name: string; quantity: number; price: number }[];
-  })[]>([]);
+  const [bookings, setBookings] = useState<EnhancedBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
@@ -37,143 +40,77 @@ const BookingHistoryPage = () => {
     const fetchBookings = async () => {
       if (!user) return;
       
+      setIsLoading(true);
+      
       try {
-        setIsLoading(true);
+        // First, try to get bookings from localStorage
+        const storedBookings = localStorage.getItem("userBookings");
         
-        // Fetch bookings from backend
-        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/bookings/${user.id}`);
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch bookings');
-        }
-        
-        const data = await response.json();
-        
-        // Process and enhance booking data
-        const enhancedBookings = data.bookings.map((booking: any) => {
-          const movie = getMovieById(booking.movieId);
-          const showtime = getShowtimeById(booking.showtimeId);
+        if (storedBookings) {
+          const parsedBookings = JSON.parse(storedBookings);
           
-          // Create a QR code for the booking
-          const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-${booking.id}-${movie?.title}-${showtime?.theater || 'THEATER'}`;
-          
-          // Map snacks data if available
-          const snackDetails = booking.snacks ? booking.snacks.map((snack: SnackOrder) => {
-            // In a real app, you would fetch snack details from your database
-            const snackNames: Record<string, string> = {
-              "1": "Large Popcorn",
-              "2": "Medium Popcorn",
-              "3": "Small Popcorn",
-              "4": "Cola (Large)",
-              "5": "Cola (Medium)",
-              "6": "Water Bottle",
-              "7": "Nachos",
-              "8": "Combo 1 (Popcorn + Cola)",
-              "9": "Combo 2 (Nachos + Cola)"
-            };
+          // Process and enhance booking data
+          const enhancedBookings = parsedBookings.map((booking: any) => {
+            const movie = getMovieById(booking.movieId);
+            const showtime = getShowtimeById(booking.showtimeId);
+            
+            // Create a QR code for the booking
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-${booking.id}-${movie?.title}-${showtime?.theater || 'THEATER'}`;
+            
+            // Map snacks data if available
+            const snackDetails = booking.snacks ? booking.snacks.map((snack: SnackOrder) => {
+              // In a real app, you would fetch snack details from your database
+              const snackNames: Record<string, string> = {
+                "1": "Large Popcorn",
+                "2": "Medium Popcorn",
+                "3": "Small Popcorn",
+                "4": "Cola (Large)",
+                "5": "Cola (Medium)",
+                "6": "Water Bottle",
+                "7": "Nachos",
+                "8": "Combo 1 (Popcorn + Cola)",
+                "9": "Combo 2 (Nachos + Cola)"
+              };
+              
+              return {
+                name: snackNames[snack.snackId] || `Snack #${snack.snackId}`,
+                quantity: snack.quantity,
+                price: snack.price
+              };
+            }) : undefined;
+            
+            // Ensure status is of the correct type
+            const validStatus = (booking.status === "confirmed" || booking.status === "cancelled" || booking.status === "pending") 
+              ? booking.status as "confirmed" | "cancelled" | "pending" 
+              : "pending" as const;
             
             return {
-              name: snackNames[snack.snackId] || `Snack #${snack.snackId}`,
-              quantity: snack.quantity,
-              price: snack.price
+              ...booking,
+              status: validStatus,
+              movieTitle: movie?.title || "Unknown Movie",
+              theaterName: showtime?.theater || "Unknown Theater",
+              showDate: showtime?.date || booking.bookingDate.split("T")[0],
+              showTime: showtime?.time || "Unknown Time",
+              posterUrl: movie?.posterUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=400&fit=crop",
+              qrCode: qrCodeUrl,
+              snackDetails
             };
-          }) : undefined;
+          });
           
-          // Ensure status is of the correct type
-          const validStatus = (booking.status === "confirmed" || booking.status === "cancelled" || booking.status === "pending") 
-            ? booking.status as "confirmed" | "cancelled" | "pending" 
-            : "pending" as const;
-          
-          return {
-            ...booking,
-            status: validStatus,
-            movieTitle: movie?.title || "Unknown Movie",
-            theaterName: showtime?.theater || "Unknown Theater",
-            showDate: showtime?.date || booking.bookingDate.split(" ")[0],
-            showTime: showtime?.time || "Unknown Time",
-            posterUrl: movie?.posterUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=400&fit=crop",
-            qrCode: qrCodeUrl,
-            snackDetails
-          };
-        });
-        
-        setBookings(enhancedBookings);
+          setBookings(enhancedBookings);
+        } else {
+          // If no local storage data, use mock data
+          setBookings(getMockBookings(user.id));
+        }
       } catch (error) {
         console.error("Error fetching bookings:", error);
         toast({
           title: "Failed to fetch bookings",
-          description: "Please try again later.",
+          description: "Using sample booking data instead.",
           variant: "destructive"
         });
         
-        // Set some mock data as a fallback
-        const mockBookings = [
-          {
-            id: "1",
-            userId: user?.id || "",
-            movieId: "1",
-            showtimeId: "1",
-            seats: ["B2", "B3"],
-            snacks: [
-              { snackId: "1", quantity: 1, price: 250 },
-              { snackId: "4", quantity: 2, price: 180 }
-            ],
-            totalAmount: 1160,
-            bookingDate: "2023-07-15",
-            status: "confirmed" as "confirmed",
-            movieTitle: "RRR",
-            theaterName: "PVR ICON: GVK One Mall",
-            showDate: "2023-07-20",
-            showTime: "6:45 PM",
-            posterUrl: "https://m.media-amazon.com/images/M/MV5BOGEzYzcxYjAtZmZiNi00YzI0LWIyY2YtOTM0MDlmYzUyZDVmXkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg",
-            qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-RRR-PVR",
-            snackDetails: [
-              { name: "Large Popcorn", quantity: 1, price: 250 },
-              { name: "Cola (Large)", quantity: 2, price: 360 }
-            ]
-          },
-          {
-            id: "2",
-            userId: user?.id || "",
-            movieId: "5",
-            showtimeId: "8",
-            seats: ["D12", "D13", "D14"],
-            snacks: [
-              { snackId: "8", quantity: 2, price: 450 }
-            ],
-            totalAmount: 1800,
-            bookingDate: "2023-08-20",
-            status: "confirmed" as "confirmed",
-            movieTitle: "K.G.F: Chapter 2",
-            theaterName: "INOX: Hyderabad Central",
-            showDate: "2023-08-25",
-            showTime: "3:30 PM",
-            posterUrl: "https://m.media-amazon.com/images/M/MV5BMjMwNDU5ZjItMjk3ZS00NzJlLWE1Y2MtZmY1Zjk1OGYxZGJiXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg",
-            qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-2-KGF-INOX",
-            snackDetails: [
-              { name: "Combo 1 (Popcorn + Cola)", quantity: 2, price: 900 }
-            ]
-          },
-          {
-            id: "3",
-            userId: user?.id || "",
-            movieId: "3",
-            showtimeId: "15",
-            seats: ["A1", "A2"],
-            snacks: [],
-            totalAmount: 600,
-            bookingDate: "2023-09-10",
-            status: "cancelled" as "cancelled",
-            movieTitle: "Pushpa: The Rise",
-            theaterName: "PVR: Forum Mall",
-            showDate: "2023-09-15",
-            showTime: "9:30 PM",
-            posterUrl: "https://m.media-amazon.com/images/M/MV5BMmQ4YmM3NjgtNTExNC00ZTZhLWEwZTctYjdhOWI4ZWFlMDk2XkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg",
-            qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-3-PUSHPA-PVR",
-            snackDetails: []
-          }
-        ];
-        setBookings(mockBookings);
+        setBookings(getMockBookings(user.id));
       } finally {
         setIsLoading(false);
       }
@@ -182,7 +119,77 @@ const BookingHistoryPage = () => {
     fetchBookings();
   }, [isAuthenticated, navigate, user, toast]);
   
-  const handleDownloadTicket = (booking: any) => {
+  // Helper function to generate mock bookings
+  const getMockBookings = (userId: string): EnhancedBooking[] => {
+    return [
+      {
+        id: "1",
+        userId: userId,
+        movieId: "1",
+        showtimeId: "1",
+        seats: ["B2", "B3"],
+        snacks: [
+          { snackId: "1", quantity: 1, price: 250 },
+          { snackId: "4", quantity: 2, price: 180 }
+        ],
+        totalAmount: 1160,
+        bookingDate: "2023-07-15",
+        status: "confirmed",
+        movieTitle: "Interstellar",
+        theaterName: "PVR ICON: GVK One Mall",
+        showDate: "2023-07-20",
+        showTime: "6:45 PM",
+        posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-Interstellar-PVR",
+        snackDetails: [
+          { name: "Large Popcorn", quantity: 1, price: 250 },
+          { name: "Cola (Large)", quantity: 2, price: 360 }
+        ]
+      },
+      {
+        id: "2",
+        userId: userId,
+        movieId: "5",
+        showtimeId: "8",
+        seats: ["D12", "D13", "D14"],
+        snacks: [
+          { snackId: "8", quantity: 2, price: 450 }
+        ],
+        totalAmount: 1800,
+        bookingDate: "2023-08-20",
+        status: "confirmed",
+        movieTitle: "Inception",
+        theaterName: "INOX: Hyderabad Central",
+        showDate: "2023-08-25",
+        showTime: "3:30 PM",
+        posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-2-Inception-INOX",
+        snackDetails: [
+          { name: "Combo 1 (Popcorn + Cola)", quantity: 2, price: 900 }
+        ]
+      },
+      {
+        id: "3",
+        userId: userId,
+        movieId: "3",
+        showtimeId: "15",
+        seats: ["A1", "A2"],
+        snacks: [],
+        totalAmount: 600,
+        bookingDate: "2023-09-10",
+        status: "cancelled",
+        movieTitle: "The Dark Knight",
+        theaterName: "PVR: Forum Mall",
+        showDate: "2023-09-15",
+        showTime: "9:30 PM",
+        posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-3-Dark-Knight-PVR",
+        snackDetails: []
+      }
+    ];
+  };
+  
+  const handleDownloadTicket = (booking: EnhancedBooking) => {
     // In a real app, you would generate a PDF here
     toast({
       title: "Ticket Download",
@@ -197,29 +204,26 @@ const BookingHistoryPage = () => {
         description: "Cancelling your booking...",
       });
       
-      // In a real app, you would call an API to cancel the booking
-      // const response = await fetch(`${import.meta.env.VITE_API_URL}/bookings/${bookingId}/cancel`, {
-      //   method: 'PUT',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ userId: user?.id })
-      // });
+      // Update UI to show cancelled status
+      setBookings(prevBookings => {
+        const updatedBookings = prevBookings.map(booking => 
+          booking.id === bookingId 
+            ? { ...booking, status: "cancelled" as "cancelled" } 
+            : booking
+        );
+        
+        // Update localStorage
+        localStorage.setItem("userBookings", JSON.stringify(updatedBookings));
+        
+        return updatedBookings;
+      });
       
-      // For demo, just show a success message
       setTimeout(() => {
         toast({
           title: "Success",
           description: "Booking cancelled successfully. Refund will be processed in 5-7 business days.",
         });
-        
-        // Update UI to show cancelled status
-        setBookings(prevBookings => 
-          prevBookings.map(booking => 
-            booking.id === bookingId 
-              ? { ...booking, status: "cancelled" as "cancelled" } 
-              : booking
-          )
-        );
-      }, 2000);
+      }, 1000);
       
     } catch (error) {
       toast({

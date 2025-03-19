@@ -94,9 +94,29 @@ const BookingPage = () => {
     
     setIsLoading(true);
     
+    // Create a booking object with the correct status type
+    const newBooking = {
+      id: Date.now().toString(),
+      userId: user?.id || "",
+      movieId: movieId || "",
+      showtimeId: showtimeId || "",
+      seats: selectedSeats,
+      snacks: selectedSnacks,
+      totalAmount: totalAmount,
+      bookingDate: new Date().toISOString(),
+      status: "confirmed" as "confirmed" | "cancelled" | "pending"
+    };
+
+    console.log("Creating new booking:", newBooking);
+    
     // Mock successful booking process
     setTimeout(() => {
       setIsLoading(false);
+      
+      // Save booking to local storage for retrieval in BookingHistoryPage
+      const existingBookings = JSON.parse(localStorage.getItem("userBookings") || "[]");
+      localStorage.setItem("userBookings", JSON.stringify([newBooking, ...existingBookings]));
+      
       toast({
         title: "Booking successful!",
         description: "Your tickets have been booked successfully",
