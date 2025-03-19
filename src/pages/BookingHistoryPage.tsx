@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getMovieById, getShowtimeById } from "@/data/movies";
-import { Booking } from "@/lib/types";
+import { Booking, SnackOrder } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { QrCode, Calendar, Clock, MapPin, CreditCard } from "lucide-react";
+import { QrCode, Calendar, Clock, MapPin, CreditCard, Popcorn } from "lucide-react";
 
 const BookingHistoryPage = () => {
   const { isAuthenticated, user } = useAuth();
@@ -19,6 +19,7 @@ const BookingHistoryPage = () => {
     showTime: string;
     posterUrl: string;
     qrCode: string;
+    snackDetails?: { name: string; quantity: number; price: number }[];
   })[]>([]);
   
   // Mock bookings data
@@ -37,6 +38,7 @@ const BookingHistoryPage = () => {
       showTime: string;
       posterUrl: string;
       qrCode: string;
+      snackDetails?: { name: string; quantity: number; price: number }[];
     })[] = [
       {
         id: "1",
@@ -44,7 +46,11 @@ const BookingHistoryPage = () => {
         movieId: "1",
         showtimeId: "1",
         seats: ["B2", "B3"],
-        totalAmount: 750,
+        snacks: [
+          { snackId: "1", quantity: 1, price: 250 },
+          { snackId: "4", quantity: 2, price: 180 }
+        ],
+        totalAmount: 1160,
         bookingDate: "2023-07-15",
         status: "confirmed",
         movieTitle: "RRR",
@@ -52,7 +58,11 @@ const BookingHistoryPage = () => {
         showDate: "2023-07-20",
         showTime: "6:45 PM",
         posterUrl: "https://m.media-amazon.com/images/M/MV5BOGEzYzcxYjAtZmZiNi00YzI0LWIyY2YtOTM0MDlmYzUyZDVmXkEyXkFqcGdeQXVyMTQ3Mzk2MDg4._V1_.jpg",
-        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-RRR-PVR"
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-RRR-PVR",
+        snackDetails: [
+          { name: "Large Popcorn", quantity: 1, price: 250 },
+          { name: "Cola (Large)", quantity: 2, price: 360 }
+        ]
       },
       {
         id: "2",
@@ -133,6 +143,19 @@ const BookingHistoryPage = () => {
                         </svg>
                         <span className="text-sm">{booking.seats.join(", ")}</span>
                       </div>
+                      
+                      {/* Snacks info if any */}
+                      {booking.snackDetails && booking.snackDetails.length > 0 && (
+                        <div className="flex items-start gap-2">
+                          <Popcorn className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-500" />
+                          <div className="text-sm flex flex-col">
+                            {booking.snackDetails.map((snack, idx) => (
+                              <span key={idx}>{snack.quantity}x {snack.name}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="flex items-start gap-2">
                         <CreditCard className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-500" />
                         <span className="text-sm font-semibold">₹{booking.totalAmount.toFixed(0)}</span>

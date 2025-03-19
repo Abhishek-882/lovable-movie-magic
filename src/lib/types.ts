@@ -1,6 +1,25 @@
-
 // Movie related types
-export type Genre = "Action" | "Adventure" | "Animation" | "Comedy" | "Crime" | "Documentary" | "Drama" | "Family" | "Fantasy" | "Historical" | "Horror" | "Musical" | "Mystery" | "Romance" | "Science Fiction" | "Sci-Fi" | "Thriller" | "War" | "Western";
+export type Genre = 
+  | "Action" 
+  | "Drama" 
+  | "Comedy" 
+  | "Horror" 
+  | "Thriller" 
+  | "Romance" 
+  | "Fantasy" 
+  | "Sci-Fi" 
+  | "Crime" 
+  | "Historical" 
+  | "Political"
+  | "Period"
+  | "Adventure"
+  | "Mystery"
+  | "Animation"
+  | "Family"
+  | "Documentary"
+  | "Biography"
+  | "Musical"
+  | "War";
 
 export interface Movie {
   id: string;
@@ -48,14 +67,31 @@ export interface User {
   isProfileComplete: boolean;
 }
 
+// Add new types for snacks
+export interface Snack {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: "Popcorn" | "Beverage" | "Combo" | "Snack";
+}
+
+// Update the Booking interface to include snacks
 export interface Booking {
   id: string;
   userId: string;
   movieId: string;
   showtimeId: string;
   seats: string[];
+  snacks?: SnackOrder[];
   totalAmount: number;
   bookingDate: string;
-  status: 'confirmed' | 'cancelled' | 'pending';
-  qrCode?: string; // Added qrCode as optional property
+  status: "confirmed" | "cancelled" | "pending";
+}
+
+export interface SnackOrder {
+  snackId: string;
+  quantity: number;
+  price: number;
 }
