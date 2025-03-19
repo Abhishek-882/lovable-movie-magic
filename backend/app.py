@@ -1,20 +1,21 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 import psycopg2
 import os
 
 app = Flask(__name__)
 
-# Database Connection (Render PostgreSQL)
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://cinemagic_db_user:password@dpg-cv7evuij1k6c73ecogd0-a/cinemagic_db")
+# Load Database URL from Environment Variable
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Connect to PostgreSQL
+# Connect to Database
 conn = psycopg2.connect(DATABASE_URL)
+cursor = conn.cursor()
 
 @app.route("/")
 def home():
-    return jsonify({"message": "Backend is working!"})
+    return "CineMagic Backend Running!"
 
-# Example API to store user signup details
+# User Signup API
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.json
@@ -22,11 +23,28 @@ def signup():
     email = data.get("email")
     password = data.get("password")
 
-    with conn.cursor() as cursor:
-        cursor.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)", (name, email, password))
-        conn.commit()
+    if not name or not email or not password:
+        return jsonify({"error": "All fields are required"}), 400
 
-    return jsonify({"message": "User signed up successfully!"})
+    cursor.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)", (name, email, password))
+    conn.commit()
+    
+    return jsonify({"message": "User registered successfully"}), 201
+
+# User Login API
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s", (email, password))
+    user = cursor.fetchone()
+
+    if user:
+        return jsonify({"message": "Login successful", "user": user[1]}), 200
+    else:
+        return jsonify({"error": "Invalid credentials"}), 401
 
 if __name__ == "__main__":
     app.run(debug=True)
