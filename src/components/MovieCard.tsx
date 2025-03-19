@@ -10,6 +10,22 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  // High-quality fallback images
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&h=750&fit=crop",
+    "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=500&h=750&fit=crop",
+    "https://images.unsplash.com/photo-1542204625-ca960ca44635?w=500&h=750&fit=crop",
+    "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=500&h=750&fit=crop",
+    "https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?w=500&h=750&fit=crop"
+  ];
+  
+  // Get a random fallback image based on movie id
+  const getFallbackImage = () => {
+    const index = parseInt(movie.id) % fallbackImages.length;
+    return fallbackImages[index];
+  };
   
   return (
     <Link 
@@ -23,12 +39,13 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
       {/* Image */}
       <div className="aspect-[2/3] w-full overflow-hidden bg-gray-100">
         <img
-          src={movie.posterUrl}
+          src={imageError ? getFallbackImage() : movie.posterUrl}
           alt={movie.title}
           className={`h-full w-full object-cover transition-transform duration-700 ${
             isHovered ? "scale-105" : "scale-100"
           }`}
           loading="lazy"
+          onError={() => setImageError(true)}
         />
       </div>
       
