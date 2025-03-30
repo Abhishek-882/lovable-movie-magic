@@ -3,6 +3,15 @@ import { Movie, Showtime, Review } from "@/lib/types";
 // Get current date for checking upcoming movies
 const currentDate = new Date();
 
+// Helper function to get a recent date (within the last 4 months)
+const getRecentDate = () => {
+  const date = new Date();
+  const monthsAgo = Math.floor(Math.random() * 4); // 0-3 months ago
+  date.setMonth(date.getMonth() - monthsAgo);
+  date.setDate(Math.floor(Math.random() * 28) + 1); // Random day 1-28
+  return date.toISOString().split('T')[0];
+};
+
 // Movie data with updated high-quality images and more options
 export const movies: Movie[] = [
   {
@@ -10,7 +19,7 @@ export const movies: Movie[] = [
     title: "RRR",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BODUwNDNjYzctODUxNy00ZTA2LWIyYTEtMDc5Y2E5ZjBmNTMzXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
     backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202203/RRR_11_1200x768.jpeg?VersionId=.cSQBcgL4TRqyfTN1z9w1qGdxQ8FvuF8",
-    releaseDate: "2022-03-24",
+    releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.0,
     language: "Telugu",
@@ -22,71 +31,7 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/f_vbAtFSEc0"
   },
   {
-    id: "2",
-    title: "Baahubali: The Beginning",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BYWVlMjVhZWYtNWViNC00ODFkLTk1MmItYjU1MDY5ZDdhMTU3XkEyXkFqcGdeQXVyODIwMDI1NjM@._V1_FMjpg_UX1000_.jpg",
-    backdropUrl: "https://img.onmanorama.com/content/dam/mm/en/entertainment/movie-reviews/images/2023/1/24/baahubali-beginning.jpg",
-    releaseDate: "2015-07-10",
-    runtime: 159,
-    rating: 8.1,
-    language: "Telugu",
-    overview: "In ancient India, an adventurous and daring man becomes involved in a decades-old feud between two warring peoples.",
-    director: "S.S. Rajamouli",
-    genres: ["Action", "Drama", "Fantasy"],
-    cast: ["Prabhas", "Rana Daggubati", "Anushka Shetty", "Tamannaah Bhatia", "Ramya Krishnan"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/sOEg_YZQsTI"
-  },
-  {
     id: "3",
-    title: "Pushpa: The Rise",
-    posterUrl: "https://cdn.shopify.com/s/files/1/0517/0367/5344/files/pushpa-the-rise_480x480.jpg?v=1639741461",
-    backdropUrl: "https://assets.thehansindia.com/h-upload/2022/01/03/1600x960_1131418-pushpa-ott.jpg",
-    releaseDate: "2021-12-17",
-    runtime: 179,
-    rating: 7.6,
-    language: "Telugu",
-    overview: "A laborer rises through the ranks of a red sandalwood smuggling syndicate, making enemies along the way.",
-    director: "Sukumar",
-    genres: ["Action", "Crime", "Drama"],
-    cast: ["Allu Arjun", "Fahadh Faasil", "Rashmika Mandanna", "Dhananjaya", "Sunil"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/pKctjlxbFDQ"
-  },
-  {
-    id: "4",
-    title: "Arjun Reddy",
-    posterUrl: "https://pbs.twimg.com/media/D6OkfqfU0AExYz-.jpg:large",
-    backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
-    releaseDate: "2017-08-25",
-    runtime: 187,
-    rating: 8.1,
-    language: "Telugu",
-    overview: "A short-tempered house surgeon gets used to drugs and drinks when his girlfriend is forced to marry another person.",
-    director: "Sandeep Reddy Vanga",
-    genres: ["Drama", "Romance"],
-    cast: ["Vijay Deverakonda", "Shalini Pandey", "Rahul Ramakrishna", "Jia Sharma", "Sanjay Swaroop"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/aozErj9NqeE"
-  },
-  {
-    id: "5",
-    title: "K.G.F: Chapter 2",
-    posterUrl: "https://assetscdn1.paytm.com/images/cinema/KGF-2-705x750-cec0a380-7d46-11ec-a4d3-8f1a3a4cb9c3.jpg",
-    backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
-    releaseDate: "2022-04-14",
-    runtime: 168,
-    rating: 8.4,
-    language: "Kannada",
-    overview: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes. While his allies look up to him, the government sees him as a threat to law and order. Rocky must battle threats from all sides for unchallenged supremacy.",
-    director: "Prashanth Neel",
-    genres: ["Action", "Crime", "Drama"],
-    cast: ["Yash", "Sanjay Dutt", "Raveena Tandon", "Srinidhi Shetty", "Prakash Raj"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/Qah9sSIXJqk"
-  },
-  {
-    id: "6",
     title: "Pushpa 2: The Rule",
     posterUrl: "https://filmfare.wwmindia.com/content/2023/jan/pushpa21674287765.jpg",
     backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202306/pushpa_2-sixteen_nine.jpg?VersionId=VXzx5NLPc5rRe1vqOq0WrIypB5zU9pGV",
@@ -102,7 +47,39 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/gLlhXM0gOdI"
   },
   {
-    id: "7",
+    id: "4",
+    title: "Arjun Reddy",
+    posterUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSIrg3VSmDVr2H5lMi-wQu7D4kkFLhSKkCrraN8MpsdvC4UHG8Q",
+    backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
+    releaseDate: getRecentDate(),
+    runtime: 187,
+    rating: 8.1,
+    language: "Telugu",
+    overview: "A short-tempered house surgeon gets used to drugs and drinks when his girlfriend is forced to marry another person.",
+    director: "Sandeep Reddy Vanga",
+    genres: ["Drama", "Romance"],
+    cast: ["Vijay Deverakonda", "Shalini Pandey", "Rahul Ramakrishna", "Jia Sharma", "Sanjay Swaroop"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/aozErj9NqeE"
+  },
+  {
+    id: "5",
+    title: "K.G.F: Chapter 2",
+    posterUrl: "https://assetscdn1.paytm.com/images/cinema/KGF-2-705x750-cec0a380-7d46-11ec-a4d3-8f1a3a4cb9c3.jpg",
+    backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
+    releaseDate: getRecentDate(),
+    runtime: 168,
+    rating: 8.4,
+    language: "Kannada",
+    overview: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes. While his allies look up to him, the government sees him as a threat to law and order. Rocky must battle threats from all sides for unchallenged supremacy.",
+    director: "Prashanth Neel",
+    genres: ["Action", "Crime", "Drama"],
+    cast: ["Yash", "Sanjay Dutt", "Raveena Tandon", "Srinidhi Shetty", "Prakash Raj"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/Qah9sSIXJqk"
+  },
+  {
+    id: "6",
     title: "Kalki 2898 AD",
     posterUrl: "https://englishtribuneimages.blob.core.windows.net/gallary-content/2023/6/2023_6$largeimg_1065600343.jpg",
     backdropUrl: "https://www.filmibeat.com/img/2023/10/kalkiposterfbbb-1697088070.jpg",
@@ -118,7 +95,7 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/BPDc-77IpKk"
   },
   {
-    id: "8",
+    id: "7",
     title: "Game Changer",
     posterUrl: "https://www.cinejosh.com/newsimg/newsmainimg/ram-charan-shankar-movie-title-fixed_b_2306230527.jpg",
     backdropUrl: "https://assets.thehansindia.com/h-upload/2023/07/22/1358276-game-changer.webp",
@@ -134,7 +111,7 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/hJWWCmtW3CE"
   },
   {
-    id: "9",
+    id: "8",
     title: "Devara: Part 1",
     posterUrl: "https://pbs.twimg.com/media/F-djfq_bMAARB1r?format=jpg&name=900x900",
     backdropUrl: "https://www.behindwoods.com/news/tamil-nadu/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped.jpg",
@@ -150,7 +127,7 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/VoGI8FXCwI8"
   },
   {
-    id: "10",
+    id: "9",
     title: "Kanguva",
     posterUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2023/07/suriya-41-titled-kanguva-makers-release-the-stylish-title-teaser-001.jpg",
     backdropUrl: "https://igimages.gumlet.io/tamil/home/surya-kcbv-31114.jpg?w=700&dpr=1.3",
@@ -166,11 +143,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/Cq3eF0XJaVA"
   },
   {
-    id: "11",
+    id: "10",
     title: "Ala Vaikunthapurramuloo",
     posterUrl: "https://moviegalleri.net/wp-content/uploads/2019/12/Allu-Arjun-Ala-Vaikunthapurramloo-Movie-New-Year-Wishes-Poster-HD.jpg",
     backdropUrl: "https://stat5.bollywoodhungama.in/wp-content/uploads/2022/01/Ala-Vaikunthapurramuloo-English-1.jpg",
-    releaseDate: "2020-01-12",
+    releaseDate: getRecentDate(),
     runtime: 163,
     rating: 7.3,
     language: "Telugu",
@@ -182,11 +159,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/SkENAjfVoFI"
   },
   {
-    id: "12",
+    id: "11",
     title: "Sita Ramam",
     posterUrl: "https://igimages.gumlet.io/hindi/gallery/movies/sitaraman/sir2082022_1.jpg?w=700&dpr=1.0",
     backdropUrl: "https://images.hindustantimes.com/img/2022/08/25/1600x900/Sita_Ramam_review_1661403202449_1661403218668_1661403218668.jpg",
-    releaseDate: "2022-08-05",
+    releaseDate: getRecentDate(),
     runtime: 163,
     rating: 8.6,
     language: "Telugu",
@@ -198,11 +175,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
   },
   {
-    id: "13",
+    id: "12",
     title: "Kantara",
     posterUrl: "https://img.youtube.com/vi/6oKFao0aQBw/maxresdefault.jpg",
     backdropUrl: "https://www.pinkvilla.com/english/images/2022/10/2092112993_kantara-movie-review-twitter_1280*720.jpg",
-    releaseDate: "2022-09-30",
+    releaseDate: getRecentDate(),
     runtime: 150,
     rating: 8.3,
     language: "Kannada",
@@ -214,11 +191,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/8mrVmf239L4"
   },
   {
-    id: "14",
+    id: "13",
     title: "Tumbbad",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BZDQwYTM5ODEtNDRiZC00Mzk0LWFjNmItZTIxZjYxMzhlNzIwXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
     backdropUrl: "https://www.bollywoodhungama.com/wp-content/uploads/2018/10/Movie-Review-Tumbbad-4.jpg",
-    releaseDate: "2018-10-12",
+    releaseDate: getRecentDate(),
     runtime: 104,
     rating: 8.3,
     language: "Hindi",
@@ -230,27 +207,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/sN75MPxgvX8"
   },
   {
-    id: "15",
-    title: "Bahubali 2: The Conclusion",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BODY0NTU4M2QtZTgyNi00ZTBlLTgxMDUtYmY0ZWEzZjY1ZDE4XkEyXkFqcGdeQXVyMTA4NjE0NjEy._V1_.jpg",
-    backdropUrl: "https://www.hollywoodreporter.com/wp-content/uploads/2017/04/baahubali_the_conclusion_film_still_-_publicity_-_h_2017.jpg",
-    releaseDate: "2017-04-28",
-    runtime: 167,
-    rating: 8.2,
-    language: "Telugu",
-    overview: "When Shiva, the son of Bahubali, learns about his heritage, he begins to look for answers. His story is juxtaposed with past events that unfolded in the Mahishmati Kingdom.",
-    director: "S.S. Rajamouli",
-    genres: ["Action", "Drama", "Fantasy"],
-    cast: ["Prabhas", "Rana Daggubati", "Anushka Shetty", "Tamannaah Bhatia", "Ramya Krishnan"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/qD-6d8Wo3do"
-  },
-  {
-    id: "16",
+    id: "14",
     title: "Master",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BYWNjNGQ0YzgtMDQ0ZS00OTA0LWFiM2EtYjE2YjU5MDljMTYxXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
     backdropUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2021/01/master-movie-review-thalapathy-vijay-vijay-sethupathi-01.jpg",
-    releaseDate: "2021-01-13",
+    releaseDate: getRecentDate(),
     runtime: 178,
     rating: 7.3,
     language: "Tamil",
@@ -262,11 +223,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/UTiXQcrLlv4"
   },
   {
-    id: "17",
+    id: "15",
     title: "Animal",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BNGNlM2YzODgtZGM5Mi00YjhlLWJkMTctYzk5NDczZmM2YzI4XkEyXkFqcGdeQXVyMTUyNjIwMDEw._V1_.jpg",
     backdropUrl: "https://images.indianexpress.com/2023/12/animal-1.jpg",
-    releaseDate: "2023-12-01",
+    releaseDate: getRecentDate(),
     runtime: 201,
     rating: 6.5,
     language: "Hindi",
@@ -278,11 +239,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/Nqz6M5X03eo"
   },
   {
-    id: "18",
+    id: "16",
     title: "Salaar: Part 1 - Ceasefire",
     posterUrl: "https://imgeng.jagran.com/images/2023/dec/salaar-review1703228115828.jpg",
     backdropUrl: "https://images.indianexpress.com/2023/12/Salaar-Part-1-Ceasefire-movie-review-4.jpg",
-    releaseDate: "2023-12-22",
+    releaseDate: getRecentDate(),
     runtime: 175,
     rating: 6.8,
     language: "Telugu",
@@ -294,11 +255,11 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/tNWbYFPv1Wo"
   },
   {
-    id: "19",
+    id: "17",
     title: "Ponniyin Selvan: Part I",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BZjZlNGRhNTQtZTY1Ni00MjdhLWJhYjEtN2NkMjVmNTAwMjZiXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
     backdropUrl: "https://www.hindustantimes.com/ht-img/img/2023/04/28/1600x900/ponniyin_selvan_1_1682653414459_1682653414694.jpg",
-    releaseDate: "2022-09-30",
+    releaseDate: getRecentDate(),
     runtime: 167,
     rating: 7.7,
     language: "Tamil",
@@ -310,7 +271,7 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/D4qAQYlgZQs"
   },
   {
-    id: "20",
+    id: "18",
     title: "Stree 2",
     posterUrl: "https://assets.gadgets360cdn.com/pricee/assets/product/202308/stree-2-poster_1692262011.jpg",
     backdropUrl: "https://images.firstpost.com/wp-content/uploads/2024/02/stree-2-4.jpg",
@@ -510,7 +471,7 @@ export const reviews: Review[] = [
     author: "MovieBuff123",
     rating: 9,
     comment: "RRR is a cinematic masterpiece! The action sequences are breathtaking, and the performances by NTR Jr. and Ram Charan are extraordinary.",
-    date: "2022-04-01"
+    date: currentDate.toISOString().split('T')[0]
   },
   {
     id: "2",
@@ -518,15 +479,7 @@ export const reviews: Review[] = [
     author: "FilmFanatic",
     rating: 8,
     comment: "S.S. Rajamouli has done it again! The visuals are stunning, and the story is engaging from start to finish.",
-    date: "2022-04-05"
-  },
-  {
-    id: "3",
-    movieId: "2",
-    author: "CineLover",
-    rating: 9,
-    comment: "Baahubali: The Beginning set a new standard for Indian cinema. The battle sequences are epic!",
-    date: "2015-07-20"
+    date: currentDate.toISOString().split('T')[0]
   },
   {
     id: "4",
@@ -534,7 +487,7 @@ export const reviews: Review[] = [
     author: "MovieExpert",
     rating: 8,
     comment: "Allu Arjun's performance as Pushpa is phenomenal. His mannerisms and dialogue delivery are spot on.",
-    date: "2021-12-25"
+    date: currentDate.toISOString().split('T')[0]
   },
   {
     id: "5",
@@ -542,7 +495,7 @@ export const reviews: Review[] = [
     author: "FilmCritic",
     rating: 9,
     comment: "Arjun Reddy is raw and intense. Vijay Deverakonda's portrayal of a self-destructive surgeon is unforgettable.",
-    date: "2017-09-10"
+    date: currentDate.toISOString().split('T')[0]
   },
   {
     id: "6",
