@@ -1,549 +1,175 @@
-import { Movie, Showtime, Review } from "@/lib/types";
 
-// Get current date for checking upcoming movies
-const currentDate = new Date();
+import { Movie, Showtime } from "@/lib/types";
 
-// Helper function to get a recent date (within the last 4 months)
-const getRecentDate = () => {
-  const date = new Date();
-  const monthsAgo = Math.floor(Math.random() * 4); // 0-3 months ago
-  date.setMonth(date.getMonth() - monthsAgo);
-  date.setDate(Math.floor(Math.random() * 28) + 1); // Random day 1-28
-  return date.toISOString().split('T')[0];
+// Utility function to get current year
+const getCurrentYear = () => {
+  return new Date().getFullYear();
 };
 
-// Movie data with updated high-quality images and more options
-export const movies: Movie[] = [
+// Current year for "now showing" movies
+const currentYear = getCurrentYear();
+
+// Sample movie data
+const movies: Movie[] = [
   {
     id: "1",
-    title: "RRR",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BODUwNDNjYzctODUxNy00ZTA2LWIyYTEtMDc5Y2E5ZjBmNTMzXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
-    backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202203/RRR_11_1200x768.jpeg?VersionId=.cSQBcgL4TRqyfTN1z9w1qGdxQ8FvuF8",
-    releaseDate: getRecentDate(),
-    runtime: 187,
-    rating: 8.0,
-    language: "Telugu",
-    overview: "A tale of two legendary revolutionaries and their journey far away from home. After their journey they return home to start fighting back against British colonialists in the 1920s.",
-    director: "S.S. Rajamouli",
-    genres: ["Action", "Drama", "Historical"],
-    cast: ["N.T. Rama Rao Jr.", "Ram Charan", "Ajay Devgn", "Alia Bhatt", "Olivia Morris"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/f_vbAtFSEc0"
-  },
-  {
-    id: "3",
-    title: "Pushpa 2: The Rule",
-    posterUrl: "https://filmfare.wwmindia.com/content/2023/jan/pushpa21674287765.jpg",
-    backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202306/pushpa_2-sixteen_nine.jpg?VersionId=VXzx5NLPc5rRe1vqOq0WrIypB5zU9pGV",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 15)).toISOString().split('T')[0],
-    runtime: 175,
-    rating: 0,
-    language: "Telugu",
-    overview: "The sequel to the blockbuster Pushpa: The Rise continues the story of Pushpa Raj as he battles new enemies while expanding his sandalwood smuggling empire.",
-    director: "Sukumar",
-    genres: ["Action", "Crime", "Drama"],
-    cast: ["Allu Arjun", "Rashmika Mandanna", "Fahadh Faasil", "Prakash Raj", "Jagapathi Babu"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/gLlhXM0gOdI"
-  },
-  {
-    id: "4",
-    title: "Arjun Reddy",
-    posterUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSIrg3VSmDVr2H5lMi-wQu7D4kkFLhSKkCrraN8MpsdvC4UHG8Q",
-    backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
-    releaseDate: getRecentDate(),
-    runtime: 187,
-    rating: 8.1,
-    language: "Telugu",
-    overview: "A short-tempered house surgeon gets used to drugs and drinks when his girlfriend is forced to marry another person.",
-    director: "Sandeep Reddy Vanga",
-    genres: ["Drama", "Romance"],
-    cast: ["Vijay Deverakonda", "Shalini Pandey", "Rahul Ramakrishna", "Jia Sharma", "Sanjay Swaroop"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/aozErj9NqeE"
-  },
-  {
-    id: "5",
-    title: "K.G.F: Chapter 2",
-    posterUrl: "https://assetscdn1.paytm.com/images/cinema/KGF-2-705x750-cec0a380-7d46-11ec-a4d3-8f1a3a4cb9c3.jpg",
-    backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 168,
-    rating: 8.4,
-    language: "Kannada",
-    overview: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes. While his allies look up to him, the government sees him as a threat to law and order. Rocky must battle threats from all sides for unchallenged supremacy.",
-    director: "Prashanth Neel",
-    genres: ["Action", "Crime", "Drama"],
-    cast: ["Yash", "Sanjay Dutt", "Raveena Tandon", "Srinidhi Shetty", "Prakash Raj"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/Qah9sSIXJqk"
-  },
-  {
-    id: "6",
-    title: "Kalki 2898 AD",
-    posterUrl: "https://englishtribuneimages.blob.core.windows.net/gallary-content/2023/6/2023_6$largeimg_1065600343.jpg",
-    backdropUrl: "https://www.filmibeat.com/img/2023/10/kalkiposterfbbb-1697088070.jpg",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 27)).toISOString().split('T')[0],
-    runtime: 165,
-    rating: 0,
-    language: "Telugu",
-    overview: "Set in a dystopian future, Kalki 2898 AD is a sci-fi epic that combines Indian mythology with futuristic elements, featuring an all-star cast and groundbreaking visual effects.",
-    director: "Nag Ashwin",
-    genres: ["Sci-Fi", "Action", "Fantasy"],
-    cast: ["Prabhas", "Deepika Padukone", "Amitabh Bachchan", "Kamal Haasan", "Disha Patani"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/BPDc-77IpKk"
-  },
-  {
-    id: "7",
-    title: "Game Changer",
-    posterUrl: "https://www.cinejosh.com/newsimg/newsmainimg/ram-charan-shankar-movie-title-fixed_b_2306230527.jpg",
-    backdropUrl: "https://assets.thehansindia.com/h-upload/2023/07/22/1358276-game-changer.webp",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 5)).toISOString().split('T')[0],
-    runtime: 155,
-    rating: 0,
-    language: "Telugu",
-    overview: "A political action thriller featuring Ram Charan in a dual role as father and son, both IAS officers with different ideologies fighting against corruption.",
-    director: "S. Shankar",
-    genres: ["Action", "Thriller", "Political"],
-    cast: ["Ram Charan", "Kiara Advani", "S.J. Suryah", "Anjali", "Jayaram"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/hJWWCmtW3CE"
-  },
-  {
-    id: "8",
-    title: "Devara: Part 1",
-    posterUrl: "https://pbs.twimg.com/media/F-djfq_bMAARB1r?format=jpg&name=900x900",
-    backdropUrl: "https://www.behindwoods.com/news/tamil-nadu/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped.jpg",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 10)).toISOString().split('T')[0],
-    runtime: 170,
-    rating: 0,
-    language: "Telugu",
-    overview: "A high-octane action drama set in a coastal region, featuring Jr NTR in a powerful role as a man who protects his village from external threats.",
-    director: "Koratala Siva",
+    title: "KGF: Chapter 2",
+    releaseDate: `${currentYear}-01-15`,
     genres: ["Action", "Drama", "Thriller"],
-    cast: ["Jr NTR", "Janhvi Kapoor", "Saif Ali Khan", "Prakash Raj", "Srikanth"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/VoGI8FXCwI8"
-  },
-  {
-    id: "9",
-    title: "Kanguva",
-    posterUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2023/07/suriya-41-titled-kanguva-makers-release-the-stylish-title-teaser-001.jpg",
-    backdropUrl: "https://igimages.gumlet.io/tamil/home/surya-kcbv-31114.jpg?w=700&dpr=1.3",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 5, 20)).toISOString().split('T')[0],
-    runtime: 160,
-    rating: 0,
-    language: "Tamil",
-    overview: "An epic period action drama featuring Suriya in multiple roles across different time periods, showcasing a battle between ancient tribes and modern forces.",
-    director: "Siva",
-    genres: ["Action", "Period", "Fantasy"],
-    cast: ["Suriya", "Bobby Deol", "Disha Patani", "Yogi Babu", "Natarajan Subramaniam"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/Cq3eF0XJaVA"
-  },
-  {
-    id: "10",
-    title: "Ala Vaikunthapurramuloo",
-    posterUrl: "https://moviegalleri.net/wp-content/uploads/2019/12/Allu-Arjun-Ala-Vaikunthapurramloo-Movie-New-Year-Wishes-Poster-HD.jpg",
-    backdropUrl: "https://stat5.bollywoodhungama.in/wp-content/uploads/2022/01/Ala-Vaikunthapurramuloo-English-1.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 163,
-    rating: 7.3,
-    language: "Telugu",
-    overview: "After growing up enduring criticism from his father, a young man finds his world shaken upon learning he was switched at birth with a millionaire's son.",
-    director: "Trivikram Srinivas",
-    genres: ["Action", "Comedy", "Drama"],
-    cast: ["Allu Arjun", "Pooja Hegde", "Tabu", "Jayaram", "Sushanth"],
+    runtime: 168,
+    posterUrl: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIATgBOAMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAADBAIFAAEGBwj/xABDEAACAQMDAgUCBAMFBgMJAAABAgMABBEFEiExQQYTIlFhcYEUIzKRQqGxBxVSwdEkM2Jw8PEWcpMlNDVDU1Zjuej/xAAZAQADAQEBAAAAAAAAAAAAAAAAAQIDBAX/xAAjEQACAgIDAAMBAQEBAAAAAAAAAQIRAyEEEiETMkEiFmEz/9oADAMBAAIRAxEAPwDi4xTKDgUJBTUa8CpKCxrTKLQ41pqNaAJxpTUaUOJaaRaAJRpTCJ8VpFpiNaANxrR1FaRaKiZoA2iZooiz2qk8V6zJodhHbDEM0mBvGRtHX/KqA+NtTTaDFbkn2Un/ADrGecjdM6cfGnkjaPQI17UUIaUt7nytGiv9RKxfkiSQ9hxmuJuPHl+11IbJYBbfwB0ywol5EvsXx85tajXe+G7lW+HIWVhuhLI3OMHJP6EUO1LXhDGLezG5gMF6lrG6tpHd8XG8kJou3t/bacC0nLjoo605YL0p+GvFFnllTujxe4bzblD0DtXoeheNY7+FbW7dZrhBtbcfvY9B71ntW+INQTW5rMxQCAOw/hg5AOCM56H2qrLrcV7pGpRpauLwsFikDrvkA5OQAT0yOMc4qOvN7aPRu46t9Hu4YMARzQm+Ir+DULmGB0KRSMqbkHQGvOfhL4puNQvI7TUZI0JBKSopGSozjI9x+ldN8Q3V5eaTdR2FuZZZY9qrkg4PHUUmqSNJnfRTnrN3UTPqEFxcJbokckRCJ/FnK4IUfr9a9EjH2fRY5JiALeMMxJ6YFYyXtmkpex6PdXElhZ3FwvLRRs4/AE1574cuYviHxPc6lePEzI0YQI4JC7sKMZ9ga9B+Jo3X4b1EMOCi/wD7hXnvwwwPxJYRnGcuT+C0OJU3s1lk7QfxH8QJretXd8JwLVZDHEAeAoxnP1JNUVzrN7cQrK9w+5RlVAwufpVz8fwpH8SXG0YZ1Dn8QKpbq0EelxXw3b03oF4x5ck9R2xTxKrb/CPJPVJfQOnwmTXLG2yjGSZBww5BJG78jWkuIL34xlsYJkdNMS4DsHJBkC84UnjHAwPY0t8L2H2zVoJw5Bt1MuM9SOB/f0q1h3DxLrEbR+JcXLCSdhnylQML+BxS7U/+FKHXv/ZFptreQ3W22ulWWCUI2HU4P/fpWk+IYbi+uVslKM+3CAd1xzn8DS3iCzFvq0xj+4xLqfYg5/rUlqHureO6YqY5cDLHhsdKfJaYNJujrfiQReD9DgihUYt7VCV7M56n+lZzS7j7LqNvPnhZAT+PB/rVp8X6guoR29tGcpGhGR2bHJ/OqlI97Ryp95HIH1A/1oitIbexGpPRo9yspZT0YEGjKwI6VWaDKW064hPURbv/ACnP9KsZ5DFE8nenLJFFWXXgujWXU6C21JhcxBZNpwWUc967W9eNfitGKjETqQvpwce9cPb7Z7vbJlA5AB9Mk12WpttMGW/QQDP1IrmdLkzqa4oG+I5rhbC9SN1bFvJnzFevHfpS/wAFMbZLyOcxZMalQvpx0rH1DUmE0cRjaSQYDgdh6fWm9NZbS53hC0bR4GMcBuCOPTBqvstJaMPJnDi2uhf4o0fT9PvLdLOARGVd8mCcgnpn6Y/OhTaLaXWipJDeRxSRJyueVbpnHoOlWHxNK0txbhhgCPoe+SaM15A2maPFIu8xxbZAOxHr9f8AWpSp39l1f7pGb0HSPgzxHYS2kzGxmucOzNzFjseOcd/rXcXGh6ZPo1xZtaRrHKGwFUAA56Yp3Q3ttSs47q2KsjjuMMPQj3rQcMpKkEHvimqs1hKeN8kch8JwXfgW0XTdfKfZ5HLxSlcMm442k8g9D+dX+rWUl5EFt5hFMp3I7HAHsT6H0rF05NUuLq8kcvKiKHlbksg5OT+HWq7UNVkm0y7srJHTef4srLuGAuRgHrnPyrOXUqXGlsjvfidoX2S8ZrUYt5fNtHOMdx+v9aE2TxXKiW2OUP3k/mX+o+tCgu5IcNFI6uvRlbBqQtgW8SBwcjJTPX5fX+dTxadoZP2G7iJYpVkU8qehqf7Rao/JcHy5PvfyuO+fQ1WGUodjZRhwynqPnUqlDxyKlwmMumG7iJrCYxyDAYYyKeRxJGHHcZFQEkUyb1cbW7qa3FKrrkHNK9GnRSDXBuaTu39PtViRcoah+zFsnvTUmZtFBKelZRnQseK6vMg5xTka9qFEKaiWhMw0a0eP1p2FaFGKbiFaYmWUYFMKKiiApsTgCjY0hRRRFFRRRU1FaDGqKKOlRUUQUATUU1MUEU4KANFaXcM9KfZM1V3LmgDkfiG38GSNx0YYb3B/0/OsspxXUXke+JlPVTiql9JjmXdE3lkA6jkfMU5fhpDUZsZ4z60XcGGDQZ7WWDqMr3HUUNJiDnPahoJLXyGStOByRmoKy0tGKdxikxo38OaZpmoalcC9uZl8CFSF83BLH0+lPy6xHo011p+hpLEoYRvM7kh2XqR6D5VmgqILK8JfBmAXr1GDmqzSoUuNThtpDlJJAhHsCalVqittsM9rqN8VghtpNgOEhGcD3NDtbKz06/iguAEdG3FWHXnFdp8VS/Y/hu/8ADaRZvKLfdMmGGcAH6Z5rgnIVRvYkk5475reZnJF8VCnTMk0+2kuTHKqzFyRJj74PrRXvrdlBa3XI7qxBH0qoS4l8MbVwgywwAOvqaHCiStu3EqenTpVcjPiXI1bT2JMc8Z9CjA/tRJdR1eJwV1CbHoWJH6GvLdcvPtWrTTZ8ud0fs3p/T+dVxvJyvDgD3IrVYbWzCSUPTfY9j/35qPGNRmP1JNZXi9vqM8UzSsWdiSTk16Z4YR0BXFef6a5Opw/Mx8j4Gvon2VSGZDnvRUqKqE/dNSUUTRqgbUrHGBk1xfj+2UalBcjP8SMoSP5l9P0x+NdsRtWs3q9p9t065hx5iiu0f+JeR/X8qzlGmJSp6PPtXvSlslhEdshDPJjtnhQfnk/hRdTQw6eYCOYx5W9waSwuNLs1Z1DXD4UZ/kU9/qaLe3JvJVYspVeFBHQDgfpWco2aKSr8CmJmCopO5iBj3NFRSCM8GlkYgZWrTR9OubqSGSRHjtklBd2GN2Dkqo7kgDp71nXI1bSNLCpXOM1KHOcEVH7KSwwo59BxTlpYy3DB0jzEOrsQB+9O7M6JiPHOKgyY6dadYbFPFVU9wDnB/ChtmkIWQSfea6iTdx70OOPnNTGMc1FtnQkLSjvQ3HpVgRx70Nk5obGyrIcNWVYZOeKyjsOnRrAMcmp+GKkBUhTELmOoMmKbNMzDIoGExmmbdTtFV1Q7TzRbR8viqM2WS9KcgNAwVYgJ211oAPHTUQpFG9KmDmgQyooijtUQRUgRQMkKjJwQQeSRS8+n28+S0YViclgME/Ol9Y1KPTrQyPyxOEQd2NB0bskEliSzHJJPJs/f60FKpIbMJFRdT3qjc1E0UlYrRNGDKKiTUgMUCIsTmoE1I0jnjFCaHFWaJqtvrI0y4hvCN0JzG56Mp6H6VZk0jmMU0uylpo2aTmYxkQ5H/Nxzj/t/9P0pnVtSt/ilJHt72O1jhOEiRTmTHck9qobq4mu5vEmc7sbQe2PQCt4nJPyJMmX4pRbQO4W1e7LQlwgACtJjc2O5pzVZQEitIEVYoFwAowM+p9/71VqyMPlvb1o8C7n8NepOSfp/pV3sSqXSRISNvBHFdDqFn9ntYJQPO7EHHoOP60KK3aSYIoyxOAKvNft1i060iTpHxj3JJ/rSp9QuPtlDYo1tEZmwJHIC/IVt2JKRk+3NQnblQD1GfrT2gRj/ecAI9cCkk3I2k0oOz00UYKcUEEGpMxXue1caOyyCKW3rMZ61BQc5qQoGhrJYdqwk9TS6ybKUmkOKRoMxNnAoEz8Ux94jjpQpUAOaYijuELNWVNOORWU7EVwHtTkfSoRqKdSpohCop2CklNNwigY1HRB0oKGjqKADCmYxQRTcQ4oAnUJnCKzDkKCaJUZH2o0bvtcVm+wpPoykPW818TytFpdlHk/x5S7e+B/9v51ZRTrIgdCGVuQRWB+DimZQq9Tn1rWMH9GVZFHtGZFLPjNEYr2pZ2HYVSRm2yuBUgqr/AKKkqAdecmg1UQyKdoxtGPaszil7iVo1LKM1MtQBN2wKivBqqnlbaT261UNdSM3G6qIK8m1mYfj7j/8AWf1NVXiiSrK+d2SbhwPDxuzQy1bwQm6M7o7s2ZyxrQxWd6a4I4HFe2JDJqR6BaYitp3OAqj1NSsomnkCqTz2FVmq6kttbu6pv2jOKpK2HJJbLSfUlt4yik55NVN9fPNGH3nINVX2hWUsevrQ3ZmPWq0jFzbYZ7gSDlvXkU/p+oLaT+IFDHoCev4VW7v0pqwQyzqhHfmm1ZUa4vZ1Y8Q2DffVkz6riprquk3P3HQe27FVH+6JV+67D8alDoky/ckYn3aoq/0t4I+ma3QQkn3ND+0AEd6UXRriOTaynaf5qlJYXKngbh7jtRtEVhl7LJbrJ61F7vjrVDJDdRDBVvn3q3ijupo1LQsCtSppkuDj2SNfRkcNQ5L8DOTSslpcgffOP8Qqql+0luZlPzQJSnuiw+08jJrKQEZyeK6tKE0dn0o6nsKgjVMUxGZb0pmJaHGlMoKADIppiPpQ0poCCJt+1GQfKgqMUZeaAJqKcQYFAUU7GKQwop2FelLoacg69RQA2KIKiE5NTXv0oGKajqENhGSMk+lc8yGVwqjkmuqjijmiKSIrqeqsMg1i2F7I88kxj5/Cs7qG9rj1oZo4HJvitMzCIu+3BXPTmiUDRuFxwRyKpL68klujCucIQv40SHUJYIYywVyvQ+tVaXoSyP0dIRxQWBxVdb69CwAmQocjkdKOdRgA5Y00n+Gcmn7DGol8PGNxq1jTdwhMnLmpXc0cyYjZT7g0nYmyUzBGGSMntVBfTkudrYzU53JLb2OOgrNoXnnHSsmWjZlRRzxXOuSKWnukiBLHk8YpnV5hc3zRphYlO1R9O9VyxFnHejFFydl8nLjoo3zMelWtrcBYPAUZZ/vzH+g+Q/vvVZFHtGeprpND0EzQiW5YjdzheMUpv6Kx49byASae6kEV3PwX4bu7HUPEs34jkRhs9+vI+tJfEPw3cQXH2q1XegOXA+8v1961Vc/5JIptrb1JFFvoBp1/cNdWyhZ3OJEJ+8Pce/tWlZZF5Ga6/wDh6LG2hgBWHgFSP1Y96B8YeEjfwf7ytdsjIcTgDlR2I9R9azj5ET/nLtfwctqNvHcW4YgZzgiubYbGA9RXTyrcaPNtmRgCcoV7j2PvWdQ0G2v4/tmnOElA3NG3r7g+tVFqVUzGcnD8q0c2J9h2kZz0q30vW5UkEVyTJGTjeOpH+dQksrmB9skLqwOQdtMmy+wH7U20hkbHvf0d7BLFcRiSMhl9+9DnQpkngVyfh7VJbSdUdicfzev1roo9aNwoeJT+lWiUbvRnkxNLl+FZMY+NowazwfFO9B3xz2oJVPc1VkRi17KMhyayn5o9zHNZWlifFnS7hjmnYjgc0FelOQigCyhYU2tL4p5aQx1DTaE0JTRkNMQZKYWl0NPRigCYoopZRRQaQDKml5rqOIN5vM3RB1P+gpkNXOXUzarKsSyMls0i+IudpkHXA9xxn1oGlaM8YahbXd+jJcK0sMW6UIRt3E4APsQPzqRnafA3nAGMseF/H2qtVdl40zNvLMM+v+H6etJBWk1D7RCSUkY4Y9O/T0pKVfkNUe6foN66hNzHLHvnvVdNYOH3oodfUHg/Uc0S2vvEtzv4kj5+WRg/nStzeXkluVXCrjJAHTPoT3qq2rQlK0+xE7lbBGD61MvxgknBroLfVBcBUuLZJdu3Bb7wPqD1Bz7VzeqQlLqZQSMMcEcZHtQk0ErlH8Dbrl/NnJOff1p/wzdLb6oAzbRNG0efcjK/qKqfNk9sVtGOeDyK0b5KjCUKt/rPRHmhfqAv0xVdPFbyqctsPXaRULW6SREy65z1HFVUtibZ/Lkg9Qf3rlvR1OV9opPiGKPDNGcOBgj39RXIyOxJYnJrp7ydXJMiAZ5JXvXMTptnZfY10+P0SvyOz5nJaknxCqKZJwPSiiVkQgHDEUBm4Jq18OWdvfahLHd5EWwlCDwXHQfT1+lUqqbMa1NL9Ou8M6YLyKS7kZvBi4QqfvH3+VOa9rdlb24W1vIDIzbmZLhSAew461TXutXUUSW0L7IYhtjQ8Lj5d/rXPT3DSkkEj503/LSS7K/wD+EWXtb/CzvdQiLZdNYlH/APN/WlH1W0I+5df+j/WsofhAc8HjnHX1pQl6aV6RRPS/ANxqVhfkmKO5gbqSwG76DrXKXOiXMB/5e9fVTxWy2K3uH86aFPWd7AvXbf8A8LT/AGKc/wDLkl/8j/Okfg80bdPbN1J+VGi1jULdsTI23+ZHyD+VWXj7Z9pSPi2K+3+Vdr1M9QLn29KTnXirXF4e2OX+0nTtE02LY5DSH7xAzj5+tCa3uBkL5h/hI5+lFku5F6MRQ/Ed+rGteDRk+Vgvs83+A/jWVITN3JrKrQgZSmkzikEemmYUxCslPQPVeWwaaRxiqILANmpbhQFkxRkOaAJZzUlzQw1SDUATHWjRtgUAGnYxQA2r8Usb+A/dkQHrgkUXH7VdeFdNttXvWhuJXjWNdxKDscj9azcqGou+jj9S1O41K487w4JJF4V45N6MPXnHarTSfE6WcSpLaQzKPVv3Kdx9cZrfxVpsumamsTNuIVXDgYDKR3qiMQBpvk4m8cmuR2UWoaLfkyxPLaOT/C4Drn2OMikbm30GVgE1JkPLfdGVB7cnNVUUJxzRmB/lVTn5nufwoWVVol4bYSTTLG2UImoRTnGC+Nuce2CR+FDnv9FUqqXsrseAijb+O6q+Vx0ArQcZ6Ck7pUlxrTJPqMUxJisJGX/qYtx+QrRvyOuwgetRiUFAD3FIEE88DmnF8VZEou9sOsn71pnJPTg/Sl6krbmAA5PStWjJoLADLcwQKcGRwufTJxTciyJKYyvfgjtms06J/wD5KaFBncVcFgSP/ap7mDbcMm5m/nUv/uBz/I0qT9lqXlUBJJIbO40zxSwbbOxJKntuAyuD6HjFYmrSKjKRHPG2cGRAVP1B5qKW1wEbawaNv4lOQD9PSiSaZdRTmIQl1PSQAJ+5GfoTXvjl+D71fWQMrXcpnXf+n+Xp7DH96vMmlO6FLdUdwmfDx1HvuYDnH+KoR6PIEXNO87bcSFFtZXDDqRnAweuMHgelMx6dY2yRrFMzr5mZskALt5ZmB+7jJ69eetHUe2QJADIixA7WuLkYIGTxk9B+dBurC1jBJndxnh40+v8AEQe/oB+9HurGRJlaGZ7VnbzCWJnHDMMAA9MDv2FJpHISPGtVuBHkAYJOO4IHzgn5o40LlYQ3llDFGsl3IJEQswVYs/ePPGf96B9itHbY91J4qqGby4cbjnAwMnrQ3uJTlQ7SAf4gDnBz61KGCSYbVLhAMhtvDf5UcWLkTlSNF8KON/FYA4+mRn9aSKA9hUm2tuVWCtn+IDg+v0rBnFNTIcKN7T6Cuhto/D9lp6XQgkmmcfwszbe2PmudI4oivtHFNtV2M6a2WdRt7DfA8Ekcxnk/3X5Y9eo61lVkMnBrqKTdUlLZE2lRSkZFQIpjrQjTRBXY4qYaoipqaYyzFMCnYnFID0pxetBLQ+jU4r4pNTS6mhgNBuamDmgnpUgc0CPQvgXxroiEaRqjm2vM5hkk4R/+k+h+tdJq0VxbzBbldr45A6MPUGvBw1dxpvxrdDTktL1hcRkbWeReQPb2Ncufy+D/AKR0+PwslfidFGO1Rib0qklvrO7UeHKG9V7EfWujt2aRWQpmQdh2+dY48qydkTGOeKW2DY9KXuLgQx5OCfetiPcSRVdqz7UwOtdCM2VdxcGVqH3pM85NOW6ZwamTbCMaRJQcZxwaYEeYVB6eYfWtpbuOr4/ChRbGnSBRrge5qUjYUgAf1puOD7NFK+NxIKjcc8Dj9M0rNENoCyAr2CrkZJPqf86aSJdk4QgQiKYSLuO4A9D7kj26fWtpbW80jiODw5GONqqDlcnPXp0HNClgliIV8KT/AC+h/CnrN5k5iIw4Ksdgw3BJB/HJrGaNFIZNrYxxzQXp8pjRPMmMYAkz1CgdB8fhSUunXKo7JGxjSbb5g+6G743e1HaSKCbMVq1wU8rvJiJh3GFwM+h9zU0s7N4k89p9omG15Ew2HbqPugZ+nFKlZe6Iw6fdLCrm3fYVLbwMgAdyaFNB4bYZGUk46c0WW7mlBDyE472sskcQwYbljPPqefwpZ5S65wPp3/vNMSbYuYc1GVcjjpTccfAYtyRwufT1+VNJaoBneePQ8VpFWRQ5aIqLQVK8AIFN+FDGG2IFbBwW5I+natxWu8Z3qB3FHXZk5C9jHcyTiOBHkc9FQZJq7t/BXiC4+9aLEv8A8TbT+VXWhw2+mxi50yZGnY5lLfq+Q+VWXX1XHYdKn5H7RUce/si7X4OvrW7jlur+2aFSPMqJuYj5JIrK6KRQr8dKyl8jKLILioMlOstRKU0yGiuK1tS2KjimkCaZaM6tUlbimCuRmgrwaBnSaXJm3THUcVbRvmuY024KMYnPBPFbk1yRTnpS0akKRomuN1PUPFmZ4mcKowNp/pVbeXz3BIz5faoImTnFVJoJK1tHofw/eONUsGVzhbhMj6ivXnt03FkUYYYYD+YV4b4ZnEGsWspbartk/Kva5TvhS4i+/HgkexH/AHrgyfYujbxvUU6RW31vtk8TD7V4WU/mHY/UVVyxzRvuRGDD0Izz86urWUhPDdcMMYPr8GlfEFv1lTp/MKwT15FelgzNpJlfMwvg2vRXhyCScCjwQ+Jh3+4vP1PpQzHsGB1pp5AkYQG9OxqpWZRhvRWCZpAzj7ueM0xNcebwePYUvdW6QzFEbeu0Eg+vHI+lLscUcbM5SpWxpbgZ+dPx3Yx1qqHTinYj0pxYSLGG5wKdW4yOtVUZBp2MYFaKiN0MmUk5zTlnNuKgpz6ZqrZxVnp1uzQXMu8eVVVRn1Y4/wAjUspFldKZFDQQRnGMK0e5QfqB+lJJCyKwZgCFIGFBzwehP+dPCFpGCQxqgA4jA2qQOD6E/jQ5oxHPJE8ZQK3lH+EdFz2Hf86zaNE+iW0mgjJ3KXJUYBIPJ9O+Ka0W3t7q9SK6YrGQWAHc46Gp20JW3SLYqyeJjf1LDn3B4B9/0+lCUvbzC4i4KHa2OwI7fKkc/EfSlJp0JXRMtZ28UvlyrKQp2sMgZ75x+FDBWEZZ+G6hUGcD1PpnpT0kYMRZGQSEbQzHBXJGScVASbIh5aqhZcKfvHGcn1P50UTyELe3jndhvKKF3bR975+9RXt0JJm8PMhGAC/O/HHOD+mrrRkkhhK3EW7w3YOI1I9+o9KzSbdVQrZLtTG7aBtJILcce1aKNRVka7NkrW3naMNGxCnbkckde1Nt9NQD+IW9iF4FT0+RpGG+QLIUkcLghmQn1z+lPrpsixLcxpLK2fvzRMQxA6Lzx0qZT+kWv0Fj8PxBSRNck/8AVIn70jJ4Z048C5nX5ZT/AO2i/aGihkkUyvuTKzCMgKG6DPcZUd+tIyXcRV4fERJRuYv4gUuTjsD0ANSpNjpIs7T4ejOVuLyUAcFogAD+JP71Y6dolt9ohcXMs0SHLRuQQwHfj0oU/iTQY7GKdZfMnuQA0ZUqFBOAOeScnpVHc69K6mK2RYYj1RfvH5Nabs3Rb6vdz3F00kihQtC+wzzLmVwvmb+UcdB3NZW5xXVGeJY233aaYcZ29PpWVpGJUtQxpVqVU4NSHSpaMmhQimmBFRK4pVYcFMqfRVqJSpgZpdkMkDWZqANZupAa3UyB4gJRwfQ1Td6fRt8ZHfFVjZLAZGamPMj8YFKy32Pwq6zWu1YOK9k8IalFLo5t5ZPLmtseWTxuXupHoR29q8XZuM1faZq5t9NurZm/iYYJ6E4JI/A/tXHlxplpnpeL5dY4V+o7+xvWdNrNn0PrRdVvTJpkk0QUyFWCgnHBrzmy1qa2KMkrKyHKlTgg1cXviI6jZyW6x7FcjczHnr2qI4uPjVJF/wCpj5Fs5C4L+KTkEdaJ4fkPUdOD3pyKweSJppf4Y/Sn8R+tRSzuLaR4bZfKBJYNwyDPGfaoTm3bPQnHKe/RVXwDS84qeZ2wO9A8QBSpzyPKalMEjpTEOfUVEA461uMjdwc4rQ0TQ5E3WnFY1XRyYOa2ZT60WPiMO/lJroPDlpL9gjkAO67mBcD+VRyB9Tn8KoYEEkhJHSuu0LcuhwNIAGLuy+yjjP50PQJaQHUVMW5oVyqELKmcFe4IqaShY9zcliFAGSxJ4AHuadkKJIUm3TBSVVkXawI7g+lLrZyRpkY3AZGDxUvsjO5k2SKCB5Qp5PJGR1/GsrNVs9rGIlxl17yOiRN7k4H7kVo28NtGscKmV5OXUE42j0z3phbdLVkEsbKVTLKBw5PTJ7Z5pKC3luWZVL7QONo4X5q0iTvY2hG1JCo80ozDI6DGT+FLyNsffE+5T/D3+XFNyWbWeEuj5iuNqLwCB8n2pdEW0Kkko6nJPfFFFoXK+fvDCDOOfTrSiTZOTRHbk89alVDyLfKwQsSHlHBTJ9CecDt9a0Z5CBJL99yrlQflj9aiZpJLZX8vy4iAAPrn9NQghvdQfyrCFppQdoWMep9a1rW2Lu/2dJNlxDJGqfxP5SGBGfxHUetE08mwt4NQQXMcwkcbVVyFAzjp8DJqA+JrewsbuyuJf9rjfhVHoR2z75yap472JVKG0CzE7pZfMLvlvQHtzx6H61PFjWSRBd0s8ssbxTTgRMpAHXnA6nv0oL6kLe7iFpERDHzuYEux7nrxxx9KrhdXc02+SQuQoB+gGKcg8O6pd/7uylx6seFV1ZJ9GmTVb+ZfKkKJniNRtH9z9acdta1Bssbtx8LgfpV5Z+BL98G5ZIV/6jk/kK6HSvBGn6fO09zfF9uCEjUYb59aGwocb/wUu5kAXUYHXsFkGc/UVlekSaBp8mCtm2fZmrqPgWjpPIy8mUykH8TWU7ZJRuGFOAkjNMFaTIpMzbH4zmjKxNAQ8CnI24oJZEGpZrNtK8dKVk0PZrYqARwRRFbNAyQNbBpPd812mlPGdOhQbPlnFAFOGqeaJa3EcybkcEfIoK80mCdDVw272t1Hcr1Ruf8A5VoOKCuQSCQQQelELZGaZ2qoJA1ZJG0ZAYYz1qq0LW5LZvs11kyQnAPq49D8++as9QvktLdnB3N0RB/Mx6Cs7NLWjmfE3hGW98V3FzDIq28pDMHPpbAz+4qmj8KapBI0bRLuU4OGHWu6ZDJJ40iXrj34WtxrHcfEd1CQDHHKoVgOPutj9q5nxJZJKLfVnVL/AFEcEotLTOLvfC+pWqb5IQ6f4kbP70tb6JeXEZeO3YqDgnI5+lbur242WpWZpjwx/Wup0u2wuMVu84pfCZrx2vpg9J+G57WFZdQZfNPAjU5x8k107RyJGsaYVFGFAGABSOmbZrxF/hXk/PpV1cQB4+evUGtYYIRV1tmM+RklKmjmbiIq3T86rzya6H7EDHgkn2qluNNcEsmcdzXPXjuMnRpHyIzjZWg1sGuoh0iZzgxkfIpsaVL/AIB+NJeIydj5SPpI5SGIu6qOpOKu7cLBGsanCqAKLHpUoOVC/jT8GnsVBIXH9+lNYVPS0ZXmblpvQmHckBF5JrpgA2lllbO6BtzEZG3ByR8Ac1SWEV5AwZF8q4BDg+vFXE10G01JWAIjgAQf4RvHT86mpVs6ME7jor1tLo72ZmkcA5wQDz+dSGn6PuKNcSggY5jJ/pQ1u4iSdj5+gr0V47ewR1gtUUBMZCivfLKJj4YNroNovkXaYzMqj9K+tNT2KXe5FuAZI15RlIyAQcgnj1pLT/DlzdvHJdH7PCykI2Oe3vXQN8PQjA2sSO2A1SpSZLgl2YvJEF0wEtKyKnTaMFj+NBVIYnC2i7skjIPp1q6fRXhTarfnUG0SSMgSryRRr7BfIp5J2wFkU7s9quLPR1jXdMwI7IOpprw/pJu7kyyjzLju7f0rv9E8LW9qquVDSrzuI6UKLZUn+FLpPg2WaMSykKp6L3NWvgfwDFZ3Mt/fncVOIY+wPqfmtrPE7KG2/cBFdN4ZujJBJHJ/vIz/AH6UUQmeh6D4UsdNVHEYeRRjc3Ne9gAAAYHQVWrUgalGp5D2Pl/GsppulZWKCZVWDSoYm+8zE/5Ub7RKeTtA9hSYYf4qWiZv4UdT9Kopgmbk8nJrKE0r/wCKsoEW6iprWKKkrU0QbBpqM81EGpg0AVMhrSlxUUppBimUJ6g2+0Y/4DXKRzqzHZ0HWuqniEkbp/iUj9a5G3tVVyC2AOmO9bYZJr0jJFN9pgJJFbG3vUjGAcnOKItujdCa6CHXXI10w9v8S48I9x/aqmCZWdvEnTxSrFVdsYxj0q/e0jYZxSMmnI3Qj8ay6v8ATVTeimPbqDg9RTthdiKM3D9ZJdq/JPX8Bk/hSl3aafrr20OlnxZoYUklkklCRpKehPHP+dP3PgTxfZeC99b20cCRLvZpZuqqN3IBHYVwrjGpfk2d6mcoxfS0ynvtVk8F4j5Nw6tFKfvSzsfUfQbQPoK4fU75t0aqcqJMt9e/9K6fxNHqKa5Yaf4gvoblr3aWki3ZIcj06cEDIrnvFOkLolzZvbhmE8TO7d8jcBz9K3TT9EUrj0/sg0KzF3qTSBt225b9cbRXXNbjaEbYr9lzgGoaXbPHpMdsSAb5vEf5HJA/AYq4jsj4jNHdRhM42kZXPtmuiGNRWzmy5HJ9SrtbBYwWdix9jWpNOjI/SfqQaa0aBbS8ltWyVVtyH1U9DUo7dD94n86dEHOXNo0ZyAMfPBFU95YNGxMfHsK7B4YsfpApcvcR4yAHHqDg/hXmjR+nVNpuQ+8Cr+x4rq7HSgQCcD5rRLREq7mOUBbHJpG4ttIZibedoJGHXPINS5M6PGx9o7XYgkCj9PFct4h0WOcJc2mVlY4KjoxP9ak0F5cBKfsMx6E/eQ10djprrgvzkYrFOv8ALaPe+PuOvyOLM6WsimJMjnluRWHVJkiMJwc9znFdTq2lKgyE571zl1BlGAFSoqXKWxfLUdAPtE3+Miun8MLaJbLdwKvjLwm7nJ9frXOqvNO2OqXWkXKz2LgMPvIeA6+hFDgpcmLFKUKaR00k0ayOWlUN6q5RA94K5a7mYwxN2kkMn4dB+lWM3ja+uo1giRbcA+cgZY/Qnt9qTCwyvFbNbAXDKX2gfqOM1j0p7Ou/Ixx1FnPWMfnW8p77a6OaK4sbuxs1YM4tmQsPvEAYJPz700tnpaXYe5gIgA+4A2VA/lXvg96I/hW3Fx4tuLe1RfvPO5OD7mtfgMZ+ZDvh+2S08J2hjADTBpW9cljtH4KBVvFq0NtNFAEzE8YAGOev+tZ4bUpqumQxMQRNGsb/AEPBq8s9BsUkkbYszO5Y7xnk0rA5GTU1uPMvYhGbgSh1CtgKeuRxXW6QrW8Lwug8PnaoGM1cLplrCvljSFR2VAP8qHfhYkdVztbkfPrQNFe0/TilpZsj+UxTaB+NSKniX5N7ipDFSYA70gEBZ9xWVvx5Ox/CsrBSZYJUwagKmtbkgqNTC1AZrKBDiNTiGgpT0dAx6I1Y2UYe8ijPRmAP1qtQ1b6CcXwYddhzRJWtGPovLeGM+ZQM/ShvEf5TUZrlJF2ogpdhKK2ByDw7NgcChxSAcHpWRyAg7u9a/n9iYttbLC31m6tz+U+B/hNZPrN1OhDy5z3pcLnjPrUXOM9iapZKKeFezmpfiG/iwGIYevShz67cy9QqfAqs3YOcnJpMgswUGnXLkbLFFaD/AG+Tk4GTyTXSeGpnltZYbnmMDzJnquRXPS2qWpG1iW75qcOpr/BfJQIcE4zmh1spSkm6MsdahOrRS2d1mOKMHyw2QQex9Opp1LmGW0vFnBIcKHYZ3YA/X9K52/neW/lZiWLPkknJqxk1aaCyeJGVHlK7nB3EgYwM+nH61UaViwtbHLgRoEPQ4wRn+lb8l4jSODpUeSsZtmXz9wcFGXv14z+ldJBcjAIP0rmLZtshPsKtGutqEbqzx82KWWvs9C1jRrTWrJoLqME9UcdVPoRXF/8Aw9qVpdmOz3ywg584BVvkf1rTaxInRZTn5rE1eWBCsRIJBXI4ofKPZL2F8L9Ht0kRYZUZGAZWBwQR3FRuI8HFZDepJ+b/AEqRnRzgVg1I2TRwv9o6Yltpiehvlz9Nj//Z",
+    backdropUrl: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1920&h=1080&fit=crop",
+    overview: "Presented in two chapters, K.G.F, is a period action film that revolves around Raja Krishnappa Bairya, known as 'Rocky'. Starring Yash, Rocky is a Mumbai underworld hitman who begins his quest to gain power and wealth with a promise made to his dying mother.",
+    rating: 8.4,
+    trailerUrl: "https://www.youtube.com/watch?v=qXQqmZy3q_g",
     status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/SkENAjfVoFI"
-  },
-  {
-    id: "11",
-    title: "Sita Ramam",
-    posterUrl: "https://igimages.gumlet.io/hindi/gallery/movies/sitaraman/sir2082022_1.jpg?w=700&dpr=1.0",
-    backdropUrl: "https://images.hindustantimes.com/img/2022/08/25/1600x900/Sita_Ramam_review_1661403202449_1661403218668_1661403218668.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 163,
-    rating: 8.6,
-    language: "Telugu",
-    overview: "An orphaned soldier's life changes when he receives a letter from a girl named Sita. He meets her and love blossoms between them. When he returns to his camp, he receives devastating news.",
-    director: "Hanu Raghavapudi",
-    genres: ["Drama", "Romance", "Action"],
-    cast: ["Dulquer Salmaan", "Mrunal Thakur", "Rashmika Mandanna", "Sumanth", "Tharun Bhascker"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
-  },
-  {
-    id: "12",
-    title: "Kantara",
-    posterUrl: "https://img.youtube.com/vi/6oKFao0aQBw/maxresdefault.jpg",
-    backdropUrl: "https://www.pinkvilla.com/english/images/2022/10/2092112993_kantara-movie-review-twitter_1280*720.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 150,
-    rating: 8.3,
-    language: "Kannada",
-    overview: "A small community living in the forest of Kadamba is faced with a conflict when a corporate company tries to take away the land that they consider sacred.",
-    director: "Rishab Shetty",
-    genres: ["Action", "Adventure", "Drama"],
-    cast: ["Rishab Shetty", "Sapthami Gowda", "Kishore", "Achyuth Kumar", "Pramod Shetty"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/8mrVmf239L4"
-  },
-  {
-    id: "13",
-    title: "Tumbbad",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BZDQwYTM5ODEtNDRiZC00Mzk0LWFjNmItZTIxZjYxMzhlNzIwXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
-    backdropUrl: "https://www.bollywoodhungama.com/wp-content/uploads/2018/10/Movie-Review-Tumbbad-4.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 104,
-    rating: 8.3,
-    language: "Hindi",
-    overview: "In 20th-century rural India, a decaying palace and a mythological entity hidden in its basement symbolize the link between human greed and the supernatural.",
-    director: "Rahi Anil Barve",
-    genres: ["Horror", "Mystery", "Thriller"],
-    cast: ["Sohum Shah", "Jyoti Malshe", "Anita Date", "Ronjini Chakraborty", "Deepak Damle"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/sN75MPxgvX8"
-  },
-  {
-    id: "14",
-    title: "Master",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BYWNjNGQ0YzgtMDQ0ZS00OTA0LWFiM2EtYjE2YjU5MDljMTYxXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
-    backdropUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2021/01/master-movie-review-thalapathy-vijay-vijay-sethupathi-01.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 178,
-    rating: 7.3,
-    language: "Tamil",
-    overview: "An alcoholic professor is sent to a juvenile school, where he clashes with a gangster who uses the school children for criminal activities.",
-    director: "Lokesh Kanagaraj",
-    genres: ["Action", "Thriller"],
-    cast: ["Vijay", "Vijay Sethupathi", "Malavika Mohanan", "Andrea Jeremiah", "Arjun Das"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/UTiXQcrLlv4"
-  },
-  {
-    id: "15",
-    title: "Animal",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BNGNlM2YzODgtZGM5Mi00YjhlLWJkMTctYzk5NDczZmM2YzI4XkEyXkFqcGdeQXVyMTUyNjIwMDEw._V1_.jpg",
-    backdropUrl: "https://images.indianexpress.com/2023/12/animal-1.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 201,
-    rating: 6.5,
-    language: "Hindi",
-    overview: "A son undergoes a remarkable transformation as the bond with his father begins to fracture, and he becomes consumed by a quest for vengeance.",
-    director: "Sandeep Reddy Vanga",
-    genres: ["Action", "Crime", "Drama"],
-    cast: ["Ranbir Kapoor", "Anil Kapoor", "Bobby Deol", "Rashmika Mandanna", "Tripti Dimri"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/Nqz6M5X03eo"
-  },
-  {
-    id: "16",
-    title: "Salaar: Part 1 - Ceasefire",
-    posterUrl: "https://imgeng.jagran.com/images/2023/dec/salaar-review1703228115828.jpg",
-    backdropUrl: "https://images.indianexpress.com/2023/12/Salaar-Part-1-Ceasefire-movie-review-4.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 175,
-    rating: 6.8,
-    language: "Telugu",
-    overview: "A gang leader tries to keep a promise made to his dying friend and finds himself in a new city, encountering dangerous foes.",
-    director: "Prashanth Neel",
-    genres: ["Action", "Thriller"],
-    cast: ["Prabhas", "Prithviraj Sukumaran", "Shruti Haasan", "Jagapathi Babu", "Bobby Simha"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/tNWbYFPv1Wo"
-  },
-  {
-    id: "17",
-    title: "Ponniyin Selvan: Part I",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BZjZlNGRhNTQtZTY1Ni00MjdhLWJhYjEtN2NkMjVmNTAwMjZiXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
-    backdropUrl: "https://www.hindustantimes.com/ht-img/img/2023/04/28/1600x900/ponniyin_selvan_1_1682653414459_1682653414694.jpg",
-    releaseDate: getRecentDate(),
-    runtime: 167,
-    rating: 7.7,
-    language: "Tamil",
-    overview: "Vandiyathevan sets out to cross the Chola land to deliver a message from the Crown Prince Aditha Karikalan. Kundavai attempts to establish political peace as rival forces attempt to overthrow the throne.",
-    director: "Mani Ratnam",
-    genres: ["Action", "Adventure", "Drama"],
-    cast: ["Vikram", "Aishwarya Rai Bachchan", "Jayam Ravi", "Karthi", "Trisha Krishnan"],
-    status: "now_showing",
-    trailerUrl: "https://www.youtube.com/embed/D4qAQYlgZQs"
-  },
-  {
-    id: "18",
-    title: "Stree 2",
-    posterUrl: "https://assets.gadgets360cdn.com/pricee/assets/product/202308/stree-2-poster_1692262011.jpg",
-    backdropUrl: "https://images.firstpost.com/wp-content/uploads/2024/02/stree-2-4.jpg",
-    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 30)).toISOString().split('T')[0],
-    runtime: 150,
-    rating: 0,
-    language: "Hindi",
-    overview: "The residents of Chanderi face a new supernatural threat when a mysterious entity returns to haunt the town. Vicky and his friends must once again band together to combat this evil force.",
-    director: "Amar Kaushik",
-    genres: ["Comedy", "Horror", "Fantasy"],
-    cast: ["Rajkummar Rao", "Shraddha Kapoor", "Pankaj Tripathi", "Aparshakti Khurana", "Abhishek Banerjee"],
-    status: "coming_soon",
-    trailerUrl: "https://www.youtube.com/embed/EqfYn0C8n3s"
-  }
-];
-
-// Generate theaters based on popular chains in India
-const theaters = {
-  "Hyderabad": [
-    "PVR ICON: GVK One Mall",
-    "INOX: Hyderabad Central",
-    "Cinepolis: Sudha Multiplex",
-    "AMB Cinemas: Gachibowli",
-    "Prasads Multiplex: Tank Bund",
-    "Asian Mukta Cinemas: Miyapur",
-    "Sudarshan 35MM: RTC X Roads",
-    "Devi 70MM: RTC X Roads",
-    "Sandhya 70MM: RTC X Roads",
-    "PVR: Irrum Manzil"
-  ],
-  "Bengaluru": [
-    "PVR: Forum Mall",
-    "INOX: Garuda Mall",
-    "Cinepolis: Orion Mall",
-    "PVR Gold: Phoenix Mall",
-    "Innovative Multiplex: Marathahalli",
-    "Swagath Cinemas: Indira Nagar",
-    "Gopalan Cinemas: Bannerghatta Road",
-    "Rockline Cinemas: JP Nagar",
-    "Cinepolis: ETA Mall Binnypet",
-    "Vaishnavi Sapphire Mall: Yeshwanthpur"
-  ],
-  "Mumbai": [
-    "PVR ICON: Phoenix Palladium",
-    "INOX: R-City Mall",
-    "Cinepolis: Andheri West",
-    "PVR: Juhu",
-    "Carnival Cinemas: IMAX Wadala",
-    "PVR: Infiniti Mall Malad",
-    "Movietime: The Hub Mall Goregaon",
-    "INOX: Megaplex Inorbit Mall",
-    "Cinepolis: Viviana Mall Thane",
-    "PVR: Market City Kurla"
-  ],
-  "Chennai": [
-    "PVR: VR Mall",
-    "SPI Cinemas: Sathyam",
-    "INOX: Phoenix Market City",
-    "Palazzo Cinemas: Forum Vijaya Mall",
-    "AGS Cinemas: T. Nagar",
-    "Rohini Silver Screens: Koyambedu",
-    "Kamala Cinemas: Vadapalani",
-    "SPI Cinemas: Escape",
-    "PVR: Grand Mall Velachery",
-    "Jazz Cinemas: Phoenix Mall"
-  ],
-  "Delhi": [
-    "PVR: Select Citywalk",
-    "PVR Director's Cut: Ambience Mall",
-    "INOX: Nehru Place",
-    "Cinepolis: DLF Place",
-    "Wave Cinemas: Raja Garden",
-    "PVR: Pacific Mall Subhash Nagar",
-    "PVR: ECX Chanakyapuri",
-    "Cinepolis: Unity One Mall",
-    "PVR: Promenade Vasant Kunj",
-    "M2K Cinemas: Pitampura"
-  ],
-  "Kolkata": [
-    "INOX: Forum Mall",
-    "PVR: Avani Riverside Mall",
-    "Cinepolis: Lake Mall",
-    "INOX: City Centre Salt Lake",
-    "Miraj Cinemas: Newtown",
-    "PVR: Diamond Plaza",
-    "INOX: Quest Mall",
-    "Cinepolis: Acropolis Mall",
-    "PVR: Mani Square Mall",
-    "INOX: South City Mall"
-  ],
-  "Pune": [
-    "PVR: Phoenix MarketCity",
-    "INOX: Amanora Town Centre",
-    "Cinepolis: Seasons Mall",
-    "PVR: Kumar Pacific Mall",
-    "INOX: Bund Garden Road",
-    "Cinepolis: Westend Mall",
-    "PVR ICON: Pavillion Mall",
-    "INOX: Jyoti Square",
-    "E-Square Multiplex: University Road",
-    "Carnival Cinemas: Pineville Mall"
-  ]
-};
-
-// Generate sample showtimes for each movie
-export const showtimes: Showtime[] = [];
-
-// Function to generate random times
-const generateTimes = () => {
-  const times = ["10:15 AM", "12:45 PM", "3:30 PM", "6:45 PM", "9:30 PM", "11:00 PM"];
-  const selectedTimes = [];
-  const numTimes = Math.floor(Math.random() * 3) + 3; // 3-5 show times
-  
-  for (let i = 0; i < numTimes; i++) {
-    const randomIndex = Math.floor(Math.random() * times.length);
-    selectedTimes.push(times[randomIndex]);
-    times.splice(randomIndex, 1);
-  }
-  
-  return selectedTimes.sort();
-};
-
-// Generate dates for the next 7 days
-const generateDates = () => {
-  const dates = [];
-  const today = new Date();
-  
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() + i);
-    dates.push(date.toISOString().split('T')[0]);
-  }
-  
-  return dates;
-};
-
-const dates = generateDates();
-
-// Get user location from localStorage (defaults to Hyderabad if not set)
-const getUserLocation = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('userLocation') || 'Hyderabad';
-  }
-  return 'Hyderabad';
-};
-
-// Generate showtimes for each movie
-let showtimeId = 1;
-movies.forEach(movie => {
-  if (movie.status === 'now_showing') {
-    // Create theaters for each movie based on city
-    const userLocation = getUserLocation();
-    const selectedTheaters = theaters[userLocation as keyof typeof theaters] || theaters.Hyderabad;
-    
-    // Use 3-5 random theaters for each movie
-    const numTheaters = Math.floor(Math.random() * 3) + 3; // Increased to ensure more theaters
-    const movieTheaters = [];
-    
-    for (let i = 0; i < numTheaters; i++) {
-      const randomTheaterIndex = Math.floor(Math.random() * selectedTheaters.length);
-      const theater = selectedTheaters[randomTheaterIndex];
-      
-      if (!movieTheaters.includes(theater)) {
-        movieTheaters.push(theater);
-        
-        // Generate showtimes for each date
-        dates.forEach(date => {
-          const times = generateTimes();
-          
-          times.forEach(time => {
-            // Generate random price between ₹120 and ₹350 (in rupees)
-            const basePrice = Math.floor(Math.random() * 250) + 120;
-            
-            showtimes.push({
-              id: showtimeId.toString(),
-              movieId: movie.id,
-              theater,
-              date,
-              time,
-              price: basePrice, // Price in rupees
-              available: Math.random() > 0.1 // 90% of showtimes are available
-            });
-            
-            showtimeId++;
-          });
-        });
-      }
-    }
-  }
-});
-
-// Generate sample reviews for movies
-export const reviews: Review[] = [
-  {
-    id: "1",
-    movieId: "1",
-    author: "MovieBuff123",
-    rating: 9,
-    comment: "RRR is a cinematic masterpiece! The action sequences are breathtaking, and the performances by NTR Jr. and Ram Charan are extraordinary.",
-    date: currentDate.toISOString().split('T')[0]
+    showtimes: [
+      { id: "1", date: `${currentYear}-10-29`, time: "10:00", theater: "PVR: Orion Mall", price: 250 },
+      { id: "2", date: `${currentYear}-10-29`, time: "13:30", theater: "INOX: Garuda Mall", price: 200 },
+      { id: "3", date: `${currentYear}-10-29`, time: "16:45", theater: "Cinepolis: Forum Mall", price: 180 },
+      { id: "4", date: `${currentYear}-10-30`, time: "11:30", theater: "PVR: Phoenix Marketcity", price: 260 },
+      { id: "5", date: `${currentYear}-10-30`, time: "14:45", theater: "PVR: Orion Mall", price: 250 },
+    ]
   },
   {
     id: "2",
-    movieId: "1",
-    author: "FilmFanatic",
-    rating: 8,
-    comment: "S.S. Rajamouli has done it again! The visuals are stunning, and the story is engaging from start to finish.",
-    date: currentDate.toISOString().split('T')[0]
+    title: "Kantara",
+    releaseDate: `${currentYear}-03-22`,
+    genres: ["Drama", "Mystery", "Thriller"],
+    runtime: 150,
+    posterUrl: "data:image/webp;base64,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",
+    backdropUrl: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=1920&h=1080&fit=crop",
+    overview: "Kantara is a 2022 Indian Kannada-language action thriller film written and directed by Rishab Shetty, and produced by Vijay Kiragandur under Hombale Films. It stars Shetty as a Kambala champion who clashes with an upright forest officer, Murali.",
+    rating: 8.8,
+    trailerUrl: "https://www.youtube.com/watch?v=592mZW-SUgg",
+    status: "now_showing",
+    showtimes: [
+      { id: "6", date: `${currentYear}-10-29`, time: "10:00", theater: "PVR: Orion Mall", price: 200 },
+      { id: "7", date: `${currentYear}-10-29`, time: "16:45", theater: "Cinepolis: Forum Mall", price: 180 },
+      { id: "8", date: `${currentYear}-10-30`, time: "14:45", theater: "PVR: Orion Mall", price: 250 },
+    ]
+  },
+  {
+    id: "3",
+    title: "Arjun Reddy",
+    releaseDate: `${currentYear}-04-15`,
+    genres: ["Romance", "Drama"],
+    runtime: 182,
+    posterUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSIrg3VSmDVr2H5lMi-wQu7D4kkFLhSKkCrraN8MpsdvC4UHG8Q",
+    backdropUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22?w=1920&h=1080&fit=crop",
+    overview: "Arjun Reddy, a young and brilliant medical student with anger management issues, falls in love with Preeti, a first-year student. When her father rejects their relationship, his life spirals into self-destructive behaviors.",
+    rating: 8.1,
+    trailerUrl: "https://www.youtube.com/watch?v=aozErj9NqeE",
+    status: "now_showing",
+    showtimes: [
+      { id: "10", date: `${currentYear}-10-29`, time: "11:30", theater: "PVR: Orion Mall", price: 240 },
+      { id: "11", date: `${currentYear}-10-29`, time: "15:00", theater: "INOX: Garuda Mall", price: 220 },
+      { id: "12", date: `${currentYear}-10-30`, time: "18:30", theater: "PVR: Phoenix Marketcity", price: 280 },
+    ]
   },
   {
     id: "4",
-    movieId: "3",
-    author: "MovieExpert",
-    rating: 8,
-    comment: "Allu Arjun's performance as Pushpa is phenomenal. His mannerisms and dialogue delivery are spot on.",
-    date: currentDate.toISOString().split('T')[0]
+    title: "Tumbad",
+    releaseDate: `${currentYear}-05-05`,
+    genres: ["Horror", "Mystery", "Fantasy"],
+    runtime: 104,
+    posterUrl: "data:image/jpeg;base64,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",
+    backdropUrl: "https://images.unsplash.com/photo-1473177104440-ffee2f376098?w=1920&h=1080&fit=crop",
+    overview: "Set in early 20th century India, Tumbbad is a tale of greed, fear, and ancient evil. The story spans 1918-1947 and follows a family's relationship with a mythical demon named Hastar, who brings gold but exacts a terrible price.",
+    rating: 8.7,
+    trailerUrl: "https://www.youtube.com/watch?v=sN75MPxgvX8",
+    status: "now_showing",
+    showtimes: [
+      { id: "15", date: `${currentYear}-10-29`, time: "13:30", theater: "INOX: Garuda Mall", price: 180 },
+      { id: "16", date: `${currentYear}-10-29`, time: "19:30", theater: "PVR: Orion Mall", price: 250 },
+      { id: "17", date: `${currentYear}-10-30`, time: "17:15", theater: "Cinepolis: Forum Mall", price: 200 },
+    ]
   },
   {
     id: "5",
-    movieId: "4",
-    author: "FilmCritic",
-    rating: 9,
-    comment: "Arjun Reddy is raw and intense. Vijay Deverakonda's portrayal of a self-destructive surgeon is unforgettable.",
-    date: currentDate.toISOString().split('T')[0]
+    title: "RRR",
+    releaseDate: `${currentYear}-07-22`,
+    genres: ["Action", "Drama", "Historical"],
+    runtime: 187,
+    posterUrl: "https://imagetot.com/images/2023/03/13/d1b04bfc08adc7cc88127aa66df8b23c.md.jpg",
+    backdropUrl: "https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&h=1080&fit=crop",
+    overview: "Set in the 1920s, RRR explores the pre-independence era through a fictional story about two legendary revolutionaries, Alluri Sitarama Raju and Komaram Bheem, who fought against the British Raj and Nizam of Hyderabad respectively.",
+    rating: 8.6,
+    trailerUrl: "https://www.youtube.com/watch?v=f_vbAtFSEc0",
+    status: "now_showing",
+    showtimes: [
+      { id: "20", date: `${currentYear}-10-29`, time: "14:00", theater: "PVR: Forum Mall", price: 280 },
+      { id: "21", date: `${currentYear}-10-29`, time: "18:15", theater: "INOX: Mantri Square", price: 240 },
+      { id: "22", date: `${currentYear}-10-30`, time: "13:00", theater: "Cinepolis: Nexus Mall", price: 200 },
+    ]
   },
   {
     id: "6",
-    movieId: "6",
-    author: "TelugeCinemaFan",
-    rating: 9,
-    comment: "Eagerly waiting for Pushpa 2! The first part was amazing, and I can't wait to see what happens next in Pushpa's journey.",
-    date: currentDate.toISOString().split('T')[0]
+    title: "Interstellar",
+    releaseDate: "2024-01-20",
+    genres: ["Sci-Fi", "Adventure", "Drama"],
+    runtime: 169,
+    posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    backdropUrl: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1920&h=1080&fit=crop",
+    overview: "When Earth becomes uninhabitable in the future, a farmer and ex-NASA pilot leads a mission through a wormhole in search of a new home for humanity.",
+    rating: 8.6,
+    trailerUrl: "https://www.youtube.com/watch?v=zSWdZVtXT7E",
+    status: "coming_soon",
+    showtimes: []
   },
   {
     id: "7",
-    movieId: "7",
-    author: "SciFiBuff",
-    rating: 8,
-    comment: "The trailer of Kalki 2898 AD looks mind-blowing! The scale and visuals seem incredible. This could be a game-changer for Indian cinema.",
-    date: currentDate.toISOString().split('T')[0]
+    title: "Inception",
+    releaseDate: "2024-02-15",
+    genres: ["Sci-Fi", "Action", "Thriller"],
+    runtime: 148,
+    posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
+    backdropUrl: "https://images.unsplash.com/photo-1496307653780-42ee777d4833?w=1920&h=1080&fit=crop",
+    overview: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+    rating: 8.8,
+    trailerUrl: "https://www.youtube.com/watch?v=8hP9D6kZseM",
+    status: "coming_soon",
+    showtimes: []
+  },
+  {
+    id: "8",
+    title: "The Dark Knight",
+    releaseDate: "2024-03-10",
+    genres: ["Action", "Crime", "Drama"],
+    runtime: 152,
+    posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    backdropUrl: "https://images.unsplash.com/photo-1551038247-3d9af20df552?w=1920&h=1080&fit=crop",
+    overview: "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice.",
+    rating: 9.0,
+    trailerUrl: "https://www.youtube.com/watch?v=EXeTwQWrcwY",
+    status: "coming_soon",
+    showtimes: []
   }
 ];
 
-// Helper functions to get movies, showtimes, and reviews
-export const getAllMovies = (): Movie[] => movies;
+// Functions to get movies data
+export const getAllMovies = (): Movie[] => {
+  return movies;
+};
 
-export const getMoviesByStatus = (status: 'now_showing' | 'coming_soon'): Movie[] => {
+export const getMovieById = (id: string): Movie | undefined => {
+  return movies.find(movie => movie.id === id);
+};
+
+export const getMoviesByStatus = (status: "now_showing" | "coming_soon"): Movie[] => {
   return movies.filter(movie => movie.status === status);
 };
 
-export const getMovieById = (id: string): Movie | null => {
-  return movies.find(movie => movie.id === id) || null;
+export const getShowtimeById = (id: string): Showtime | undefined => {
+  for (const movie of movies) {
+    const showtime = movie.showtimes.find(showtime => showtime.id === id);
+    if (showtime) {
+      return showtime;
+    }
+  }
+  return undefined;
 };
 
-export const getShowtimesForMovie = (movieId: string): Showtime[] => {
-  // Get all showtimes for the movie
-  const allShowtimes = showtimes.filter(showtime => showtime.movieId === movieId);
-  
-  // Get user's current location
-  const userLocation = getUserLocation();
-  const cityTheaters = theaters[userLocation as keyof typeof theaters] || theaters.Hyderabad;
-  
-  // Filter showtimes by theaters in user's location
-  return allShowtimes.filter(showtime => 
-    cityTheaters.includes(showtime.theater)
-  );
-};
-
-export const getShowtimeById = (showtimeId: string): Showtime | null => {
-  return showtimes.find(showtime => showtime.id === showtimeId) || null;
-};
-
-export const getReviewsForMovie = (movieId: string): Review[] => {
-  return reviews.filter(review => review.movieId === movieId);
+export const getFeaturedMovies = (): Movie[] => {
+  return movies.filter(movie => movie.status === "now_showing").slice(0, 3);
 };
