@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db';
 import routes from './routes';
 
-// Fix __dirname for ES Modules
+// ES Modules __dirname polyfill
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,9 +16,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Middleware
 app.use(cors({
-  origin: isProduction ? 'https://yourdomain.com' : '*'
+  origin: isProduction ? ['https://your-production-domain.com'] : '*',
+  credentials: true
 }));
-app.use(express.json());
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan(isProduction ? 'combined' : 'dev'));
 
 // Database
@@ -33,38 +36,49 @@ initializeDatabase()
 app.use('/api', routes);
 
 // Static Files
-const staticPath = path.join(__dirname, '../client/dist');
+const staticPath = path.resolve(__dirname, '../client/dist');
 app.use(express.static(staticPath, {
-  maxAge: isProduction ? '1y' : '0'
+  maxAge: isProduction ? '1y' : '0',
+  etag: true,
+  index: false
 }));
 
 // Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'healthy',
-    time: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
   });
 });
 
 // SPA Fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(staticPath, 'index.html'));
+  res.sendFile(path.join(staticPath, 'index.html'), {
+    headers: {
+      'Cache-Control': isProduction ? 'public, max-age=86400' : 'no-cache'
+    }
+  });
 });
 
 // Error Handling
 app.use((err: any, req, res, next) => {
   console.error(`[${new Date().toISOString()}]`, err);
-  res.status(500).json({
-    error: isProduction ? 'Internal Server Error' : err.message
+  res.status(err.status || 500).json({
+    error: {
+      message: err.message,
+      ...(!isProduction && { stack: err.stack })
+    }
   });
 });
 
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
-  ==============================
+  ==================================
   🚀 Server running on port ${PORT}
-  📁 Static files from: ${staticPath}
-  ==============================
+  📁 Serving static files from: ${staticPath}
+  🚦 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}
+  ==================================
   `);
 });
