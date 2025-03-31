@@ -1,5 +1,15 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
+const { Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs');
+
+module.exports = (sequelize) => {
+  class User extends Model {
+    static associate(models) {
+      User.hasOne(models.Profile, { foreignKey: 'userId' });
+      User.hasMany(models.Booking, { foreignKey: 'userId' });
+    }
+  }
+
+  User.init({
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -9,50 +19,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
-      validate: {
-        isEmail: true,
-        notEmpty: true
-      }
+      validate: { isEmail: true }
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [8, 128]
+      set(value) {
+        this.setDataValue('password', bcrypt.hashSync(value, 10));
       }
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true
-      }
-    },
+    name: DataTypes.STRING,
     isEmailVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     }
   }, {
-    timestamps: true,
-    paranoid: true, // Enable soft deletes
-    hooks: {
-      beforeCreate: async (user) => {
-        if (user.password) {
-          user.password = await hashPassword(user.password);
-        }
-      }
-    }
+    sequelize,
+    modelName: 'User',
+    tableName: 'users',
+    paranoid: true
   });
-
-  // Instance methods
-  User.prototype.verifyPassword = async function(password) {
-    return await bcrypt.compare(password, this.password);
-  };
 
   return User;
 };
-
-async function hashPassword(password) {
-  const salt = await bcrypt.genSalt(10);
-  return await bcrypt.hash(password, salt);
-}
