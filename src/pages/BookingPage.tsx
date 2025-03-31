@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { SnackOrder } from "@/lib/types";
 import SnackSelector from "@/components/SnackSelector";
-import { ChevronLeft, ChevronRight, Ticket, Coffee } from "lucide-react";
+import { ChevronLeft, ChevronRight, Ticket, Coffee, CreditCard } from "lucide-react";
 
 const BookingPage = () => {
   const { movieId, showtimeId } = useParams<{ movieId: string; showtimeId: string }>();
@@ -25,7 +24,6 @@ const BookingPage = () => {
   const movie = movieId ? getMovieById(movieId) : null;
   const showtime = showtimeId ? getShowtimeById(showtimeId) : null;
   
-  // Check authentication status immediately
   const checkAuth = useCallback(() => {
     if (!isAuthenticated) {
       toast({
@@ -50,18 +48,14 @@ const BookingPage = () => {
     return true;
   }, [isAuthenticated, isProfileComplete, navigate, toast]);
   
-  // Check on component mount and when auth status changes
   useEffect(() => {
-    // Call the checkAuth function and store its result
     const isAuthValid = checkAuth();
     
-    // Only run the scroll logic if authentication is valid
     if (isAuthValid) {
       window.scrollTo(0, 0);
     }
   }, [checkAuth]);
   
-  // If no movie or showtime, show nothing
   if (!movie || !showtime) {
     return null;
   }
@@ -81,7 +75,7 @@ const BookingPage = () => {
     setBookingStep('payment');
   };
   
-  const handleBooking = () => {
+  const handleProceedToPayment = () => {
     if (!isEmailVerified) {
       toast({
         title: "Email verification required",
@@ -94,7 +88,6 @@ const BookingPage = () => {
     
     setIsLoading(true);
     
-    // Create a booking object with the correct status type
     const newBooking = {
       id: Date.now().toString(),
       userId: user?.id || "",
@@ -103,34 +96,30 @@ const BookingPage = () => {
       seats: selectedSeats,
       snacks: selectedSnacks,
       totalAmount: totalAmount,
+      theater: showtime.theater,
+      date: new Date(showtime.date).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      }),
+      time: showtime.time,
       bookingDate: new Date().toISOString(),
-      status: "confirmed" as "confirmed" | "cancelled" | "pending"
+      status: "pending" as "confirmed" | "cancelled" | "pending"
     };
 
     console.log("Creating new booking:", newBooking);
     
-    // Mock successful booking process
+    localStorage.setItem("currentBooking", JSON.stringify(newBooking));
+    
     setTimeout(() => {
       setIsLoading(false);
-      
-      // Save booking to local storage for retrieval in BookingHistoryPage
-      const existingBookings = JSON.parse(localStorage.getItem("userBookings") || "[]");
-      localStorage.setItem("userBookings", JSON.stringify([newBooking, ...existingBookings]));
-      
-      toast({
-        title: "Booking successful!",
-        description: "Your tickets have been booked successfully",
-      });
-      navigate("/bookings");
-    }, 1500);
+      navigate(`/payment/${movieId}/${showtimeId}`);
+    }, 1000);
   };
   
-  // Calculate snacks total
   const snacksTotal = selectedSnacks.reduce((total, snack) => {
     return total + (snack.price * snack.quantity);
   }, 0);
   
-  // Mock seats for demonstration
   const rows = ["A", "B", "C", "D", "E", "F", "G"];
   const seatCategories = {
     "A": { name: "Premium", price: showtime.price + 150 },
@@ -167,7 +156,6 @@ const BookingPage = () => {
               <span className="font-semibold">{showtime.time}</span>
             </div>
             
-            {/* Booking steps */}
             <div className="mt-6 flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
@@ -209,7 +197,7 @@ const BookingPage = () => {
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
                   bookingStep === 'payment' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-400'
                 }`}>
-                  <span className="text-sm font-bold">₹</span>
+                  <CreditCard className="h-4 w-4" />
                 </div>
                 <span className={`text-sm font-medium ${
                   bookingStep === 'payment' ? 'text-red-600' : 'text-gray-400'
@@ -218,7 +206,6 @@ const BookingPage = () => {
             </div>
           </div>
           
-          {/* Seat selection */}
           {bookingStep === 'seats' && (
             <div className="mb-8 bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
               <div className="mb-6 flex items-center justify-center">
@@ -231,7 +218,6 @@ const BookingPage = () => {
                         {Array.from({ length: 10 }, (_, i) => i + 1).map(num => {
                           const seatId = `${row}${num}`;
                           const isSelected = selectedSeats.includes(seatId);
-                          // Simulate some seats as unavailable
                           const isAvailable = !((row === "D" && num === 5) || (row === "E" && num === 6) || (row === "A" && num === 2));
                           
                           return (
@@ -291,7 +277,6 @@ const BookingPage = () => {
             </div>
           )}
           
-          {/* Snack selection */}
           {bookingStep === 'snacks' && (
             <>
               <SnackSelector 
@@ -310,7 +295,6 @@ const BookingPage = () => {
             </>
           )}
           
-          {/* Payment */}
           {bookingStep === 'payment' && (
             <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
               <h2 className="mb-4 text-xl font-bold text-red-600">Booking Summary</h2>
@@ -337,7 +321,6 @@ const BookingPage = () => {
                   </span>
                 </div>
                 
-                {/* Display selected snacks */}
                 {selectedSnacks.length > 0 && (
                   <div>
                     <div className="flex justify-between pt-2">
@@ -385,11 +368,11 @@ const BookingPage = () => {
                   <ChevronLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
                 <Button 
-                  onClick={handleBooking} 
+                  onClick={handleProceedToPayment} 
                   disabled={selectedSeats.length === 0 || isLoading}
                   className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
                 >
-                  {isLoading ? "Processing..." : "Confirm & Pay"}
+                  {isLoading ? "Processing..." : "Proceed to Payment"}
                 </Button>
               </div>
             </div>
