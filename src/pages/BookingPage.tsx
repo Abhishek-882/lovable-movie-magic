@@ -245,7 +245,7 @@ const BookingPage = () => {
                 day: 'numeric' 
               })}</span>
               <span className="font-semibold">{showtime.time}</span>
-            </div>
+            </span>
             
             {/* Booking steps */}
             <div className="mt-6 flex justify-between items-center">
@@ -499,11 +499,11 @@ const BookingPage = () => {
             </div>
           )}
         </div>
-      </main>
-      
+       </div>  
       <Footer />
-    </div>
+      </main>  
+
   );
-};
+}
 
 export default BookingPage;
