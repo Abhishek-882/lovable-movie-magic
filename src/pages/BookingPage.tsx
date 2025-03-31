@@ -27,6 +27,12 @@ const BookingPage = () => {
     categories: {name: string, rows: string[], price: number}[],
     unavailableSeats: Set<string>
   } | null>(null);
+  const [userLocation, setUserLocation] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('userLocation') || 'Hyderabad';
+    }
+    return 'Hyderabad';
+  });
   
   // Calculate totals first to avoid reference before definition
   const ticketPrice = 150; // Base ticket price
@@ -38,17 +44,24 @@ const BookingPage = () => {
   
   const totalAmount = ticketsTotal + snacksTotal;
   
-  // Fetch movie and showtime data
+   // Add location change listener
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const newLocation = localStorage.getItem('userLocation') || 'Hyderabad';
+      setUserLocation(newLocation);
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Update showtime when location changes
   useEffect(() => {
     if (movieId && showtimeId) {
-      const fetchedMovie = getMovieById(movieId);
       const fetchedShowtime = getShowtimeById(showtimeId);
-      
-      setMovie(fetchedMovie);
       setShowtime(fetchedShowtime);
-      setIsDataLoading(false);
     }
-  }, [movieId, showtimeId]);
+  }, [movieId, showtimeId, userLocation]);
   
   // Generate seats only once when component mounts
   useEffect(() => {
@@ -224,7 +237,8 @@ const BookingPage = () => {
           <div className="mb-8 bg-white/80 backdrop-blur-sm p-6 rounded-xl shadow-md">
             <h1 className="text-2xl font-bold md:text-3xl text-red-600">{movie.title}</h1>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-600">
-              <span className="bg-red-100 px-3 py-1 rounded-full text-red-600">{showtime.theater}</span>
+              <span className="bg-red-100 px-3 py-1 rounded-full text-red-600">
+                {showtime.theater} ({userLocation})
               <span>{new Date(showtime.date).toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 month: 'long', 
