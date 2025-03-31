@@ -1,3 +1,4 @@
+
 export type Genre = 
   | 'Action' 
   | 'Adventure' 
@@ -49,4 +50,40 @@ export interface Review {
   rating: number;
   comment: string;
   date: string;
+}
+
+// Added missing types
+export interface Snack {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+}
+
+export interface SnackOrder {
+  snackId: string;
+  quantity: number;
+  price: number;
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  movieId: string;
+  showtimeId: string;
+  seats: string[];
+  totalAmount: number;
+  bookingDate: string;
+  snacks?: SnackOrder[];
+  status: 'confirmed' | 'cancelled' | 'pending';
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  isEmailVerified?: boolean;
 }
