@@ -14,8 +14,7 @@ const getRecentDate = () => {
 
 // Movie data with updated high-quality images and more options
 export const movies: Movie[] = [
-  // ... (keep all the existing movie data exactly as is)
-   {
+  {
     id: "1",
     title: "RRR",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BNjE5NTMwMzItYjExNS00NzJjLWJlM2ItN2ZjZDU0NjE0NjZiXkEyXkFqcGc@._V1_.jpg",
