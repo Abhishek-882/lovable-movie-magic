@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db';
 import routes from './routes';
 
-// ES Modules __dirname polyfill
+// Fix __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -16,17 +16,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Middleware
 app.use(cors({
-  origin: isProduction ? 'https://your-production-domain.com' : '*'
+  origin: isProduction ? 'https://yourdomain.com' : '*'
 }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 app.use(morgan(isProduction ? 'combined' : 'dev'));
 
 // Database
 initializeDatabase()
-  .then(() => console.log('Database connected'))
+  .then(() => console.log('✓ Database connected'))
   .catch(err => {
-    console.error('Database connection failed:', err);
+    console.error('✗ Database connection failed:', err);
     process.exit(1);
   });
 
@@ -34,26 +33,26 @@ initializeDatabase()
 app.use('/api', routes);
 
 // Static Files
-const staticDir = path.join(__dirname, isProduction ? '../client/dist' : '../dist/client');
-app.use(express.static(staticDir, {
+const staticPath = path.join(__dirname, '../client/dist');
+app.use(express.static(staticPath, {
   maxAge: isProduction ? '1y' : '0'
 }));
 
 // Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ 
-    status: 'OK',
-    timestamp: new Date().toISOString()
+    status: 'healthy',
+    time: new Date().toISOString()
   });
 });
 
 // SPA Fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(staticDir, 'index.html'));
+  res.sendFile(path.join(staticPath, 'index.html'));
 });
 
 // Error Handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, req, res, next) => {
   console.error(`[${new Date().toISOString()}]`, err);
   res.status(500).json({
     error: isProduction ? 'Internal Server Error' : err.message
@@ -62,5 +61,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // Start Server
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on http://0.0.0.0:${PORT}`);
+  console.log(`
+  ==============================
+  🚀 Server running on port ${PORT}
+  📁 Static files from: ${staticPath}
+  ==============================
+  `);
 });
