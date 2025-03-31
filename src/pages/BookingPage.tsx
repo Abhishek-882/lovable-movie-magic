@@ -11,12 +11,10 @@ import SnackSelector from "@/components/SnackSelector";
 import { ChevronLeft, ChevronRight, Ticket, Coffee, CreditCard } from "lucide-react";
 
 const BookingPage = () => {
-  const params = useParams();
-  const movieId = params.movieId as string;
-  const showtimeId = params.showtimeId as string;
+  const { movieId, showtimeId } = useParams<{ movieId: string; showtimeId: string }>();
   const { isAuthenticated, isProfileComplete, isEmailVerified, user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast() ?? {};
+  const { toast } = useToast();
   
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [selectedSnacks, setSelectedSnacks] = useState<SnackOrder[]>([]);
@@ -38,55 +36,40 @@ const BookingPage = () => {
   
   // Fetch movie and showtime data
   useEffect(() => {
-  if (movieId && showtimeId) {
-    const fetchData = async () => {
-      const fetchedMovie = await getMovieById(movieId);
-      const fetchedShowtime = await getShowtimeById(showtimeId);
+    if (movieId && showtimeId) {
+      const fetchedMovie = getMovieById(movieId);
+      const fetchedShowtime = getShowtimeById(showtimeId);
       
       setMovie(fetchedMovie);
       setShowtime(fetchedShowtime);
       setIsDataLoading(false);
-    };
-
-    fetchData();
-  }
-}, [movieId, showtimeId]);
-
+    }
+  }, [movieId, showtimeId]);
   
   // Check authentication status immediately
   const checkAuth = useCallback(() => {
-  if (!isAuthenticated) {
-    toast({
-      title: "Sign in required",
-      description: "Please sign in to book tickets",
-      variant: "destructive",
-    });
-    navigate("/");
-    return false;
-  }
-
-  if (!isProfileComplete) {
-    toast({
-      title: "Complete your profile",
-      description: "Please complete your profile before booking tickets",
-      variant: "destructive",
-    });
-    navigate("/profile");
-    return false;
-  }
-
-  if (!isEmailVerified) {
-    toast({
-      title: "Email verification required",
-      description: "Please verify your email before proceeding",
-      variant: "destructive",
-    });
-    navigate("/profile");
-    return false;
-  }
-
-  return true;
-}, [isAuthenticated, isProfileComplete, isEmailVerified, navigate, toast]); // Added isEmailVerified
+    if (!isAuthenticated) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to book tickets",
+        variant: "destructive",
+      });
+      navigate("/");
+      return false;
+    }
+    
+    if (!isProfileComplete) {
+      toast({
+        title: "Complete your profile",
+        description: "Please complete your profile before booking tickets",
+        variant: "destructive",
+      });
+      navigate("/profile");
+      return false;
+    }
+    
+    return true;
+  }, [isAuthenticated, isProfileComplete, navigate, toast]);
   
   // Check on component mount and when auth status changes
   useEffect(() => {
@@ -506,4 +489,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage;
+export default BookingPage
