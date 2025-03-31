@@ -1,4 +1,3 @@
-
 export type Genre = 
   | 'Action' 
   | 'Adventure' 
@@ -52,7 +51,6 @@ export interface Review {
   date: string;
 }
 
-// Added missing types
 export interface Snack {
   id: string;
   name: string;
