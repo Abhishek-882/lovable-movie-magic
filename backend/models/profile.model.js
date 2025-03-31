@@ -1,19 +1,28 @@
-module.exports = (sequelize, DataTypes) => {
-  const Profile = sequelize.define('Profile', {
-    id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
-    },
-    avatar: DataTypes.STRING,
-    preferredLocation: DataTypes.STRING
-  }, {
-    tableName: 'profiles'
-  });
+import { Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { User } from './user.model';
 
-  Profile.associate = (models) => {
-    Profile.belongsTo(models.User, { foreignKey: 'userId' });
-  };
+@Table({
+  tableName: 'profiles',
+  timestamps: true
+})
+export class Profile extends Model {
+  @Column({
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
+    primaryKey: true
+  })
+  id: string;
 
-  return Profile;
-};
+  @Column(DataType.STRING)
+  avatar: string;
+
+  @Column(DataType.STRING)
+  preferredLocation: string;
+
+  @ForeignKey(() => User)
+  @Column(DataType.UUID)
+  userId: string;
+
+  @BelongsTo(() => User)
+  user: User;
+}
