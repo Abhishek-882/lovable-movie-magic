@@ -10,27 +10,21 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
       "@server/*": ["src/server/*"],
-      "@db/*": ["src/db/*"],
-      "@config/*": ["src/config/*"]
+      "@db/*": ["src/db/*"]
     },
     "types": ["node"]
   },
   "include": [
     "server.ts",
     "src/server/**/*.ts",
-    "src/db/**/*.ts",
-    "src/config/**/*.ts"
+    "src/db/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "src/client/**/*",
-    "vite.config.ts",
-    "**/*.spec.ts"
+    "src/client/**/*"
   ]
 }
