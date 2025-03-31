@@ -1,5 +1,5 @@
-
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,145 +14,138 @@ interface AuthContextType {
   updateProfile: (userData: Partial<User>) => Promise<boolean>;
   verifyEmail: (otp: string) => Promise<boolean>;
   sendVerificationEmail: () => Promise<boolean>;
+  refreshUser: () => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Local storage key for users
-const USERS_STORAGE_KEY = 'registered_users';
-const CURRENT_USER_KEY = 'current_user';
-
-// Mock function to get registered users
-const getRegisteredUsers = (): Record<string, User & { password: string }> => {
-  const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
-  return storedUsers ? JSON.parse(storedUsers) : {};
-};
-
-// Mock function to save registered users
-const saveRegisteredUsers = (users: Record<string, User & { password: string }>) => {
-  localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
   const [verificationCode, setVerificationCode] = useState<string | null>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  // Load current user from localStorage on initial render
+  // Initialize auth state
   useEffect(() => {
-    const storedUser = localStorage.getItem(CURRENT_USER_KEY);
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error('Failed to parse stored user data:', error);
-        localStorage.removeItem(CURRENT_USER_KEY);
+    const initializeAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch(`${API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            localStorage.removeItem('token');
+          }
+        } catch (error) {
+          console.error('Auth initialization failed:', error);
+        }
       }
-    }
-  }, []);
+      setLoading(false);
+    };
 
-  // Update localStorage whenever user changes
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-    } else {
-      localStorage.removeItem(CURRENT_USER_KEY);
+    initializeAuth();
+  }, [API_URL]);
+
+  const refreshUser = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        setUser(await response.json());
+      }
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
     }
-  }, [user]);
+  }, [API_URL]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const users = getRegisteredUsers();
-      
-      // Check if the user exists and password matches
-      if (users[email] && users[email].password === password) {
-        // Create user object without the password
-        const { password: _, ...userWithoutPassword } = users[email];
-        setUser(userWithoutPassword);
-        
-        toast({
-          title: "Login successful",
-          description: "Welcome back to Cinematic!",
-        });
-        return true;
-      } else {
-        toast({
-          title: "Login failed",
-          description: "Email or password is incorrect. Please try again or signup.",
-          variant: "destructive",
-        });
-        return false;
+      setLoading(true);
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
       }
-    } catch (error) {
-      console.error('Login failed:', error);
+
+      const { token, user: userData } = await response.json();
+      localStorage.setItem('token', token);
+      setUser(userData);
+
+      toast({
+        title: "Login successful",
+        description: `Welcome back, ${userData.name}!`,
+      });
+      return true;
+    } catch (error: any) {
       toast({
         title: "Login failed",
-        description: "Please check your credentials and try again.",
+        description: error.message || "Could not log in",
         variant: "destructive",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
     try {
-      const users = getRegisteredUsers();
-      
-      // Check if the user already exists
-      if (users[email]) {
-        toast({
-          title: "Signup failed",
-          description: "Email already registered. Please login instead.",
-          variant: "destructive",
-        });
-        return false;
+      setLoading(true);
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Registration failed');
       }
-      
-      // Create a new user
-      const newUser: User & { password: string } = {
-        id: Date.now().toString(),
-        name,
-        email,
-        isEmailVerified: false,
-        isProfileComplete: false,
-        password
-      };
-      
-      // Save the new user to storage
-      users[email] = newUser;
-      saveRegisteredUsers(users);
-      
-      // Set the current user (without password)
-      const { password: _, ...userWithoutPassword } = newUser;
-      setUser(userWithoutPassword);
-      
+
+      const { token, user: userData } = await response.json();
+      localStorage.setItem('token', token);
+      setUser(userData);
+
       toast({
         title: "Account created",
-        description: "Welcome to Cinematic! Please verify your email.",
+        description: "Welcome! Please verify your email.",
       });
       return true;
-    } catch (error) {
-      console.error('Signup failed:', error);
+    } catch (error: any) {
       toast({
         title: "Signup failed",
-        description: "Please check your information and try again.",
+        description: error.message || "Could not create account",
         variant: "destructive",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
-    localStorage.removeItem(CURRENT_USER_KEY);
+    setVerificationCode(null);
+    navigate('/');
     toast({
       title: "Logged out",
       description: "You have been successfully logged out.",
@@ -161,107 +154,124 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (userData: Partial<User>): Promise<boolean> => {
     try {
-      if (!user) return false;
-      
-      const updatedUser = {
-        ...user,
-        ...userData,
-        isProfileComplete: true,
-      };
-      
-      setUser(updatedUser);
-      
-      // Also update the user in the registered users
-      if (user.email) {
-        const users = getRegisteredUsers();
-        if (users[user.email]) {
-          users[user.email] = { ...users[user.email], ...userData, isProfileComplete: true };
-          saveRegisteredUsers(users);
-        }
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Not authenticated');
+
+      const response = await fetch(`${API_URL}/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(userData)
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Update failed');
       }
-      
+
+      const updatedUser = await response.json();
+      setUser(updatedUser);
+
       toast({
         title: "Profile updated",
-        description: "Your profile has been successfully updated.",
+        description: "Your changes have been saved.",
       });
       return true;
-    } catch (error) {
-      console.error('Profile update failed:', error);
+    } catch (error: any) {
       toast({
         title: "Update failed",
-        description: "Failed to update your profile. Please try again.",
+        description: error.message || "Could not update profile",
         variant: "destructive",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const sendVerificationEmail = async (): Promise<boolean> => {
     try {
-      if (!user) return false;
-      
-      // Generate a 6-digit OTP
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      setVerificationCode(otp);
-      
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Not authenticated');
+
+      const response = await fetch(`${API_URL}/auth/send-verification`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to send verification');
+      }
+
+      // For demo purposes - in production this would come from your backend
+      const demoCode = Math.floor(100000 + Math.random() * 900000).toString();
+      setVerificationCode(demoCode);
+
       toast({
-        title: "Verification code sent",
-        description: `Your verification code is: ${otp}`,
+        title: "Verification sent",
+        description: `Demo verification code: ${demoCode}`,
       });
       return true;
-    } catch (error) {
-      console.error('Failed to send verification email:', error);
+    } catch (error: any) {
       toast({
-        title: "Failed to send code",
-        description: "Could not send verification code. Please try again.",
+        title: "Failed to send",
+        description: error.message || "Could not send verification",
         variant: "destructive",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
   const verifyEmail = async (otp: string): Promise<boolean> => {
     try {
-      if (!user || !verificationCode) return false;
-      
-      if (otp === verificationCode) {
-        const verifiedUser = {
-          ...user,
-          isEmailVerified: true,
-        };
-        
-        setUser(verifiedUser);
-        
-        // Also update the user in the registered users
-        if (user.email) {
-          const users = getRegisteredUsers();
-          if (users[user.email]) {
-            users[user.email] = { ...users[user.email], isEmailVerified: true };
-            saveRegisteredUsers(users);
-          }
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('Not authenticated');
+
+      // In production, this would verify with your backend
+      if (verificationCode && otp === verificationCode) {
+        const response = await fetch(`${API_URL}/auth/verify-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ otp })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Verification failed');
         }
-        
+
+        const verifiedUser = await response.json();
+        setUser(verifiedUser);
+        setVerificationCode(null);
+
         toast({
-          title: "Email verified",
+          title: "Email verified!",
           description: "Your email has been successfully verified.",
         });
         return true;
       } else {
-        toast({
-          title: "Verification failed",
-          description: "Invalid verification code. Please try again.",
-          variant: "destructive",
-        });
-        return false;
+        throw new Error('Invalid verification code');
       }
-    } catch (error) {
-      console.error('Email verification failed:', error);
+    } catch (error: any) {
       toast({
         title: "Verification failed",
-        description: "Failed to verify your email. Please try again.",
+        description: error.message || "Could not verify email",
         variant: "destructive",
       });
       return false;
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -278,9 +288,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateProfile,
         verifyEmail,
         sendVerificationEmail,
+        refreshUser,
+        loading
       }}
     >
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
