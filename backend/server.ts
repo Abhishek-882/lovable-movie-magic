@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db';
 import routes from './routes';
 
-// Configure __dirname for ES Modules
+// ES Modules __dirname polyfill
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -14,82 +14,93 @@ const app = express();
 const PORT = parseInt(process.env.PORT || '10000');
 const isProduction = process.env.NODE_ENV === 'production';
 
-// ======================
-// Middleware
-// ======================
+// ==============
+// Configuration
+// ==============
 app.use(cors({
-  origin: isProduction ? 'https://your-production-domain.com' : '*'
+  origin: isProduction ? 'https://your-production-domain.com' : '*',
+  credentials: true
 }));
-app.use(express.json());
+
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Logging
-if (!isProduction) {
-  app.use(morgan('dev'));
-} else {
-  app.use(morgan('combined'));
-}
+app.use(isProduction ? 
+  morgan('combined') : 
+  morgan('dev')
+);
 
-// ======================
-// Database Connection
-// ======================
+// ==============
+// Database
+// ==============
 initializeDatabase()
-  .then(() => console.log('Database connected'))
-  .catch(err => console.error('Database connection error:', err));
+  .then(() => console.log('✓ Database connected'))
+  .catch(err => {
+    console.error('✗ Database connection failed:', err);
+    process.exit(1);
+  });
 
-// ======================
-// API Routes
-// ======================
+// ==============
+// Routes
+// ==============
 app.use('/api', routes);
 
-// ======================
-// Static Files (Vite Build)
-// ======================
-const staticDir = path.join(__dirname, isProduction ? '../dist/client' : '../client/dist');
-app.use(express.static(staticDir, {
+// ==============
+// Static Files
+// ==============
+const staticPath = path.join(__dirname, isProduction ? '../client/dist' : '../dist/client');
+app.use(express.static(staticPath, {
   maxAge: isProduction ? '1y' : '0',
-  etag: true
+  etag: true,
+  index: false
 }));
 
-// ======================
-// Health Check (for Render)
-// ======================
+// ==============
+// Health Check
+// ==============
 app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK',
-    timestamp: new Date().toISOString()
+  res.status(200).json({
+    status: 'healthy',
+    time: new Date().toISOString(),
+    uptime: process.uptime()
   });
 });
 
-// ======================
-// SPA Fallback Route
-// ======================
+// ==============
+// SPA Fallback
+// ==============
 app.get('*', (req, res) => {
-  res.sendFile(path.join(staticDir, 'index.html'));
-});
-
-// ======================
-// Error Handling
-// ======================
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(`[${new Date().toISOString()}] Error:`, err.stack);
-  
-  res.status(err.status || 500).json({
-    error: {
-      message: err.message,
-      ...(isProduction ? {} : { stack: err.stack })
+  res.sendFile(path.join(staticPath, 'index.html'), {
+    headers: {
+      'Cache-Control': isProduction ? 'max-age=86400' : 'no-cache'
     }
   });
 });
 
-// ======================
-// Server Startup
-// ======================
+// ==============
+// Error Handling
+// ==============
+app.use((err: any, req, res, next) => {
+  console.error(`[${new Date().toISOString()}]`, err);
+  
+  const status = err.status || 500;
+  res.status(status).json({
+    error: {
+      message: err.message,
+      ...(!isProduction && { stack: err.stack })
+    }
+  });
+});
+
+// ==============
+// Server Start
+// ==============
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
-  ====================================
-  🚀 Server running in ${isProduction ? 'production' : 'development'} mode
-  ➡️  http://0.0.0.0:${PORT}
-  ====================================
+  ==================================
+  Server started on port ${PORT}
+  Mode: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}
+  ==================================
   `);
 });
