@@ -4,11 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "dev": "concurrently \"vite\" \"ts-node-dev server.ts\"",
-    "build": "vite build && tsc",
+    "build": "vite build && tsc --outDir dist",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint ."
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all"
   },
