@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgGreen.bold\" \"vite\" \"ts-node-dev --respawn --transpile-only server.ts\"",
-    "build": "vite build && tsc",
+    "dev": "concurrently \"vite\" \"ts-node-dev server.ts\"",
+    "build": "vite build && tsc -p tsconfig.backend.json && tsc -p tsconfig.json",
     "preview": "vite preview",
     "lint": "eslint .",
     "migrate": "npx sequelize-cli db:migrate",
