@@ -14,39 +14,28 @@
     "test": "vitest"
   },
   "dependencies": {
-    // Frontend
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    
-    // Backend
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "morgan": "^1.10.0",
     "sequelize": "^6.37.1",
     "pg": "^8.11.3",
-    
-    // Shared
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    // Frontend
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
-    "@vitejs/plugin-react": "^4.2.1",
-    
-    // Backend
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.0",
-    "ts-node": "^10.9.2",
-    
-    // Tools
+    "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
     "vitest": "^1.2.2",
-    "eslint": "^8.56.0"
+    "eslint": "^8.56.0",
+    "@types/node": "^20.11.0"
   }
 }
