@@ -28,62 +28,70 @@ const BookingPage = () => {
     unavailableSeats: Set<string>
   } | null>(null);
   const [userLocation, setUserLocation] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('userLocation') || 'Hyderabad';
-    }
-    return 'Hyderabad';
+    return localStorage.getItem('userLocation') || 'Hyderabad';
   });
-  
+
   // Calculate totals
   const ticketPrice = 150;
   const ticketsTotal = selectedSeats.length * ticketPrice;
   const snacksTotal = selectedSnacks.reduce((total, snack) => total + snack.quantity * snack.price, 0);
   const totalAmount = ticketsTotal + snacksTotal;
-  
-   // Add location change listener
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const newLocation = localStorage.getItem('userLocation') || 'Hyderabad';
-      setUserLocation(newLocation);
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
-  // Update showtime when location changes
+  // Fetch data on mount
   useEffect(() => {
-    if (movieId && showtimeId) {
-      const fetchedShowtime = getShowtimeById(showtimeId);
-      setShowtime(fetchedShowtime);
-    }
-  }, [movieId, showtimeId, userLocation]);
-  
-  // Generate seats only once when component mounts
+    const fetchData = async () => {
+      try {
+        if (!movieId || !showtimeId) {
+          navigate("/");
+          return;
+        }
+
+        const [movieData, showtimeData] = await Promise.all([
+          getMovieById(movieId),
+          getShowtimeById(showtimeId)
+        ]);
+
+        if (!movieData || !showtimeData) {
+          throw new Error("Data not found");
+        }
+
+        setMovie(movieData);
+        setShowtime(showtimeData);
+
+        // Initialize seat data
+        const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        const categories = [
+          { name: 'SILVER', rows: ['A', 'B', 'C', 'D'], price: ticketPrice },
+          { name: 'GOLD', rows: ['E', 'F'], price: ticketPrice + 50 },
+          { name: 'PLATINUM', rows: ['G', 'H'], price: ticketPrice + 100 },
+        ];
+        
+        const unavailableSeats = new Set<string>();
+        for (let i = 0; i < 20; i++) {
+          const row = seatRows[Math.floor(Math.random() * seatRows.length)];
+          const seatNum = Math.floor(Math.random() * 12) + 1;
+          unavailableSeats.add(`${row}${seatNum}`);
+        }
+        
+        setSeatData({ categories, unavailableSeats });
+      } catch (error) {
+        console.error("Error loading data:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load booking details",
+          variant: "destructive",
+        });
+        navigate("/");
+      } finally {
+        setIsDataLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [movieId, showtimeId, navigate, toast]);
+
+  // Authentication check
   useEffect(() => {
-    const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-    
-    // Create categories with different sections
-    const categories = [
-      { name: 'SILVER', rows: ['A', 'B', 'C', 'D'], price: ticketPrice },
-      { name: 'GOLD', rows: ['E', 'F'], price: ticketPrice + 50 },
-      { name: 'PLATINUM', rows: ['G', 'H'], price: ticketPrice + 100 },
-    ];
-    
-    // Generate all seats with unavailable ones
-    const unavailableSeats = new Set<string>();
-    // Randomly mark some seats as unavailable
-    for (let i = 0; i < 20; i++) {
-      const row = seatRows[Math.floor(Math.random() * seatRows.length)];
-      const seatNum = Math.floor(Math.random() * 12) + 1;
-      unavailableSeats.add(`${row}${seatNum}`);
-    }
-    
-    setSeatData({ categories, unavailableSeats });
-  }, []); // Empty dependency array means this runs only once
-  
-  // Check authentication status immediately
-  const checkAuth = useCallback(() => {
     if (!isAuthenticated) {
       toast({
         title: "Sign in required",
@@ -91,26 +99,15 @@ const BookingPage = () => {
         variant: "destructive",
       });
       navigate("/");
-      return false;
-    }
-    
-    if (!isProfileComplete) {
+    } else if (!isProfileComplete) {
       toast({
         title: "Complete your profile",
         description: "Please complete your profile before booking tickets",
         variant: "destructive",
       });
       navigate("/profile");
-      return false;
     }
-    
-    return true;
   }, [isAuthenticated, isProfileComplete, navigate, toast]);
-  
-  // Check on component mount and when auth status changes
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth, isAuthenticated, isProfileComplete]);
   
   // If still loading data, show loading indicator
   if (isDataLoading || !seatData) {
