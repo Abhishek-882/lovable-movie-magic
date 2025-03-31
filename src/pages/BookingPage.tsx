@@ -503,6 +503,7 @@ return (
 
     <Footer />
   </div>
-);
+ );
+};
 
 export default BookingPage;
