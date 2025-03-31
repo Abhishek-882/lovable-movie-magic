@@ -10,24 +10,35 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-    },
+      '@components': path.resolve(__dirname, './src/components'),
+      '@server': path.resolve(__dirname, './server')
+    }
   },
   server: {
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:10000',
+        target: 'http://localhost:3000',
         changeOrigin: true,
-      },
-      '/health': {
-        target: 'http://localhost:10000',
-        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   },
   build: {
-    outDir: './dist/client'  // Explicit output path
+    outDir: './dist/client',
     emptyOutDir: true,
-    sourcemap: process.env.NODE_ENV !== 'production',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          radix: [/@radix-ui/]
+        }
+      }
+    }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.ts'
   }
 });
