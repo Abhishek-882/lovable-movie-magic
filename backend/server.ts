@@ -1,27 +1,41 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { Sequelize } from 'sequelize';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Database setup
+const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://user:pass@localhost:5432/dbname');
 
+// Express app
 const app = express();
-const PORT = process.env.PORT || 10000;
+app.use(express.json());
 
-// Serve frontend files
-app.use(express.static(path.join(__dirname, '../../../frontend/dist')));
-
-// API routes would go here
-app.get('/api', (req, res) => {
-  res.json({ message: "Hello from backend" });
+// User model
+const User = sequelize.define('User', {
+  name: { type: DataTypes.STRING },
+  email: { type: DataTypes.STRING, unique: true }
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.sendStatus(200);
+// Booking model
+const Booking = sequelize.define('Booking', {
+  date: { type: DataTypes.DATE },
+  userId: { type: DataTypes.INTEGER }
+});
+
+// Routes
+app.get('/users', async (req, res) => {
+  const users = await User.findAll();
+  res.json(users);
+});
+
+app.get('/bookings/:userId', async (req, res) => {
+  const bookings = await Booking.findAll({ 
+    where: { userId: req.params.userId }
+  });
+  res.json(bookings);
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+sequelize.sync().then(() => {
+  app.listen(process.env.PORT || 3000, () => {
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
+  });
 });
