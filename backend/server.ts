@@ -3,8 +3,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { initializeDatabase } from './db';
-import routes from './routes';
+import { initializeDatabase } from './db'; // Your DB setup
+import routes from './routes'; // Your API routes
 
 // Configure __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -25,24 +25,28 @@ initializeDatabase();
 app.use('/api', routes);
 
 // Serve static files from Vite build
-app.use(express.static(path.join(__dirname, '../dist/client')));
+app.use(express.static(path.join(__dirname, 'dist/client')));
 
 // Health check endpoint (required for Render)
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
 
-// SPA Fallback - must be after API routes
+// SPA Fallback - must come after API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/client', 'index.html'));
+  res.sendFile(path.join(__dirname, 'dist/client/index.html'));
 });
 
-// Error handling
+// Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Internal server error' });
+  res.status(500).json({ 
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
