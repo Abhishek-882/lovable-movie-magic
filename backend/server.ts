@@ -2,12 +2,16 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { initializeDatabase } from './db';
 import routes from './routes';
 
+// Configure __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 10000;
-const HOST = process.env.HOST || '0.0.0.0';
+const PORT = parseInt(process.env.PORT || '10000');
 
 // Middleware
 app.use(cors());
@@ -21,16 +25,16 @@ initializeDatabase();
 app.use('/api', routes);
 
 // Serve static files from Vite build
-app.use(express.static(path.join(__dirname, '../dist')));
+app.use(express.static(path.join(__dirname, '../dist/client')));
 
-// Health check
+// Health check endpoint (required for Render)
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
 
-// Handle SPA routing - must come after API routes
+// SPA Fallback - must be after API routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../dist/client', 'index.html'));
 });
 
 // Error handling
@@ -39,6 +43,6 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   res.status(500).json({ message: 'Internal server error' });
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server running on http://${HOST}:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
