@@ -7,7 +7,41 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true
+  },{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@server/*": ["./src/server/*"],
+      "@db/*": ["./src/db/*"],
+      "@config/*": ["./src/config/*"]
+    },
+    "types": ["node"],
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
+  "include": [
+    "src/**/*.ts",
+    "server.ts",
+    "db/**/*.ts",
+    "config/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/client/**/*",
+    "vite.config.ts",
+    "**/*.spec.ts"
+  ]
+}
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
 }
