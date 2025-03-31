@@ -23,6 +23,10 @@ const BookingPage = () => {
   const [movie, setMovie] = useState<any>(null);
   const [showtime, setShowtime] = useState<any>(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [seatData, setSeatData] = useState<{
+    categories: {name: string, rows: string[], price: number}[],
+    unavailableSeats: Set<string>
+  } | null>(null);
   
   // Calculate totals first to avoid reference before definition
   const ticketPrice = 150; // Base ticket price
@@ -45,6 +49,29 @@ const BookingPage = () => {
       setIsDataLoading(false);
     }
   }, [movieId, showtimeId]);
+  
+  // Generate seats only once when component mounts
+  useEffect(() => {
+    const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    
+    // Create categories with different sections
+    const categories = [
+      { name: 'SILVER', rows: ['A', 'B', 'C', 'D'], price: ticketPrice },
+      { name: 'GOLD', rows: ['E', 'F'], price: ticketPrice + 50 },
+      { name: 'PLATINUM', rows: ['G', 'H'], price: ticketPrice + 100 },
+    ];
+    
+    // Generate all seats with unavailable ones
+    const unavailableSeats = new Set<string>();
+    // Randomly mark some seats as unavailable
+    for (let i = 0; i < 20; i++) {
+      const row = seatRows[Math.floor(Math.random() * seatRows.length)];
+      const seatNum = Math.floor(Math.random() * 12) + 1;
+      unavailableSeats.add(`${row}${seatNum}`);
+    }
+    
+    setSeatData({ categories, unavailableSeats });
+  }, []); // Empty dependency array means this runs only once
   
   // Check authentication status immediately
   const checkAuth = useCallback(() => {
@@ -77,7 +104,7 @@ const BookingPage = () => {
   }, [checkAuth, isAuthenticated, isProfileComplete]);
   
   // If still loading data, show loading indicator
-  if (isDataLoading) {
+  if (isDataLoading || !seatData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-red-50">
         <div className="text-center">
@@ -188,33 +215,6 @@ const BookingPage = () => {
     }
   };
   
-  // Mock seats for demonstration
-  const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  const seatsPerRow = 12;
-  
-  // Generate seats based on rows and columns
-  const generateSeats = () => {
-    // Create categories with different sections
-    const categories = [
-      { name: 'SILVER', rows: ['A', 'B', 'C', 'D'], price: ticketPrice },
-      { name: 'GOLD', rows: ['E', 'F'], price: ticketPrice + 50 },
-      { name: 'PLATINUM', rows: ['G', 'H'], price: ticketPrice + 100 },
-    ];
-    
-    // Generate all seats with unavailable ones
-    const unavailableSeats = new Set();
-    // Randomly mark some seats as unavailable
-    for (let i = 0; i < 20; i++) {
-      const row = seatRows[Math.floor(Math.random() * seatRows.length)];
-      const seatNum = Math.floor(Math.random() * seatsPerRow) + 1;
-      unavailableSeats.add(`${row}${seatNum}`);
-    }
-    
-    return { categories, unavailableSeats };
-  };
-  
-  const { categories, unavailableSeats } = generateSeats();
-  
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-red-50">
       <Navbar />
@@ -295,7 +295,7 @@ const BookingPage = () => {
               </div>
               
               <div className="space-y-6">
-                {categories.map((category) => (
+                {seatData.categories.map((category) => (
                   <div key={category.name} className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold text-gray-600">{category.name}</h3>
@@ -307,9 +307,9 @@ const BookingPage = () => {
                         <div key={row} className="flex items-center gap-1">
                           <div className="w-6 text-center text-sm font-medium text-gray-500">{row}</div>
                           <div className="flex-1 flex justify-center gap-1">
-                            {Array.from({ length: seatsPerRow }, (_, i) => {
+                            {Array.from({ length: 12 }, (_, i) => {
                               const seatId = `${row}${i + 1}`;
-                              const isUnavailable = unavailableSeats.has(seatId);
+                              const isUnavailable = seatData.unavailableSeats.has(seatId);
                               const isSelected = selectedSeats.includes(seatId);
                               
                               return (
@@ -317,13 +317,16 @@ const BookingPage = () => {
                                   key={seatId}
                                   disabled={isUnavailable}
                                   onClick={() => handleSeatClick(seatId)}
-                                  className={`w-7 h-7 rounded-t-md text-xs font-medium
+                                  className={`w-7 h-7 rounded-t-md text-xs font-medium transition-colors duration-200
                                     ${isUnavailable 
                                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                                       : isSelected
                                         ? 'bg-red-600 text-white'
-                                        : 'bg-white border border-gray-300 hover:border-red-400 text-gray-700'
+                                        : 'bg-white border border-gray-300 hover:border-red-400 hover:bg-red-50 text-gray-700'
                                     }`}
+                                  aria-label={`Seat ${seatId}`}
+                                  aria-pressed={isSelected}
+                                  aria-disabled={isUnavailable}
                                 >
                                   {i + 1}
                                 </button>
@@ -489,4 +492,4 @@ const BookingPage = () => {
   );
 };
 
-export default BookingPage
+export default BookingPage;
