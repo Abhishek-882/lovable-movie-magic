@@ -478,7 +478,8 @@ const theaters = {
     "Rajhans Cinema",
     "City Gold",
     "Akshar Multiplex"
-  ],
+  ]
+};    
 
 // Generate sample showtimes for each movie
 // Generate sample showtimes for each movie
