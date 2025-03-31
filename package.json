@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgGreen.bold\" \"vite\" \"ts-node-dev --respawn --transpile-only server.ts\"",
-    "build": "vite build && tsc -p tsconfig.backend.json",
+    "build": "rm -rf dist && vite build && tsc -p tsconfig.backend.json && node verify-build.js",
     "preview": "vite preview",
     "lint": "eslint .",
     "migrate": "npx sequelize-cli db:migrate",
