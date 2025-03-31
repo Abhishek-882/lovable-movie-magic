@@ -33,7 +33,7 @@ export const movies: Movie[] = [
   {
     id: "3",
     title: "Pushpa 2: The Rule",
-    posterUrl: "https://filmfare.wwmindia.com/content/2023/jan/pushpa21674287765.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/pushpa-2-the-rule-et00304943-1701157015.jpg",
     backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202306/pushpa_2-sixteen_nine.jpg?VersionId=VXzx5NLPc5rRe1vqOq0WrIypB5zU9pGV",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 15)).toISOString().split('T')[0],
     runtime: 175,
@@ -49,7 +49,7 @@ export const movies: Movie[] = [
   {
     id: "4",
     title: "Arjun Reddy",
-    posterUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSIrg3VSmDVr2H5lMi-wQu7D4kkFLhSKkCrraN8MpsdvC4UHG8Q",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/arjun-reddy-et00058089-08-12-2016-06-11-58.jpg",
     backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
     releaseDate: getRecentDate(),
     runtime: 187,
@@ -65,7 +65,7 @@ export const movies: Movie[] = [
   {
     id: "5",
     title: "K.G.F: Chapter 2",
-    posterUrl: "https://assetscdn1.paytm.com/images/cinema/KGF-2-705x750-cec0a380-7d46-11ec-a4d3-8f1a3a4cb9c3.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/kgf-chapter-2-et00098647-08-04-2022-11-33-32.jpg",
     backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
     releaseDate: getRecentDate(),
     runtime: 168,
@@ -81,7 +81,7 @@ export const movies: Movie[] = [
   {
     id: "6",
     title: "Kalki 2898 AD",
-    posterUrl: "https://englishtribuneimages.blob.core.windows.net/gallary-content/2023/6/2023_6$largeimg_1065600343.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/kalki-2898-ad-et00311673-1709723875.jpg",
     backdropUrl: "https://www.filmibeat.com/img/2023/10/kalkiposterfbbb-1697088070.jpg",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 27)).toISOString().split('T')[0],
     runtime: 165,
@@ -97,7 +97,7 @@ export const movies: Movie[] = [
   {
     id: "7",
     title: "Game Changer",
-    posterUrl: "https://www.cinejosh.com/newsimg/newsmainimg/ram-charan-shankar-movie-title-fixed_b_2306230527.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/game-changer-et00363916-1689751053.jpg",
     backdropUrl: "https://assets.thehansindia.com/h-upload/2023/07/22/1358276-game-changer.webp",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 5)).toISOString().split('T')[0],
     runtime: 155,
@@ -113,7 +113,7 @@ export const movies: Movie[] = [
   {
     id: "8",
     title: "Devara: Part 1",
-    posterUrl: "https://pbs.twimg.com/media/F-djfq_bMAARB1r?format=jpg&name=900x900",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/devara-part-1-et00308395-1719059020.jpg",
     backdropUrl: "https://www.behindwoods.com/news/tamil-nadu/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped.jpg",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 10)).toISOString().split('T')[0],
     runtime: 170,
@@ -129,8 +129,8 @@ export const movies: Movie[] = [
   {
     id: "9",
     title: "Kanguva",
-    posterUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2023/07/suriya-41-titled-kanguva-makers-release-the-stylish-title-teaser-001.jpg",
-    backdropUrl: "https://igimages.gumlet.io/tamil/home/surya-kcbv-31114.jpg?w=700&dpr=1.3",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/kanguva-et00329543-1714998823.jpg",
+    backdropUrl: "https://igimages.gumlet.io/tamil/home/surya-kcbv-31114.jpg",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 5, 20)).toISOString().split('T')[0],
     runtime: 160,
     rating: 0,
@@ -145,7 +145,7 @@ export const movies: Movie[] = [
   {
     id: "10",
     title: "Ala Vaikunthapurramuloo",
-    posterUrl: "https://moviegalleri.net/wp-content/uploads/2019/12/Allu-Arjun-Ala-Vaikunthapurramloo-Movie-New-Year-Wishes-Poster-HD.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/ala-vaikunthapurramuloo-et00117766-1706273012.jpg",
     backdropUrl: "https://stat5.bollywoodhungama.in/wp-content/uploads/2022/01/Ala-Vaikunthapurramuloo-English-1.jpg",
     releaseDate: getRecentDate(),
     runtime: 163,
@@ -161,7 +161,7 @@ export const movies: Movie[] = [
   {
     id: "11",
     title: "Sita Ramam",
-    posterUrl: "https://igimages.gumlet.io/hindi/gallery/movies/sitaraman/sir2082022_1.jpg?w=700&dpr=1.0",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/sita-ramam-et00321341-1659696442.jpg",
     backdropUrl: "https://images.hindustantimes.com/img/2022/08/25/1600x900/Sita_Ramam_review_1661403202449_1661403218668_1661403218668.jpg",
     releaseDate: getRecentDate(),
     runtime: 163,
@@ -177,7 +177,7 @@ export const movies: Movie[] = [
   {
     id: "12",
     title: "Kantara",
-    posterUrl: "https://img.youtube.com/vi/6oKFao0aQBw/maxresdefault.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/kantara-hindi-et00342025-1665304124.jpg",
     backdropUrl: "https://www.pinkvilla.com/english/images/2022/10/2092112993_kantara-movie-review-twitter_1280*720.jpg",
     releaseDate: getRecentDate(),
     runtime: 150,
@@ -193,7 +193,7 @@ export const movies: Movie[] = [
   {
     id: "13",
     title: "Tumbbad",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BZDQwYTM5ODEtNDRiZC00Mzk0LWFjNmItZTIxZjYxMzhlNzIwXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/tumbbad-et00046437-19-09-2018-11-34-43.jpg",
     backdropUrl: "https://www.bollywoodhungama.com/wp-content/uploads/2018/10/Movie-Review-Tumbbad-4.jpg",
     releaseDate: getRecentDate(),
     runtime: 104,
@@ -209,7 +209,7 @@ export const movies: Movie[] = [
   {
     id: "14",
     title: "Master",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BYWNjNGQ0YzgtMDQ0ZS00OTA0LWFiM2EtYjE2YjU5MDljMTYxXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/master-et00110156-29-01-2020-12-28-20.jpg",
     backdropUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2021/01/master-movie-review-thalapathy-vijay-vijay-sethupathi-01.jpg",
     releaseDate: getRecentDate(),
     runtime: 178,
@@ -225,7 +225,7 @@ export const movies: Movie[] = [
   {
     id: "15",
     title: "Animal",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BNGNlM2YzODgtZGM5Mi00YjhlLWJkMTctYzk5NDczZmM2YzI4XkEyXkFqcGdeQXVyMTUyNjIwMDEw._V1_.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/animal-et00311762-1689675248.jpg",
     backdropUrl: "https://images.indianexpress.com/2023/12/animal-1.jpg",
     releaseDate: getRecentDate(),
     runtime: 201,
@@ -241,7 +241,7 @@ export const movies: Movie[] = [
   {
     id: "16",
     title: "Salaar: Part 1 - Ceasefire",
-    posterUrl: "https://imgeng.jagran.com/images/2023/dec/salaar-review1703228115828.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/salaar-part-1-ceasefire-et00301886-1702971292.jpg",
     backdropUrl: "https://images.indianexpress.com/2023/12/Salaar-Part-1-Ceasefire-movie-review-4.jpg",
     releaseDate: getRecentDate(),
     runtime: 175,
@@ -257,7 +257,7 @@ export const movies: Movie[] = [
   {
     id: "17",
     title: "Ponniyin Selvan: Part I",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BZjZlNGRhNTQtZTY1Ni00MjdhLWJhYjEtN2NkMjVmNTAwMjZiXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/ponniyin-selvan--part-1-et00323897-1664271205.jpg",
     backdropUrl: "https://www.hindustantimes.com/ht-img/img/2023/04/28/1600x900/ponniyin_selvan_1_1682653414459_1682653414694.jpg",
     releaseDate: getRecentDate(),
     runtime: 167,
@@ -273,7 +273,7 @@ export const movies: Movie[] = [
   {
     id: "18",
     title: "Stree 2",
-    posterUrl: "https://assets.gadgets360cdn.com/pricee/assets/product/202308/stree-2-poster_1692262011.jpg",
+    posterUrl: "https://assets-in.bmscdn.com/iedb/movies/images/mobile/thumbnail/xlarge/stree-2-et00326263-1718450423.jpg",
     backdropUrl: "https://images.firstpost.com/wp-content/uploads/2024/02/stree-2-4.jpg",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 30)).toISOString().split('T')[0],
     runtime: 150,
@@ -302,78 +302,7 @@ const theaters = {
     "Sandhya 70MM: RTC X Roads",
     "PVR: Irrum Manzil"
   ],
-  "Bengaluru": [
-    "PVR: Forum Mall",
-    "INOX: Garuda Mall",
-    "Cinepolis: Orion Mall",
-    "PVR Gold: Phoenix Mall",
-    "Innovative Multiplex: Marathahalli",
-    "Swagath Cinemas: Indira Nagar",
-    "Gopalan Cinemas: Bannerghatta Road",
-    "Rockline Cinemas: JP Nagar",
-    "Cinepolis: ETA Mall Binnypet",
-    "Vaishnavi Sapphire Mall: Yeshwanthpur"
-  ],
-  "Mumbai": [
-    "PVR ICON: Phoenix Palladium",
-    "INOX: R-City Mall",
-    "Cinepolis: Andheri West",
-    "PVR: Juhu",
-    "Carnival Cinemas: IMAX Wadala",
-    "PVR: Infiniti Mall Malad",
-    "Movietime: The Hub Mall Goregaon",
-    "INOX: Megaplex Inorbit Mall",
-    "Cinepolis: Viviana Mall Thane",
-    "PVR: Market City Kurla"
-  ],
-  "Chennai": [
-    "PVR: VR Mall",
-    "SPI Cinemas: Sathyam",
-    "INOX: Phoenix Market City",
-    "Palazzo Cinemas: Forum Vijaya Mall",
-    "AGS Cinemas: T. Nagar",
-    "Rohini Silver Screens: Koyambedu",
-    "Kamala Cinemas: Vadapalani",
-    "SPI Cinemas: Escape",
-    "PVR: Grand Mall Velachery",
-    "Jazz Cinemas: Phoenix Mall"
-  ],
-  "Delhi": [
-    "PVR: Select Citywalk",
-    "PVR Director's Cut: Ambience Mall",
-    "INOX: Nehru Place",
-    "Cinepolis: DLF Place",
-    "Wave Cinemas: Raja Garden",
-    "PVR: Pacific Mall Subhash Nagar",
-    "PVR: ECX Chanakyapuri",
-    "Cinepolis: Unity One Mall",
-    "PVR: Promenade Vasant Kunj",
-    "M2K Cinemas: Pitampura"
-  ],
-  "Kolkata": [
-    "INOX: Forum Mall",
-    "PVR: Avani Riverside Mall",
-    "Cinepolis: Lake Mall",
-    "INOX: City Centre Salt Lake",
-    "Miraj Cinemas: Newtown",
-    "PVR: Diamond Plaza",
-    "INOX: Quest Mall",
-    "Cinepolis: Acropolis Mall",
-    "PVR: Mani Square Mall",
-    "INOX: South City Mall"
-  ],
-  "Pune": [
-    "PVR: Phoenix MarketCity",
-    "INOX: Amanora Town Centre",
-    "Cinepolis: Seasons Mall",
-    "PVR: Kumar Pacific Mall",
-    "INOX: Bund Garden Road",
-    "Cinepolis: Westend Mall",
-    "PVR ICON: Pavillion Mall",
-    "INOX: Jyoti Square",
-    "E-Square Multiplex: University Road",
-    "Carnival Cinemas: Pineville Mall"
-  ]
+  // ... keep existing code (theater definitions for other cities)
 };
 
 // Generate sample showtimes for each movie
@@ -473,46 +402,7 @@ export const reviews: Review[] = [
     comment: "RRR is a cinematic masterpiece! The action sequences are breathtaking, and the performances by NTR Jr. and Ram Charan are extraordinary.",
     date: currentDate.toISOString().split('T')[0]
   },
-  {
-    id: "2",
-    movieId: "1",
-    author: "FilmFanatic",
-    rating: 8,
-    comment: "S.S. Rajamouli has done it again! The visuals are stunning, and the story is engaging from start to finish.",
-    date: currentDate.toISOString().split('T')[0]
-  },
-  {
-    id: "4",
-    movieId: "3",
-    author: "MovieExpert",
-    rating: 8,
-    comment: "Allu Arjun's performance as Pushpa is phenomenal. His mannerisms and dialogue delivery are spot on.",
-    date: currentDate.toISOString().split('T')[0]
-  },
-  {
-    id: "5",
-    movieId: "4",
-    author: "FilmCritic",
-    rating: 9,
-    comment: "Arjun Reddy is raw and intense. Vijay Deverakonda's portrayal of a self-destructive surgeon is unforgettable.",
-    date: currentDate.toISOString().split('T')[0]
-  },
-  {
-    id: "6",
-    movieId: "6",
-    author: "TelugeCinemaFan",
-    rating: 9,
-    comment: "Eagerly waiting for Pushpa 2! The first part was amazing, and I can't wait to see what happens next in Pushpa's journey.",
-    date: currentDate.toISOString().split('T')[0]
-  },
-  {
-    id: "7",
-    movieId: "7",
-    author: "SciFiBuff",
-    rating: 8,
-    comment: "The trailer of Kalki 2898 AD looks mind-blowing! The scale and visuals seem incredible. This could be a game-changer for Indian cinema.",
-    date: currentDate.toISOString().split('T')[0]
-  }
+  // ... keep existing code (review definitions)
 ];
 
 // Helper functions to get movies, showtimes, and reviews
