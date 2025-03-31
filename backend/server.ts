@@ -6,7 +6,8 @@ import { initializeDatabase } from './db';
 import routes from './routes';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT || '10000'); // Force numeric port
+const HOST = '0.0.0.0'; // Explicit host binding
 
 // Middleware
 app.use(cors());
@@ -34,5 +35,5 @@ const HOST = process.env.HOST || '0.0.0.0'; // Explicit host binding
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 10000; // Force number type
 
 app.listen(PORT, HOST, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
+  console.log(`Server running on http://${HOST}:${PORT}`);
 });
