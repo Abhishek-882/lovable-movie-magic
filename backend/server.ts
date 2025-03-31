@@ -29,7 +29,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   console.error(err.stack);
   res.status(500).json({ message: 'Internal server error' });
 });
+// Change the last lines to:
+const HOST = process.env.HOST || '0.0.0.0'; // Explicit host binding
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 10000; // Force number type
 
-app.listen(PORT, '0.0.0.0', () => {  // ← Add '0.0.0.0' as second argument
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running at http://${HOST}:${PORT}`);
 });
