@@ -6,11 +6,10 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgGreen.bold\" \"vite\" \"ts-node-dev --respawn --transpile-only server.ts\"",
-    "build": "rm -rf dist && vite build && tsc -p tsconfig.backend.json && node verify-build.js",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "migrate": "npx sequelize-cli db:migrate",
-    "seed": "npx sequelize-cli db:seed:all"
+    "build": "rm -rf dist && mkdir -p dist && vite build && tsc -p tsconfig.backend.json",
+    "verify": "node build-verifier.js",
+    "preview": "npm run build && npm run verify && npm start",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
