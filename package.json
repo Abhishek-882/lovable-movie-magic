@@ -7,11 +7,10 @@
     "start": "node dist/server.js",
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgGreen.bold\" \"vite\" \"ts-node-dev --respawn --transpile-only server.ts\"",
     "build": "vite build && tsc -p tsconfig.backend.json",
-    "preview": "node dist/server.js",
+    "preview": "vite preview",
     "lint": "eslint .",
     "migrate": "npx sequelize-cli db:migrate",
-    "seed": "npx sequelize-cli db:seed:all",
-    "test": "vitest"
+    "seed": "npx sequelize-cli db:seed:all"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -22,10 +21,10 @@
     "sequelize": "^6.37.1",
     "pg": "^8.11.3",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "zod": "^3.22.4"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/node": "^20.11.0",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@types/express": "^4.17.21",
@@ -34,8 +33,6 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
-    "vitest": "^1.2.2",
-    "eslint": "^8.56.0",
-    "@types/node": "^20.11.0"
+    "eslint": "^8.56.0"
   }
 }
