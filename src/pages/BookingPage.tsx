@@ -24,50 +24,19 @@ const BookingPage = () => {
   const movie = movieId ? getMovieById(movieId) : null;
   const showtime = showtimeId ? getShowtimeById(showtimeId) : null;
   
-  const checkAuth = useCallback(() => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "Please login to book tickets",
-        variant: "destructive",
-      });
-      navigate("/");
-      return false;
-    }
-    
-    if (!isProfileComplete) {
-      toast({
-        title: "Profile completion required",
-        description: "Please complete your profile before booking tickets",
-        variant: "destructive",
-      });
-      navigate("/profile");
-      return false;
-    }
-    
-    return true;
-  }, [isAuthenticated, isProfileComplete, navigate, toast]);
+  // Check authentication status immediately
+  // ... keep existing code (checkAuth function)
   
-  useEffect(() => {
-    const isAuthValid = checkAuth();
-    
-    if (isAuthValid) {
-      window.scrollTo(0, 0);
-    }
-  }, [checkAuth]);
+  // Check on component mount and when auth status changes
+  // ... keep existing code (useEffect hook)
   
+  // If no movie or showtime, show nothing
   if (!movie || !showtime) {
     return null;
   }
   
   const handleSeatClick = (seatId: string) => {
-    setSelectedSeats(prev => {
-      if (prev.includes(seatId)) {
-        return prev.filter(id => id !== seatId);
-      } else {
-        return [...prev, seatId];
-      }
-    });
+    // ... keep existing code (seat selection)
   };
   
   const handleSnacksSelected = (snacks: SnackOrder[]) => {
@@ -88,6 +57,7 @@ const BookingPage = () => {
     
     setIsLoading(true);
     
+    // Create a booking object with the correct status type
     const newBooking = {
       id: Date.now().toString(),
       userId: user?.id || "",
@@ -108,33 +78,24 @@ const BookingPage = () => {
 
     console.log("Creating new booking:", newBooking);
     
+    // Save current booking to localStorage for retrieval in PaymentPage
     localStorage.setItem("currentBooking", JSON.stringify(newBooking));
     
+    // Navigate to payment page
     setTimeout(() => {
       setIsLoading(false);
       navigate(`/payment/${movieId}/${showtimeId}`);
     }, 1000);
   };
   
-  const snacksTotal = selectedSnacks.reduce((total, snack) => {
-    return total + (snack.price * snack.quantity);
-  }, 0);
+  // Calculate snacks total
+  // ... keep existing code (snacksTotal calculation)
   
-  const rows = ["A", "B", "C", "D", "E", "F", "G"];
-  const seatCategories = {
-    "A": { name: "Premium", price: showtime.price + 150 },
-    "B": { name: "Premium", price: showtime.price + 150 },
-    "C": { name: "Regular", price: showtime.price },
-    "D": { name: "Regular", price: showtime.price },
-    "E": { name: "Regular", price: showtime.price },
-    "F": { name: "Budget", price: showtime.price - 50 },
-    "G": { name: "Budget", price: showtime.price - 50 },
-  };
+  // Mock seats for demonstration
+  // ... keep existing code (seats and categories)
   
-  const ticketsTotal = selectedSeats.reduce((total, seat) => {
-    const row = seat.charAt(0);
-    return total + (seatCategories[row as keyof typeof seatCategories]?.price || showtime.price);
-  }, 0);
+  // Ticket price calculation
+  // ... keep existing code (tickets total calculation)
   
   const totalAmount = ticketsTotal + snacksTotal;
   
@@ -156,6 +117,7 @@ const BookingPage = () => {
               <span className="font-semibold">{showtime.time}</span>
             </div>
             
+            {/* Booking steps */}
             <div className="mt-6 flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <div className={`h-8 w-8 rounded-full flex items-center justify-center ${
@@ -206,95 +168,17 @@ const BookingPage = () => {
             </div>
           </div>
           
+          {/* Seat selection */}
           {bookingStep === 'seats' && (
-            <div className="mb-8 bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
-              <div className="mb-6 flex items-center justify-center">
-                <div className="w-full max-w-md rounded-lg bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-8 text-center text-white">
-                  <p className="mb-6 text-sm font-medium">SCREEN</p>
-                  <div className="space-y-3">
-                    {rows.map(row => (
-                      <div key={row} className="flex items-center justify-center gap-1">
-                        <div className="w-6 text-xs font-medium">{row}</div>
-                        {Array.from({ length: 10 }, (_, i) => i + 1).map(num => {
-                          const seatId = `${row}${num}`;
-                          const isSelected = selectedSeats.includes(seatId);
-                          const isAvailable = !((row === "D" && num === 5) || (row === "E" && num === 6) || (row === "A" && num === 2));
-                          
-                          return (
-                            <button
-                              key={seatId}
-                              className={`h-7 w-7 rounded-t-md text-xs font-medium transition-colors ${
-                                isSelected
-                                  ? "bg-red-600 text-white animate-pulse"
-                                  : isAvailable
-                                  ? "bg-gray-600 text-white hover:bg-gray-500"
-                                  : "bg-gray-400 cursor-not-allowed"
-                              }`}
-                              onClick={() => isAvailable && handleSeatClick(seatId)}
-                              disabled={!isAvailable}
-                            >
-                              {num}
-                            </button>
-                          );
-                        })}
-                        <div className="w-6 text-xs font-medium">{row}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mb-4 flex justify-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded bg-red-600"></div>
-                  <span>Selected</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded bg-gray-600"></div>
-                  <span>Available</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 rounded bg-gray-400"></div>
-                  <span>Booked</span>
-                </div>
-              </div>
-              
-              <div className="space-y-2 text-center">
-                <p className="text-sm text-gray-600">
-                  Premium: ₹{(seatCategories.A.price).toFixed(0)} | Regular: ₹{showtime.price.toFixed(0)} | Budget: ₹{(seatCategories.F.price).toFixed(0)}
-                </p>
-              </div>
-              
-              <div className="mt-6 flex justify-end">
-                <Button 
-                  onClick={() => setBookingStep('snacks')} 
-                  disabled={selectedSeats.length === 0}
-                  className="w-full md:w-auto bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
-                >
-                  Continue to Snacks <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+            // ... keep existing code (seat selection UI)
           )}
           
+          {/* Snack selection */}
           {bookingStep === 'snacks' && (
-            <>
-              <SnackSelector 
-                onSnacksSelected={handleSnacksSelected} 
-                selectedSnacks={selectedSnacks}
-              />
-              <div className="mt-4 flex justify-between">
-                <Button 
-                  variant="outline"
-                  onClick={() => setBookingStep('seats')}
-                  className="border-red-200 text-red-600"
-                >
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back to Seats
-                </Button>
-              </div>
-            </>
+            // ... keep existing code (snack selection UI)
           )}
           
+          {/* Payment */}
           {bookingStep === 'payment' && (
             <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
               <h2 className="mb-4 text-xl font-bold text-red-600">Booking Summary</h2>
@@ -321,6 +205,7 @@ const BookingPage = () => {
                   </span>
                 </div>
                 
+                {/* Display selected snacks */}
                 {selectedSnacks.length > 0 && (
                   <div>
                     <div className="flex justify-between pt-2">
