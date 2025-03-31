@@ -1,8 +1,3 @@
-
-// This component is marked as read-only, so we cannot modify it directly.
-// Instead, we will create a wrapper component that adds our location selector
-// to the existing Navbar component.
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -43,84 +38,59 @@ const NavbarWrapper = () => {
             <span className="text-xl font-bold text-primary">CineBook</span>
           </Link>
           
-          {/* Location Selector */}
-          <div className="flex-shrink-0 md:order-1">
-            <LocationSelector />
-          </div>
-          
-          {/* Desktop Navigation - Remove Movies and Coming Soon buttons */}
+          {/* Desktop Navigation - Now includes LocationSelector */}
           {!isMobile && (
-            <NavigationMenu className="hidden md:flex">
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger>More</NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/bookings"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              My Bookings
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              View your past and upcoming bookings
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                      <li>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            to="/offers"
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              Offers
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              Exclusive deals and discounts
-                            </p>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
+            <div className="flex items-center gap-6">
+              <LocationSelector />
+              
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger>More</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/bookings"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">
+                                My Bookings
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                View your past and upcoming bookings
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                        <li>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/offers"
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">
+                                Offers
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                Exclusive deals and discounts
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
           )}
           
-          {/* Auth Buttons */}
-          <div className="flex items-center gap-2">
-            {isAuthenticated ? (
-              <>
-                <Link to="/profile">
-                  <Button variant="outline" className="hidden sm:inline-flex">
-                    My Account
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  onClick={logout}
-                  className="hidden sm:inline-flex"
-                >
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="hidden sm:inline-flex"
-              >
-                Sign In
-              </Button>
-            )}
-            
-            {/* Mobile Menu */}
-            {isMobile && (
+          {/* Mobile Navigation */}
+          {isMobile && (
+            <div className="flex items-center gap-4">
+              <LocationSelector />
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -139,6 +109,9 @@ const NavbarWrapper = () => {
                     </Link>
                     <Link to="/bookings" className="text-lg font-medium">
                       My Bookings
+                    </Link>
+                    <Link to="/offers" className="text-lg font-medium">
+                      Offers
                     </Link>
                     
                     <div className="my-4 border-t" />
@@ -160,8 +133,35 @@ const NavbarWrapper = () => {
                   </div>
                 </SheetContent>
               </Sheet>
-            )}
-          </div>
+            </div>
+          )}
+          
+          {/* Desktop Auth Buttons */}
+          {!isMobile && (
+            <div className="flex items-center gap-2">
+              {isAuthenticated ? (
+                <>
+                  <Link to="/profile">
+                    <Button variant="outline">
+                      My Account
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="ghost"
+                    onClick={logout}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => setIsAuthModalOpen(true)}
+                >
+                  Sign In
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
       
