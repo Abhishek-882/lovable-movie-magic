@@ -8,22 +8,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Middleware
-app.use(express.json());
+// Serve frontend files
+app.use(express.static(path.join(__dirname, '../../../frontend/dist')));
 
-// Static files
-app.use(express.static(path.join(__dirname, 'dist/client')));
-
-// API routes
+// API routes would go here
 app.get('/api', (req, res) => {
-  res.json({ message: 'Hello from backend' });
+  res.json({ message: "Hello from backend" });
 });
 
-// SPA fallback
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/client/index.html'));
+// Health check
+app.get('/health', (req, res) => {
+  res.sendStatus(200);
 });
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
