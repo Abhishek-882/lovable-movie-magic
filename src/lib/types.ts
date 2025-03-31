@@ -86,4 +86,5 @@ export interface User {
   email: string;
   phone?: string;
   isEmailVerified?: boolean;
+  isProfileComplete?: boolean;
 }
