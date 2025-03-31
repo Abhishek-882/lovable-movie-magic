@@ -13,5 +13,5 @@
     "types": ["node"]
   },
   "include": ["server.ts", "src/server/**/*.ts"],
-  "exclude": ["node_modules", "dist", "src/client/**/*"]
+  "exclude": ["node_modules"]
 }
