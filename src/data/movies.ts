@@ -49,7 +49,7 @@ export const movies: Movie[] = [
   {
     id: "4",
     title: "Arjun Reddy",
-    posterUrl: "https://images.app.goo.gl/gaHiZbujA8SdrsHV7",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BODUzYzJlZTctODNmMS00MWU4LWI0ZjUtMGEzMTc2ODhlMTI5XkEyXkFqcGc@._V1_.jpg",
     backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
     releaseDate: getRecentDate(),
     runtime: 187,
