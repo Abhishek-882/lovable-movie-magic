@@ -485,11 +485,10 @@ const theaters = {
 // Generate sample showtimes for each movie
 export const showtimes: Showtime[] = [];
 
-// Function to generate random times
 const generateTimes = () => {
   const times = ["10:15 AM", "12:45 PM", "3:30 PM", "6:45 PM", "9:30 PM", "11:00 PM"];
   const selectedTimes = [];
-  const numTimes = Math.floor(Math.random() * 3) + 3; // 3-5 show times
+  const numTimes = Math.floor(Math.random() * 3) + 3;
   
   for (let i = 0; i < numTimes; i++) {
     const randomIndex = Math.floor(Math.random() * times.length);
@@ -500,7 +499,6 @@ const generateTimes = () => {
   return selectedTimes.sort();
 };
 
-// Generate dates for the next 7 days
 const generateDates = () => {
   const dates = [];
   const today = new Date();
@@ -516,56 +514,46 @@ const generateDates = () => {
 
 const dates = generateDates();
 
-// Get user location from localStorage (defaults to Hyderabad if not set)
-const getUserLocation = () => {
+const getUserLocation = (): string => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('userLocation') || 'Hyderabad';
+    const savedLocation = localStorage.getItem('userLocation');
+    if (savedLocation && theaters[savedLocation as keyof typeof theaters]) {
+      return savedLocation;
+    }
+    const defaultLocation = Object.keys(theaters)[0];
+    localStorage.setItem('userLocation', defaultLocation);
+    return defaultLocation;
   }
   return 'Hyderabad';
 };
 
-// Generate showtimes for each movie
+// Generate showtimes for ALL cities
 let showtimeId = 1;
 movies.forEach(movie => {
   if (movie.status === 'now_showing') {
-    // Create theaters for each movie based on city
-    const userLocation = getUserLocation();
-    const selectedTheaters = theaters[userLocation as keyof typeof theaters] || theaters.Hyderabad;
-    
-    // Use 3-5 random theaters for each movie
-    const numTheaters = Math.floor(Math.random() * 3) + 3; // Increased to ensure more theaters
-    const movieTheaters = [];
-    
-    for (let i = 0; i < numTheaters; i++) {
-      const randomTheaterIndex = Math.floor(Math.random() * selectedTheaters.length);
-      const theater = selectedTheaters[randomTheaterIndex];
+    Object.keys(theaters).forEach(location => {
+      const cityTheaters = theaters[location as keyof typeof theaters];
+      const numTheaters = Math.min(3, cityTheaters.length);
       
-      if (!movieTheaters.includes(theater)) {
-        movieTheaters.push(theater);
-        
-        // Generate showtimes for each date
+      const shuffled = [...cityTheaters].sort(() => 0.5 - Math.random());
+      const selectedTheaters = shuffled.slice(0, numTheaters);
+      
+      selectedTheaters.forEach(theater => {
         dates.forEach(date => {
-          const times = generateTimes();
-          
-          times.forEach(time => {
-            // Generate random price between ₹120 and ₹350 (in rupees)
-            const basePrice = Math.floor(Math.random() * 250) + 120;
-            
+          generateTimes().forEach(time => {
             showtimes.push({
-              id: showtimeId.toString(),
+              id: (showtimeId++).toString(),
               movieId: movie.id,
               theater,
               date,
               time,
-              price: basePrice, // Price in rupees
-              available: Math.random() > 0.1 // 90% of showtimes are available
+              price: Math.floor(Math.random() * 250) + 120,
+              available: true
             });
-            
-            showtimeId++;
           });
         });
-      }
-    }
+      });
+    });
   }
 });
 
@@ -717,7 +705,6 @@ export const reviews: Review[] = [
   }
 ];
 
-// Enhanced helper functions with better type safety
 export const getAllMovies = (): Movie[] => movies;
 
 export const getMoviesByStatus = (status: 'now_showing' | 'coming_soon'): Movie[] => {
@@ -746,7 +733,6 @@ export const getReviewsForMovie = (movieId: string): Review[] => {
   return reviews.filter(review => review.movieId === movieId);
 };
 
-// Additional helper to get all available locations
 export const getAvailableLocations = (): string[] => {
   return Object.keys(theaters);
 };
