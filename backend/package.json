@@ -1,11 +1,15 @@
 {
+  "name": "backend",
+  "type": "module",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "concurrently \"vite\" \"ts-node-dev server.ts\"",
-    "build": "vite build && tsc",
-    "migrate": "npx sequelize-cli db:migrate",
-    "seed": "npx sequelize-cli db:seed:all",
-    "test": "jest",
-    "preview": "vite preview"
+    "dev": "ts-node-dev server.ts",
+    "build": "tsc",
+    "migrate": "npx sequelize-cli db:migrate"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sequelize": "^6.37.1"
   }
 }
