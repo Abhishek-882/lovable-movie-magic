@@ -10,21 +10,8 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@server/*": ["src/server/*"],
-      "@db/*": ["src/db/*"]
-    },
     "types": ["node"]
   },
-  "include": [
-    "server.ts",
-    "src/server/**/*.ts",
-    "src/db/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/client/**/*"
-  ]
+  "include": ["server.ts", "src/server/**/*.ts"],
+  "exclude": ["node_modules", "dist", "src/client/**/*"]
 }
