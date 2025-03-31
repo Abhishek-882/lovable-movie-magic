@@ -20,23 +20,105 @@ const BookingPage = () => {
   const [selectedSnacks, setSelectedSnacks] = useState<SnackOrder[]>([]);
   const [bookingStep, setBookingStep] = useState<'seats' | 'snacks' | 'payment'>('seats');
   const [isLoading, setIsLoading] = useState(false);
+  const [movie, setMovie] = useState<any>(null);
+  const [showtime, setShowtime] = useState<any>(null);
+  const [isDataLoading, setIsDataLoading] = useState(true);
   
-  const movie = movieId ? getMovieById(movieId) : null;
-  const showtime = showtimeId ? getShowtimeById(showtimeId) : null;
+  // Calculate totals first to avoid reference before definition
+  const ticketPrice = 150; // Base ticket price
+  const ticketsTotal = selectedSeats.length * ticketPrice;
+  
+  const snacksTotal = selectedSnacks.reduce((total, snack) => {
+    return total + snack.quantity * snack.price;
+  }, 0);
+  
+  const totalAmount = ticketsTotal + snacksTotal;
+  
+  // Fetch movie and showtime data
+  useEffect(() => {
+    if (movieId && showtimeId) {
+      const fetchedMovie = getMovieById(movieId);
+      const fetchedShowtime = getShowtimeById(showtimeId);
+      
+      setMovie(fetchedMovie);
+      setShowtime(fetchedShowtime);
+      setIsDataLoading(false);
+    }
+  }, [movieId, showtimeId]);
   
   // Check authentication status immediately
-  // ... keep existing code (checkAuth function)
+  const checkAuth = useCallback(() => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to book tickets",
+        variant: "destructive",
+      });
+      navigate("/");
+      return false;
+    }
+    
+    if (!isProfileComplete) {
+      toast({
+        title: "Complete your profile",
+        description: "Please complete your profile before booking tickets",
+        variant: "destructive",
+      });
+      navigate("/profile");
+      return false;
+    }
+    
+    return true;
+  }, [isAuthenticated, isProfileComplete, navigate, toast]);
   
   // Check on component mount and when auth status changes
-  // ... keep existing code (useEffect hook)
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth, isAuthenticated, isProfileComplete]);
   
-  // If no movie or showtime, show nothing
+  // If still loading data, show loading indicator
+  if (isDataLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-red-50">
+        <div className="text-center">
+          <p className="text-xl text-gray-600">Loading booking details...</p>
+        </div>
+      </div>
+    );
+  }
+  
+  // If no movie or showtime data found after loading
   if (!movie || !showtime) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-red-50">
+        <div className="text-center">
+          <p className="text-xl text-red-600">Movie or showtime not found</p>
+          <Button 
+            onClick={() => navigate("/")}
+            className="mt-4 bg-red-600 hover:bg-red-700"
+          >
+            Return to Home
+          </Button>
+        </div>
+      </div>
+    );
   }
   
   const handleSeatClick = (seatId: string) => {
-    // ... keep existing code (seat selection)
+    if (selectedSeats.includes(seatId)) {
+      setSelectedSeats(selectedSeats.filter(seat => seat !== seatId));
+    } else {
+      // Limit to 10 seats per booking
+      if (selectedSeats.length >= 10) {
+        toast({
+          title: "Maximum seats reached",
+          description: "You can select up to 10 seats per booking",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedSeats([...selectedSeats, seatId]);
+    }
   };
   
   const handleSnacksSelected = (snacks: SnackOrder[]) => {
@@ -57,7 +139,7 @@ const BookingPage = () => {
     
     setIsLoading(true);
     
-    // Create a booking object with the correct status type
+    // Create a booking object with explicit typing for status
     const newBooking = {
       id: Date.now().toString(),
       userId: user?.id || "",
@@ -78,26 +160,60 @@ const BookingPage = () => {
 
     console.log("Creating new booking:", newBooking);
     
-    // Save current booking to localStorage for retrieval in PaymentPage
-    localStorage.setItem("currentBooking", JSON.stringify(newBooking));
-    
-    // Navigate to payment page
-    setTimeout(() => {
+    // Safely store booking data in localStorage
+    try {
+      localStorage.setItem("currentBooking", JSON.stringify(newBooking));
+      
+      // Navigate to payment page
+      setTimeout(() => {
+        setIsLoading(false);
+        if (movieId && showtimeId) {
+          navigate(`/payment/${movieId}/${showtimeId}`);
+        } else {
+          toast({
+            title: "Navigation error",
+            description: "Could not navigate to payment page",
+            variant: "destructive",
+          });
+        }
+      }, 1000);
+    } catch (error) {
+      console.error("Error saving booking data:", error);
+      toast({
+        title: "Booking error",
+        description: "Could not save booking data",
+        variant: "destructive",
+      });
       setIsLoading(false);
-      navigate(`/payment/${movieId}/${showtimeId}`);
-    }, 1000);
+    }
   };
   
-  // Calculate snacks total
-  // ... keep existing code (snacksTotal calculation)
-  
   // Mock seats for demonstration
-  // ... keep existing code (seats and categories)
+  const seatRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+  const seatsPerRow = 12;
   
-  // Ticket price calculation
-  // ... keep existing code (tickets total calculation)
+  // Generate seats based on rows and columns
+  const generateSeats = () => {
+    // Create categories with different sections
+    const categories = [
+      { name: 'SILVER', rows: ['A', 'B', 'C', 'D'], price: ticketPrice },
+      { name: 'GOLD', rows: ['E', 'F'], price: ticketPrice + 50 },
+      { name: 'PLATINUM', rows: ['G', 'H'], price: ticketPrice + 100 },
+    ];
+    
+    // Generate all seats with unavailable ones
+    const unavailableSeats = new Set();
+    // Randomly mark some seats as unavailable
+    for (let i = 0; i < 20; i++) {
+      const row = seatRows[Math.floor(Math.random() * seatRows.length)];
+      const seatNum = Math.floor(Math.random() * seatsPerRow) + 1;
+      unavailableSeats.add(`${row}${seatNum}`);
+    }
+    
+    return { categories, unavailableSeats };
+  };
   
-  const totalAmount = ticketsTotal + snacksTotal;
+  const { categories, unavailableSeats } = generateSeats();
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-red-50">
@@ -170,12 +286,115 @@ const BookingPage = () => {
           
           {/* Seat selection */}
           {bookingStep === 'seats' && (
-            // ... keep existing code (seat selection UI)
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
+              <h2 className="mb-4 text-xl font-bold text-red-600">Select Your Seats</h2>
+              
+              <div className="mb-8 py-4 px-2 bg-gray-100 rounded-lg">
+                <div className="w-full h-4 bg-gradient-to-r from-transparent via-gray-300 to-transparent rounded mb-6"></div>
+                <p className="text-center text-sm text-gray-500 mb-2">SCREEN</p>
+              </div>
+              
+              <div className="space-y-6">
+                {categories.map((category) => (
+                  <div key={category.name} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-gray-600">{category.name}</h3>
+                      <span className="text-sm text-red-600 font-medium">₹{category.price}</span>
+                    </div>
+                    
+                    <div className="grid gap-y-3">
+                      {category.rows.map((row) => (
+                        <div key={row} className="flex items-center gap-1">
+                          <div className="w-6 text-center text-sm font-medium text-gray-500">{row}</div>
+                          <div className="flex-1 flex justify-center gap-1">
+                            {Array.from({ length: seatsPerRow }, (_, i) => {
+                              const seatId = `${row}${i + 1}`;
+                              const isUnavailable = unavailableSeats.has(seatId);
+                              const isSelected = selectedSeats.includes(seatId);
+                              
+                              return (
+                                <button
+                                  key={seatId}
+                                  disabled={isUnavailable}
+                                  onClick={() => handleSeatClick(seatId)}
+                                  className={`w-7 h-7 rounded-t-md text-xs font-medium
+                                    ${isUnavailable 
+                                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
+                                      : isSelected
+                                        ? 'bg-red-600 text-white'
+                                        : 'bg-white border border-gray-300 hover:border-red-400 text-gray-700'
+                                    }`}
+                                >
+                                  {i + 1}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="w-6"></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 flex justify-between items-center">
+                <div className="flex flex-wrap gap-4 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 rounded-t-md bg-white border border-gray-300"></div>
+                    <span>Available</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 rounded-t-md bg-red-600"></div>
+                    <span>Selected</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 rounded-t-md bg-gray-200"></div>
+                    <span>Unavailable</span>
+                  </div>
+                </div>
+                
+                <div className="text-right">
+                  <p className="text-sm text-gray-600">Selected: {selectedSeats.length} seats</p>
+                  <p className="font-medium">Subtotal: ₹{ticketsTotal}</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={() => selectedSeats.length > 0 ? setBookingStep('snacks') : null}
+                  disabled={selectedSeats.length === 0}
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
+                >
+                  Continue <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           )}
           
           {/* Snack selection */}
           {bookingStep === 'snacks' && (
-            // ... keep existing code (snack selection UI)
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl border border-red-100 p-6 shadow-lg">
+              <h2 className="mb-4 text-xl font-bold text-red-600">Add Snacks & Beverages</h2>
+              
+              <SnackSelector onSnacksSelected={handleSnacksSelected} />
+              
+              <div className="flex justify-between mt-6">
+                <Button 
+                  variant="outline"
+                  onClick={() => setBookingStep('seats')}
+                  className="border-red-200 text-red-600"
+                >
+                  <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                </Button>
+                <Button 
+                  onClick={() => setBookingStep('payment')}
+                  className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600"
+                >
+                  Continue <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           )}
           
           {/* Payment */}
@@ -214,7 +433,7 @@ const BookingPage = () => {
                     </div>
                     {selectedSnacks.map((snackOrder, index) => (
                       <div key={index} className="flex justify-between pl-4 text-sm">
-                        <span>{`${snackOrder.quantity}x Item #${snackOrder.snackId}`}</span>
+                        <span>{`${snackOrder.quantity}x ${snackOrder.name || `Item #${snackOrder.snackId}`}`}</span>
                         <span>₹{(snackOrder.quantity * snackOrder.price).toFixed(0)}</span>
                       </div>
                     ))}
