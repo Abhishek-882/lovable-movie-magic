@@ -1,10 +1,11 @@
 {
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "ts-node-dev server.ts",
-    "build": "tsc",
+    "dev": "concurrently \"vite\" \"ts-node-dev server.ts\"",
+    "build": "vite build && tsc",
     "migrate": "npx sequelize-cli db:migrate",
     "seed": "npx sequelize-cli db:seed:all",
-    "test": "jest"
+    "test": "jest",
+    "preview": "vite preview"
   }
 }
