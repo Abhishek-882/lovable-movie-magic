@@ -2,11 +2,11 @@
   "name": "fullstack-app",
   "private": true,
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "start": "node create-server.js && node /opt/render/project/src/dist/server.js",
+    "build": "rm -rf dist && vite build && tsc --project tsconfig.render.json",
+    "dev": "concurrently \"vite\" \"ts-node-dev server.ts\"",
     "dev:frontend": "cd frontend && vite",
     "dev:backend": "cd backend && ts-node-dev --respawn src/server.ts",
-    "build": "rm -rf dist && npm run build:frontend && npm run build:backend && node build-verifier.js",
     "build:frontend": "cd frontend && vite build",
     "build:backend": "cd backend && tsc",
     "preview": "npm run build && npm start"
