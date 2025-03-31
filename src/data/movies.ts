@@ -12,13 +12,13 @@ const getRecentDate = () => {
   return date.toISOString().split('T')[0];
 };
 
-// Movie data with updated working image URLs
+// Movie data with updated high-quality images and more options
 export const movies: Movie[] = [
   {
     id: "1",
     title: "RRR",
-    posterUrl: "https://resizing.flixster.com/WAHXGKleT3QvhqHUlFGIRgcQAjU=/ems.ZW1zLXByZC1hc3NldHMvbW92aWVzLzljZDVhZjgxLTYxZjItNDRkMy1hMjU5LWEwZWJmYTlmYjg2MS5qcGc=",
-    backdropUrl: "https://static.toiimg.com/photo/89879242.cms",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BODUwNDNjYzctODUxNy00ZTA2LWIyYTEtMDc5Y2E5ZjBmNTMzXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+    backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202203/RRR_11_1200x768.jpeg?VersionId=.cSQBcgL4TRqyfTN1z9w1qGdxQ8FvuF8",
     releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.0,
@@ -31,10 +31,26 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/f_vbAtFSEc0"
   },
   {
+    id: "3",
+    title: "Pushpa 2: The Rule",
+    posterUrl: "https://filmfare.wwmindia.com/content/2023/jan/pushpa21674287765.jpg",
+    backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202306/pushpa_2-sixteen_nine.jpg?VersionId=VXzx5NLPc5rRe1vqOq0WrIypB5zU9pGV",
+    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 15)).toISOString().split('T')[0],
+    runtime: 175,
+    rating: 0,
+    language: "Telugu",
+    overview: "The sequel to the blockbuster Pushpa: The Rise continues the story of Pushpa Raj as he battles new enemies while expanding his sandalwood smuggling empire.",
+    director: "Sukumar",
+    genres: ["Action", "Crime", "Drama"],
+    cast: ["Allu Arjun", "Rashmika Mandanna", "Fahadh Faasil", "Prakash Raj", "Jagapathi Babu"],
+    status: "coming_soon",
+    trailerUrl: "https://www.youtube.com/embed/gLlhXM0gOdI"
+  },
+  {
     id: "4",
     title: "Arjun Reddy",
-    posterUrl: "https://www.filmiforest.com/img/movie/profile/arjun-reddy-m51.jpg",
-    backdropUrl: "https://stat5.bollywoodhungama.in/wp-content/uploads/2016/09/Arjun-Reddy-1.jpg",
+    posterUrl: "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSIrg3VSmDVr2H5lMi-wQu7D4kkFLhSKkCrraN8MpsdvC4UHG8Q",
+    backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
     releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.1,
@@ -49,8 +65,8 @@ export const movies: Movie[] = [
   {
     id: "5",
     title: "K.G.F: Chapter 2",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BNzY5NzZiNTgtMTA4Yy00NzY0LThmMDUtOWUwZjNkZWYwZTYzXkEyXkFqcGdeQXVyMTA3MDk2NDg2._V1_.jpg",
-    backdropUrl: "https://c.ndtvimg.com/2022-04/5qruvs8o_yash-kgf-chapter-2_625x300_07_April_22.jpg",
+    posterUrl: "https://assetscdn1.paytm.com/images/cinema/KGF-2-705x750-cec0a380-7d46-11ec-a4d3-8f1a3a4cb9c3.jpg",
+    backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
     releaseDate: getRecentDate(),
     runtime: 168,
     rating: 8.4,
@@ -65,8 +81,8 @@ export const movies: Movie[] = [
   {
     id: "6",
     title: "Kalki 2898 AD",
-    posterUrl: "https://www.koimoi.com/wp-content/new-galleries/2023/10/kalki-2898-ad-is-bigger-than-baahubali-prabhas-deepika-padukone-starrer-took-4-times-the-investment-of-ss-rajamoulis-epic-saga-001.jpg",
-    backdropUrl: "https://images.hindustantimes.com/tech/img/2023/07/20/1600x900/kalki_1689833025162_1689833030624.jpg",
+    posterUrl: "https://englishtribuneimages.blob.core.windows.net/gallary-content/2023/6/2023_6$largeimg_1065600343.jpg",
+    backdropUrl: "https://www.filmibeat.com/img/2023/10/kalkiposterfbbb-1697088070.jpg",
     releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 27)).toISOString().split('T')[0],
     runtime: 165,
     rating: 0,
@@ -79,10 +95,58 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/BPDc-77IpKk"
   },
   {
+    id: "7",
+    title: "Game Changer",
+    posterUrl: "https://www.cinejosh.com/newsimg/newsmainimg/ram-charan-shankar-movie-title-fixed_b_2306230527.jpg",
+    backdropUrl: "https://assets.thehansindia.com/h-upload/2023/07/22/1358276-game-changer.webp",
+    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 4, 5)).toISOString().split('T')[0],
+    runtime: 155,
+    rating: 0,
+    language: "Telugu",
+    overview: "A political action thriller featuring Ram Charan in a dual role as father and son, both IAS officers with different ideologies fighting against corruption.",
+    director: "S. Shankar",
+    genres: ["Action", "Thriller", "Political"],
+    cast: ["Ram Charan", "Kiara Advani", "S.J. Suryah", "Anjali", "Jayaram"],
+    status: "coming_soon",
+    trailerUrl: "https://www.youtube.com/embed/hJWWCmtW3CE"
+  },
+  {
+    id: "8",
+    title: "Devara: Part 1",
+    posterUrl: "https://pbs.twimg.com/media/F-djfq_bMAARB1r?format=jpg&name=900x900",
+    backdropUrl: "https://www.behindwoods.com/news/tamil-nadu/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped/jr-ntr-saif-ali-khan-in-devara-movie-shooting-wrapped.jpg",
+    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 2, 10)).toISOString().split('T')[0],
+    runtime: 170,
+    rating: 0,
+    language: "Telugu",
+    overview: "A high-octane action drama set in a coastal region, featuring Jr NTR in a powerful role as a man who protects his village from external threats.",
+    director: "Koratala Siva",
+    genres: ["Action", "Drama", "Thriller"],
+    cast: ["Jr NTR", "Janhvi Kapoor", "Saif Ali Khan", "Prakash Raj", "Srikanth"],
+    status: "coming_soon",
+    trailerUrl: "https://www.youtube.com/embed/VoGI8FXCwI8"
+  },
+  {
+    id: "9",
+    title: "Kanguva",
+    posterUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2023/07/suriya-41-titled-kanguva-makers-release-the-stylish-title-teaser-001.jpg",
+    backdropUrl: "https://igimages.gumlet.io/tamil/home/surya-kcbv-31114.jpg?w=700&dpr=1.3",
+    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 5, 20)).toISOString().split('T')[0],
+    runtime: 160,
+    rating: 0,
+    language: "Tamil",
+    overview: "An epic period action drama featuring Suriya in multiple roles across different time periods, showcasing a battle between ancient tribes and modern forces.",
+    director: "Siva",
+    genres: ["Action", "Period", "Fantasy"],
+    cast: ["Suriya", "Bobby Deol", "Disha Patani", "Yogi Babu", "Natarajan Subramaniam"],
+    status: "coming_soon",
+    trailerUrl: "https://www.youtube.com/embed/Cq3eF0XJaVA"
+  },
+  {
     id: "10",
     title: "Ala Vaikunthapurramuloo",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BOGFjYjFjYTItMmQwMC00OWZhLWFiZTAtYzI5MzJmN2YxNTAxXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg",
-    backdropUrl: "https://www.telugu360.com/wp-content/uploads/2020/01/Ala-Vaikuntapuramlo-2.jpg",
+    posterUrl: "https://moviegalleri.net/wp-content/uploads/2019/12/Allu-Arjun-Ala-Vaikunthapurramloo-Movie-New-Year-Wishes-Poster-HD.jpg",
+    backdropUrl: "https://stat5.bollywoodhungama.in/wp-content/uploads/2022/01/Ala-Vaikunthapurramuloo-English-1.jpg",
     releaseDate: getRecentDate(),
     runtime: 163,
     rating: 7.3,
@@ -95,10 +159,26 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/SkENAjfVoFI"
   },
   {
+    id: "11",
+    title: "Sita Ramam",
+    posterUrl: "https://igimages.gumlet.io/hindi/gallery/movies/sitaraman/sir2082022_1.jpg?w=700&dpr=1.0",
+    backdropUrl: "https://images.hindustantimes.com/img/2022/08/25/1600x900/Sita_Ramam_review_1661403202449_1661403218668_1661403218668.jpg",
+    releaseDate: getRecentDate(),
+    runtime: 163,
+    rating: 8.6,
+    language: "Telugu",
+    overview: "An orphaned soldier's life changes when he receives a letter from a girl named Sita. He meets her and love blossoms between them. When he returns to his camp, he receives devastating news.",
+    director: "Hanu Raghavapudi",
+    genres: ["Drama", "Romance", "Action"],
+    cast: ["Dulquer Salmaan", "Mrunal Thakur", "Rashmika Mandanna", "Sumanth", "Tharun Bhascker"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
+  },
+  {
     id: "12",
     title: "Kantara",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BNjQzNDI1YjMtMzEwMS00OGM2LWFmY2YtZmRiYjNjNjNkMGQ0XkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_.jpg",
-    backdropUrl: "https://www.pinkvilla.com/images/2022-10/kantara_review_main_1_1666267802.jpg",
+    posterUrl: "https://img.youtube.com/vi/6oKFao0aQBw/maxresdefault.jpg",
+    backdropUrl: "https://www.pinkvilla.com/english/images/2022/10/2092112993_kantara-movie-review-twitter_1280*720.jpg",
     releaseDate: getRecentDate(),
     runtime: 150,
     rating: 8.3,
@@ -113,8 +193,8 @@ export const movies: Movie[] = [
   {
     id: "13",
     title: "Tumbbad",
-    posterUrl: "https://assets.gadgets360cdn.com/pricee/assets/product/202206/tumbbad_1655468240.jpg",
-    backdropUrl: "https://static.toiimg.com/photo/66247182.cms",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BZDQwYTM5ODEtNDRiZC00Mzk0LWFjNmItZTIxZjYxMzhlNzIwXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+    backdropUrl: "https://www.bollywoodhungama.com/wp-content/uploads/2018/10/Movie-Review-Tumbbad-4.jpg",
     releaseDate: getRecentDate(),
     runtime: 104,
     rating: 8.3,
@@ -129,8 +209,8 @@ export const movies: Movie[] = [
   {
     id: "14",
     title: "Master",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BYTJmZmE5N2QtZWYyMi00YTdhLWIxMGEtODJiNWNiNDFiOGNlXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_.jpg",
-    backdropUrl: "https://static.toiimg.com/photo/80245813.cms",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BYWNjNGQ0YzgtMDQ0ZS00OTA0LWFiM2EtYjE2YjU5MDljMTYxXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
+    backdropUrl: "https://static-koimoi.akamaized.net/wp-content/new-galleries/2021/01/master-movie-review-thalapathy-vijay-vijay-sethupathi-01.jpg",
     releaseDate: getRecentDate(),
     runtime: 178,
     rating: 7.3,
@@ -141,6 +221,70 @@ export const movies: Movie[] = [
     cast: ["Vijay", "Vijay Sethupathi", "Malavika Mohanan", "Andrea Jeremiah", "Arjun Das"],
     status: "now_showing",
     trailerUrl: "https://www.youtube.com/embed/UTiXQcrLlv4"
+  },
+  {
+    id: "15",
+    title: "Animal",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BNGNlM2YzODgtZGM5Mi00YjhlLWJkMTctYzk5NDczZmM2YzI4XkEyXkFqcGdeQXVyMTUyNjIwMDEw._V1_.jpg",
+    backdropUrl: "https://images.indianexpress.com/2023/12/animal-1.jpg",
+    releaseDate: getRecentDate(),
+    runtime: 201,
+    rating: 6.5,
+    language: "Hindi",
+    overview: "A son undergoes a remarkable transformation as the bond with his father begins to fracture, and he becomes consumed by a quest for vengeance.",
+    director: "Sandeep Reddy Vanga",
+    genres: ["Action", "Crime", "Drama"],
+    cast: ["Ranbir Kapoor", "Anil Kapoor", "Bobby Deol", "Rashmika Mandanna", "Tripti Dimri"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/Nqz6M5X03eo"
+  },
+  {
+    id: "16",
+    title: "Salaar: Part 1 - Ceasefire",
+    posterUrl: "https://imgeng.jagran.com/images/2023/dec/salaar-review1703228115828.jpg",
+    backdropUrl: "https://images.indianexpress.com/2023/12/Salaar-Part-1-Ceasefire-movie-review-4.jpg",
+    releaseDate: getRecentDate(),
+    runtime: 175,
+    rating: 6.8,
+    language: "Telugu",
+    overview: "A gang leader tries to keep a promise made to his dying friend and finds himself in a new city, encountering dangerous foes.",
+    director: "Prashanth Neel",
+    genres: ["Action", "Thriller"],
+    cast: ["Prabhas", "Prithviraj Sukumaran", "Shruti Haasan", "Jagapathi Babu", "Bobby Simha"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/tNWbYFPv1Wo"
+  },
+  {
+    id: "17",
+    title: "Ponniyin Selvan: Part I",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BZjZlNGRhNTQtZTY1Ni00MjdhLWJhYjEtN2NkMjVmNTAwMjZiXkEyXkFqcGdeQXVyMTEzNzg0Mjkx._V1_.jpg",
+    backdropUrl: "https://www.hindustantimes.com/ht-img/img/2023/04/28/1600x900/ponniyin_selvan_1_1682653414459_1682653414694.jpg",
+    releaseDate: getRecentDate(),
+    runtime: 167,
+    rating: 7.7,
+    language: "Tamil",
+    overview: "Vandiyathevan sets out to cross the Chola land to deliver a message from the Crown Prince Aditha Karikalan. Kundavai attempts to establish political peace as rival forces attempt to overthrow the throne.",
+    director: "Mani Ratnam",
+    genres: ["Action", "Adventure", "Drama"],
+    cast: ["Vikram", "Aishwarya Rai Bachchan", "Jayam Ravi", "Karthi", "Trisha Krishnan"],
+    status: "now_showing",
+    trailerUrl: "https://www.youtube.com/embed/D4qAQYlgZQs"
+  },
+  {
+    id: "18",
+    title: "Stree 2",
+    posterUrl: "https://assets.gadgets360cdn.com/pricee/assets/product/202308/stree-2-poster_1692262011.jpg",
+    backdropUrl: "https://images.firstpost.com/wp-content/uploads/2024/02/stree-2-4.jpg",
+    releaseDate: (new Date(currentDate.getFullYear(), currentDate.getMonth() + 3, 30)).toISOString().split('T')[0],
+    runtime: 150,
+    rating: 0,
+    language: "Hindi",
+    overview: "The residents of Chanderi face a new supernatural threat when a mysterious entity returns to haunt the town. Vicky and his friends must once again band together to combat this evil force.",
+    director: "Amar Kaushik",
+    genres: ["Comedy", "Horror", "Fantasy"],
+    cast: ["Rajkummar Rao", "Shraddha Kapoor", "Pankaj Tripathi", "Aparshakti Khurana", "Abhishek Banerjee"],
+    status: "coming_soon",
+    trailerUrl: "https://www.youtube.com/embed/EqfYn0C8n3s"
   }
 ];
 
@@ -335,6 +479,14 @@ export const reviews: Review[] = [
     author: "FilmFanatic",
     rating: 8,
     comment: "S.S. Rajamouli has done it again! The visuals are stunning, and the story is engaging from start to finish.",
+    date: currentDate.toISOString().split('T')[0]
+  },
+  {
+    id: "4",
+    movieId: "3",
+    author: "MovieExpert",
+    rating: 8,
+    comment: "Allu Arjun's performance as Pushpa is phenomenal. His mannerisms and dialogue delivery are spot on.",
     date: currentDate.toISOString().split('T')[0]
   },
   {
