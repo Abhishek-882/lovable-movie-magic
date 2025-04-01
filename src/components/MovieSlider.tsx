@@ -1,6 +1,7 @@
 import { MovieCard } from "./MovieCard";
 import { Movie } from "@/lib/types";
 
+
 interface MovieSliderProps {
   movies: Movie[];
 }
