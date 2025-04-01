@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
 import { getMoviesByStatus } from "@/data/movies";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   useEffect(() => {
@@ -150,11 +151,11 @@ const Index = () => {
 };
 
 const FeatureItem = ({ icon, title, description }: { icon: string; title: string; description: string }) => (
-  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+  <Card className="p-6 hover:shadow-md transition-shadow duration-300">
     <div className="text-3xl mb-4">{icon}</div>
     <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
     <p className="text-gray-600">{description}</p>
-  </div>
+  </Card>
 );
 
 export default Index;
