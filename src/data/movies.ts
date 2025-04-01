@@ -49,8 +49,8 @@ export const movies: Movie[] = [
   {
     id: "4",
     title: "Arjun Reddy",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BZWYxOGUwODUtZmMwNi00YzQxLTliZDYtMjFkM2E2OWU5ZjhhXkEyXkFqcGdeQXVyOTA3MTM0MTM@._V1_.jpg",
-    backdropUrl: "https://m.media-amazon.com/images/M/MV5BOGJlM2QyNjgtZTRmOS00ZThkLWFiOTctNDEwYThiYzViNGE0XkEyXkFqcGc@._V1_.jpg",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BY2JjNDExMjItNTRkZi00NzI5LWE2N2EtNGMyNDkxZGY4YTg1XkEyXkFqcGc@._V1_.jpg",
+    backdropUrl: "https://m.media-amazon.com/images/M/MV5BY2JjNDExMjItNTRkZi00NzI5LWE2N2EtNGMyNDkxZGY4YTg1XkEyXkFqcGc@._V1_.jpg",
     releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.1,
