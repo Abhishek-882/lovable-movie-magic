@@ -6,11 +6,12 @@ import Footer from "@/components/Footer";
 import { getMovieById, getShowtimeById } from "@/data/movies";
 import { Booking, SnackOrder } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
-import { QrCode, Calendar, Clock, MapPin, CreditCard, Popcorn, CheckCircle, XCircle, Download } from "lucide-react";
+import { QrCode, Calendar, Clock, MapPin, CreditCard, Popcorn, CheckCircle, XCircle, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import EmptyState from "@/components/EmptyState";
 
 type EnhancedBooking = Booking & {
   movieTitle: string;
@@ -31,7 +32,7 @@ const BookingHistoryPage = () => {
   
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login");
       return;
     }
     
@@ -41,6 +42,9 @@ const BookingHistoryPage = () => {
       setIsLoading(true);
       
       try {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        
         const storedBookings = localStorage.getItem("userBookings");
         
         if (storedBookings) {
@@ -51,7 +55,9 @@ const BookingHistoryPage = () => {
             const showtime = getShowtimeById(booking.showtimeId);
             
             // Generate QR code with booking details
-            const qrCodeUrl = await generateQRCode(booking.id, movie?.title, showtime?.theater);
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+              `Cinemagic Booking\nID: ${booking.id}\nMovie: ${movie?.title || ''}\nTheater: ${showtime?.theater || ''}`
+            )}`;
             
             const snackDetails = booking.snacks?.map((snack: SnackOrder) => ({
               name: getSnackName(snack.snackId),
@@ -73,8 +79,6 @@ const BookingHistoryPage = () => {
           }));
           
           setBookings(enhancedBookings);
-        } else {
-          setBookings(getMockBookings(user.id));
         }
       } catch (error) {
         console.error("Error fetching bookings:", error);
@@ -90,13 +94,6 @@ const BookingHistoryPage = () => {
     
     fetchBookings();
   }, [isAuthenticated, navigate, user, toast]);
-
-  const generateQRCode = async (bookingId: string, movieTitle?: string, theater?: string) => {
-    // Use your own QR code generation service or API
-    return `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-      `Cinemagic Booking\nID: ${bookingId}\nMovie: ${movieTitle || ''}\nTheater: ${theater || ''}`
-    )}`;
-  };
 
   const getSnackName = (snackId: string) => {
     const snacks: Record<string, string> = {
@@ -305,19 +302,19 @@ const BookingHistoryPage = () => {
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border-2 border-dashed border-gray-300 p-12 text-center bg-white">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-              <QrCode className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="mb-2 text-xl font-semibold">No bookings yet</h3>
-            <p className="mb-6 text-gray-500">You haven't booked any movie tickets yet.</p>
-            <Button
-              onClick={() => navigate("/movies")}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Browse Movies
-            </Button>
-          </div>
+          <EmptyState
+            icon={<QrCode className="h-10 w-10 text-gray-400" />}
+            title="No bookings yet"
+            description="You haven't booked any movie tickets yet."
+            action={
+              <Button
+                onClick={() => navigate("/movies")}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Browse Movies
+              </Button>
+            }
+          />
         )}
       </main>
       
