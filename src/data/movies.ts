@@ -8,6 +8,32 @@ const getRecentDate = () => {
   return date.toISOString().split('T')[0];
 };
 
+// Sample showtimes data (ensure this matches your actual data structure)
+const showtimes: Showtime[] = [
+  {
+    id: "show1",
+    movieId: "kgf2",
+    theaterId: "theater1",
+    time: "10:00 AM",
+    date: getRecentDate(),
+    seatsAvailable: 100
+  },
+  // Add all your showtimes here...
+];
+
+// Sample reviews data (ensure this matches your actual data structure)
+const reviews: Review[] = [
+  {
+    id: "rev1",
+    movieId: "kgf2",
+    author: "User1",
+    rating: 5,
+    content: "Amazing movie!",
+    date: getRecentDate()
+  },
+  // Add all your reviews here...
+];
+
 export const movies: Movie[] = [
   {
     id: "kgf2",
@@ -57,22 +83,46 @@ export const movies: Movie[] = [
     status: "now_showing",
     trailerUrl: "https://www.youtube.com/embed/aozErj9NqeE"
   },
-  // ... (keep all your other existing movies exactly as they were)
   {
     id: "pushpa2",
     title: "Pushpa 2: The Rule",
     posterUrl: "https://m.media-amazon.com/images/M/MV5BNWU1ZWFhNGQtZDhlZC00ZWFlLTlmNmEtN2VmYmZiN2Y5ZmQ2XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-    // ... (rest of the properties)
-    status: "coming_soon"
-  },
-  // ... (all other movies)
+    backdropUrl: "",
+    releaseDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    runtime: 0,
+    rating: 0,
+    language: "Telugu",
+    overview: "The continuation of Pushpa Raj's story.",
+    director: "Sukumar",
+    genres: ["Action", "Drama"],
+    cast: ["Allu Arjun", "Rashmika Mandanna"],
+    status: "coming_soon",
+    trailerUrl: ""
+  }
+  // Add all your other movies here...
 ];
 
-// ... (keep all your existing theater, showtime, and review data)
-// ... (keep all your existing utility functions)
-
+// Core movie functions
 export const getAllMovies = (): Movie[] => movies;
 export const getMoviesByStatus = (status: 'now_showing' | 'coming_soon'): Movie[] => 
   movies.filter(movie => movie.status === status);
 export const getMovieById = (id: string): Movie | null => 
   movies.find(movie => movie.id === id) || null;
+
+// Showtime functions
+export const getShowtimeById = (id: string): Showtime | null => {
+  return showtimes.find(showtime => showtime.id === id) || null;
+};
+
+export const getShowtimesForMovie = (movieId: string): Showtime[] => {
+  return showtimes.filter(showtime => showtime.movieId === movieId);
+};
+
+// Review functions
+export const getReviewsForMovie = (movieId: string): Review[] => {
+  return reviews.filter(review => review.movieId === movieId);
+};
+
+// Utility exports
+export const getCurrentDate = (): Date => currentDate;
+export const getFormattedRecentDate = (): string => getRecentDate();
