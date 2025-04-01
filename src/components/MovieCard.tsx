@@ -18,11 +18,11 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
     rootMargin: '200px 0px',
   });
 
-  // Improved fallback image generation
+  // Fixed fallback image generation
   const getFallbackImage = () => {
     return `https://placehold.co/500x750?text=${encodeURIComponent(
       movie.title.substring(0, 20)
-    }&font=montserrat`;
+    )}&font=montserrat`;
   };
 
   return (
