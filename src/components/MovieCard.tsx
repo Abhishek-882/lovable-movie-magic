@@ -15,7 +15,6 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
-  // Simple intersection observer implementation
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -38,10 +37,30 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
     };
   }, []);
 
-  // Efficient fallback image generation
-  const getFallbackImage = () => {
-    const encodedTitle = encodeURIComponent(movie.title.substring(0, 20));
-    return `https://via.placeholder.com/500x750/cccccc/969696?text=${encodedTitle}`;
+  // Optimized image URLs for the three movies
+  const getImageUrl = () => {
+    // Direct URLs for your three movies
+    const movieImages = {
+      "K.G.F: Chapter 2": "https://posterwha.com/cdn/shop/files/KGF1_1efddd90-f686-4e72-b6d7-10f976ad1c88.jpg",
+      "RRR": "https://m.media-amazon.com/images/M/MVY1BNWMOODYyMjQxTQ._V1_FMjpg_UX1000_.jpg",
+      "Arjun Reddy": "https://m.media-amazon.com/images/M/MVY1B2JjNkREyMjJdTQ._V1_FMjpg_UX1000_.jpg"
+    };
+
+    return movieImages[movie.title as keyof typeof movieImages] || movie.posterUrl;
+  };
+
+  const renderFallback = () => {
+    return (
+      <div className="h-full w-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 p-4">
+        <div className="text-2xl font-bold text-gray-400 mb-2">🎬</div>
+        <span className="text-gray-600 text-sm text-center font-medium">
+          {movie.title}
+        </span>
+        <span className="text-gray-500 text-xs mt-2">
+          {movie.releaseDate.substring(0, 4)}
+        </span>
+      </div>
+    );
   };
 
   return (
@@ -64,36 +83,29 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
           <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse"></div>
         )}
 
-        {/* Actual Image - only renders when visible */}
-        {isVisible && (
+        {/* Actual Image */}
+        {isVisible && !imageError && (
           <img
-            src={imageError ? getFallbackImage() : movie.posterUrl}
-            alt={movie.title}
+            src={getImageUrl()}
+            alt={`${movie.title} poster`}
             width={500}
             height={750}
             className={`h-full w-full object-cover transition-transform duration-300 ${
               isHovered || isTouched ? "scale-105" : "scale-100"
             }`}
             loading="lazy"
-            onLoad={() => {
-              setIsLoading(false);
-              setImageError(false);
-            }}
+            decoding="async"
+            onLoad={() => setIsLoading(false)}
             onError={() => {
               setIsLoading(false);
               setImageError(true);
             }}
+            crossOrigin="anonymous"
           />
         )}
 
-        {/* Fallback for when image fails to load */}
-        {imageError && !isLoading && (
-          <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-            <span className="text-gray-600 text-sm text-center p-2 font-medium">
-              {movie.title}
-            </span>
-          </div>
-        )}
+        {/* Fallback */}
+        {(imageError || !getImageUrl()) && !isLoading && renderFallback()}
       </div>
       
       {/* Overlay */}
@@ -114,14 +126,12 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
       
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        {/* Basic Info always visible */}
         <h3 className={`font-medium text-white transition-all duration-300 ${
           featured ? "text-xl" : "text-base"
         } ${(isHovered || isTouched) ? "mb-2" : "mb-0"}`}>
           {movie.title}
         </h3>
         
-        {/* Extended Info on hover/touch */}
         <div className={`overflow-hidden transition-all duration-300 ${
           (isHovered || isTouched) ? "max-h-32 opacity-100" : "max-h-0 opacity-0"
         }`}>
