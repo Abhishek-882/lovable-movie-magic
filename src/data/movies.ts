@@ -17,8 +17,8 @@ export const movies: Movie[] = [
   {
     id: "1",
     title: "RRR",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BNjE5NTMwMzItYjExNS00NzJjLWJlM2ItN2ZjZDU0NjE0NjZiXkEyXkFqcGc@._V1_.jpg",
-    backdropUrl: "https://akm-img-a-in.tosshub.com/indiatoday/images/story/202203/RRR_11_1200x768.jpeg?VersionId=.cSQBcgL4TRqyfTN1z9w1qGdxQ8FvuF8",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BODUwNDNjYzctODUxNy00ZTA2LWIyYTEtMDc5Y2E5ZjBmNTMzXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_FMjpg_UX1000_.jpg",
+    backdropUrl: "https://m.media-amazon.com/images/M/MV5BZmYzMzU4NjctNDI0Mi00MGExLWI3ZDQtYzQzYThmYzc2ZmNjXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg",
     releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.0,
@@ -49,8 +49,8 @@ export const movies: Movie[] = [
   {
     id: "4",
     title: "Arjun Reddy",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BODUzYzJlZTctODNmMS00MWU4LWI0ZjUtMGEzMTc2ODhlMTI5XkEyXkFqcGc@._V1_.jpg",
-    backdropUrl: "https://static.moviecrow.com/gallery/20170825/141580-1-A.png",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BZWYxOGUwODUtZmMwNi00YzQxLTliZDYtMjFkM2E2OWU5ZjhhXkEyXkFqcGdeQXVyOTA3MTM0MTM@._V1_.jpg",
+    backdropUrl: "https://m.media-amazon.com/images/M/MV5BOGJlM2QyNjgtZTRmOS00ZThkLWFiOTctNDEwYThiYzViNGE0XkEyXkFqcGc@._V1_.jpg",
     releaseDate: getRecentDate(),
     runtime: 187,
     rating: 8.1,
@@ -63,10 +63,10 @@ export const movies: Movie[] = [
     trailerUrl: "https://www.youtube.com/embed/aozErj9NqeE"
   },
   {
-    id: "5",
+   id: "5",
     title: "K.G.F: Chapter 2",
-    posterUrl: "https://m.media-amazon.com/images/M/MV5BYjE2ZTJjZGQtZDRlYy00MGY1LWE5ZDEtN2U2MDY3ZjBmMTcxXkEyXkFqcGc@._V1_.jpg",
-    backdropUrl: "https://www.koimoi.com/wp-content/new-galleries/2022/04/kgf-chapter-2-box-office-day-5-early-trends-yash-starrer-continues-to-dominate-001.jpg",
+    posterUrl: "https://m.media-amazon.com/images/M/MV5BMjMwMDgyOGQtMWZjNC00MDUwLTllZDYtZWM3NDBmN2YzNmZmXkEyXkFqcGdeQXVyMTQzNTA5MzYz._V1_FMjpg_UX1000_.jpg",
+    backdropUrl: "https://m.media-amazon.com/images/M/MV5BNWQwMGJmYTItNjA0Ny00MWE1LTlkOWMtOTQ5YjA1ZTk4ZGY0XkEyXkFqcGdeQXVyMTQzNTA5MzYz._V1_.jpg",
     releaseDate: getRecentDate(),
     runtime: 168,
     rating: 8.4,
