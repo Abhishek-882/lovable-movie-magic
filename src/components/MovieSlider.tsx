@@ -1,16 +1,12 @@
 import { MovieCard } from "./MovieCard";
 import { Movie } from "@/lib/types";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
 
 interface MovieSliderProps {
   movies: Movie[];
 }
 
 export const MovieSlider = ({ movies }: MovieSliderProps) => {
-  // Explicitly filter for the 3 movies we want in the slider
+  // Filter for the 3 specific movies
   const sliderMovies = movies.filter(movie => 
     ['K.G.F: Chapter 2', 'RRR', 'Arjun Reddy'].includes(movie.title)
   );
@@ -20,25 +16,17 @@ export const MovieSlider = ({ movies }: MovieSliderProps) => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold mb-6 text-gray-900">Featured Movies</h2>
         
-        <Swiper
-          modules={[Autoplay, Navigation]}
-          spaceBetween={20}
-          slidesPerView={1.2}
-          autoplay={{ delay: 3000 }}
-          navigation
-          breakpoints={{
-            640: { slidesPerView: 2.3 },
-            768: { slidesPerView: 2.5 },
-            1024: { slidesPerView: 3 }
-          }}
-          className="pb-12"
-        >
+        {/* Responsive grid as a Swiper alternative */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sliderMovies.map(movie => (
-            <SwiperSlide key={movie.id}>
+            <div 
+              key={movie.id} 
+              className="animate-fade-in transition-transform hover:scale-105"
+            >
               <MovieCard movie={movie} featured />
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
       </div>
     </section>
   );
