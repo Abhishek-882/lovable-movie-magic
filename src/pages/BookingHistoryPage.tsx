@@ -1,69 +1,65 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { getMovieById, getShowtimeById } from "@/data/movies";
-import { Booking, SnackOrder } from "@/lib/types";
-import { Card, CardContent } from "@/components/ui/card";
-import { QrCode, Calendar, Clock, MapPin, CreditCard, Popcorn, CheckCircle, XCircle, Download, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import EmptyState from "@/components/EmptyState";
+import { useState, useEffect } from "react"
+import { useAuth } from "@/contexts/AuthContext"
+import { useNavigate } from "react-router-dom"
+import { getMovieById, getShowtimeById } from "@/data/movies"
+import { Booking, SnackOrder } from "@/lib/types"
+import { QrCode, Calendar, Clock, MapPin, CreditCard, Popcorn, Download } from "lucide-react"
+import { EmptyState } from "@/components/EmptyState"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/hooks/use-toast"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 type EnhancedBooking = Booking & {
-  movieTitle: string;
-  theaterName: string;
-  showDate: string;
-  showTime: string;
-  posterUrl: string;
-  qrCode: string;
-  snackDetails?: { name: string; quantity: number; price: number }[];
-};
+  movieTitle: string
+  theaterName: string
+  showDate: string
+  showTime: string
+  posterUrl: string
+  qrCode: string
+  snackDetails?: { name: string; quantity: number; price: number }[]
+}
 
-const BookingHistoryPage = () => {
-  const { isAuthenticated, user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [bookings, setBookings] = useState<EnhancedBooking[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export const BookingHistoryPage = () => {
+  const { isAuthenticated, user } = useAuth()
+  const navigate = useNavigate()
+  const { toast } = useToast()
+  const [bookings, setBookings] = useState<EnhancedBooking[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
-      return;
+      navigate("/login")
+      return
     }
     
     const fetchBookings = async () => {
-      if (!user) return;
+      if (!user) return
       
-      setIsLoading(true);
+      setIsLoading(true)
       
       try {
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const storedBookings = localStorage.getItem("userBookings");
+        const storedBookings = localStorage.getItem("userBookings")
         
         if (storedBookings) {
-          const parsedBookings = JSON.parse(storedBookings);
+          const parsedBookings = JSON.parse(storedBookings)
           
           const enhancedBookings = await Promise.all(parsedBookings.map(async (booking: any) => {
-            const movie = getMovieById(booking.movieId);
-            const showtime = getShowtimeById(booking.showtimeId);
+            const movie = getMovieById(booking.movieId)
+            const showtime = getShowtimeById(booking.showtimeId)
             
-            // Generate QR code with booking details
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
-              `Cinemagic Booking\nID: ${booking.id}\nMovie: ${movie?.title || ''}\nTheater: ${showtime?.theater || ''}`
-            )}`;
+              `Booking\nID: ${booking.id}\nMovie: ${movie?.title || ''}\nTheater: ${showtime?.theater || ''}`
+            )}`
             
             const snackDetails = booking.snacks?.map((snack: SnackOrder) => ({
               name: getSnackName(snack.snackId),
               quantity: snack.quantity,
               price: snack.price
-            }));
+            }))
             
             return {
               ...booking,
@@ -75,25 +71,24 @@ const BookingHistoryPage = () => {
               posterUrl: movie?.posterUrl || "/placeholder-movie.jpg",
               qrCode: qrCodeUrl,
               snackDetails
-            };
-          }));
+            }
+          })
           
-          setBookings(enhancedBookings);
+          setBookings(enhancedBookings)
         }
       } catch (error) {
-        console.error("Error fetching bookings:", error);
         toast({
           title: "Error",
           description: "Failed to load bookings",
           variant: "destructive"
-        });
+        })
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
     
-    fetchBookings();
-  }, [isAuthenticated, navigate, user, toast]);
+    fetchBookings()
+  }, [isAuthenticated, navigate, user, toast])
 
   const getSnackName = (snackId: string) => {
     const snacks: Record<string, string> = {
@@ -106,17 +101,16 @@ const BookingHistoryPage = () => {
       "7": "Nachos",
       "8": "Combo 1 (Popcorn + Cola)",
       "9": "Combo 2 (Nachos + Cola)"
-    };
-    return snacks[snackId] || `Snack #${snackId}`;
-  };
+    }
+    return snacks[snackId] || `Snack #${snackId}`
+  }
 
   const handleDownloadTicket = (bookingId: string) => {
     toast({
       title: "Download Started",
       description: "Your ticket will be downloaded shortly",
-    });
-    // In a real app, generate and download PDF here
-  };
+    })
+  }
 
   const handleCancelBooking = async (bookingId: string) => {
     try {
@@ -126,28 +120,27 @@ const BookingHistoryPage = () => {
             ? { ...b, status: "cancelled" } 
             : b
         )
-      );
+      )
       
-      // Update localStorage
       const updatedBookings = bookings.map(b => 
         b.id === bookingId ? { ...b, status: "cancelled" } : b
-      );
-      localStorage.setItem("userBookings", JSON.stringify(updatedBookings));
+      )
+      localStorage.setItem("userBookings", JSON.stringify(updatedBookings))
       
       toast({
         title: "Booking Cancelled",
         description: "Refund will be processed in 5-7 business days",
-      });
+      })
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to cancel booking",
         variant: "destructive"
-      });
+      })
     }
-  };
+  }
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) return null
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
@@ -157,7 +150,7 @@ const BookingHistoryPage = () => {
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Bookings</h1>
-            <p className="text-gray-600 mt-1">View and manage your upcoming and past bookings</p>
+            <p className="text-gray-600 mt-1">View and manage your bookings</p>
           </div>
           <Button 
             variant="outline" 
@@ -195,7 +188,7 @@ const BookingHistoryPage = () => {
                     alt={booking.movieTitle}
                     className="h-full w-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = "/placeholder-movie.jpg";
+                      e.currentTarget.src = "/placeholder-movie.jpg"
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -291,7 +284,6 @@ const BookingHistoryPage = () => {
                           className="gap-1 text-sm border-red-500 text-red-500 hover:bg-red-50"
                           onClick={() => handleCancelBooking(booking.id)}
                         >
-                          <XCircle className="h-4 w-4" />
                           Cancel
                         </Button>
                       )}
@@ -306,21 +298,16 @@ const BookingHistoryPage = () => {
             icon={<QrCode className="h-10 w-10 text-gray-400" />}
             title="No bookings yet"
             description="You haven't booked any movie tickets yet."
-            action={
-              <Button
-                onClick={() => navigate("/movies")}
-                className="bg-red-600 hover:bg-red-700"
-              >
-                Browse Movies
-              </Button>
-            }
+            action="Browse Movies"
+            actionProps={{
+              onClick: () => navigate("/movies"),
+              className: "bg-red-600 hover:bg-red-700"
+            }}
           />
         )}
       </main>
       
       <Footer />
     </div>
-  );
-};
-
-export default BookingHistoryPage;
+  )
+}
