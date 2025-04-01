@@ -2,11 +2,22 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Hero from "@/components/Hero";
 import MovieGrid from "@/components/MovieGrid";
-import MovieSlider from "@/components/MovieSlider";
+import { MovieSlider } from "@/components/MovieSlider"; // Changed to named import
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
-import { getMoviesByStatus } from "@/data/movies";
+import { 
+  getMoviesByStatus,
+  getShowtimeById,
+  getShowtimesForMovie,
+  getReviewsForMovie
+} from "@/data/movies"; // Added missing exports
+
+interface Movie {
+  id: string;
+  title: string;
+  // Add other movie properties as needed
+}
 
 const Index = () => {
   useEffect(() => {
