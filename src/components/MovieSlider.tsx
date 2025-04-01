@@ -10,15 +10,15 @@ interface MovieSliderProps {
 }
 
 export const MovieSlider = ({ movies }: MovieSliderProps) => {
-  // Filter for your 3 specific movies
-  const featuredMovies = movies.filter(movie => 
+  // Explicitly filter for the 3 movies we want in the slider
+  const sliderMovies = movies.filter(movie => 
     ['K.G.F: Chapter 2', 'RRR', 'Arjun Reddy'].includes(movie.title)
   );
 
   return (
     <section className="py-8 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-6 text-gray-900">Now Showing</h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-900">Featured Movies</h2>
         
         <Swiper
           modules={[Autoplay, Navigation]}
@@ -29,11 +29,11 @@ export const MovieSlider = ({ movies }: MovieSliderProps) => {
           breakpoints={{
             640: { slidesPerView: 2.3 },
             768: { slidesPerView: 2.5 },
-            1024: { slidesPerView: 3.2 }
+            1024: { slidesPerView: 3 }
           }}
           className="pb-12"
         >
-          {featuredMovies.map(movie => (
+          {sliderMovies.map(movie => (
             <SwiperSlide key={movie.id}>
               <MovieCard movie={movie} featured />
             </SwiperSlide>
