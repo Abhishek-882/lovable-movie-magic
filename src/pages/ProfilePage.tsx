@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,6 +7,8 @@ import UserProfile from "@/components/UserProfile";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const ProfilePage = () => {
   const { isAuthenticated, isProfileComplete, isEmailVerified } = useAuth();
@@ -26,15 +27,18 @@ const ProfilePage = () => {
   if (!isAuthenticated) return null;
   
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       
       <main className="container mx-auto px-4 py-24 md:px-6">
         <div className="mx-auto max-w-4xl">
-          <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">My Account</h1>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">My Account</h1>
+            <p className="text-gray-600 mt-2">Manage your profile and preferences</p>
+          </div>
           
           {(!isProfileComplete || !isEmailVerified) && (
-            <Alert variant="destructive" className="mb-6 bg-amber-50 text-amber-800 border-amber-200">
+            <Alert variant="warning" className="mb-6">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Account Setup Required</AlertTitle>
               <AlertDescription>
@@ -55,62 +59,65 @@ const ProfilePage = () => {
             </TabsContent>
             
             <TabsContent value="preferences" className="mt-0">
-              <div className="rounded-lg border bg-card p-6 shadow-sm">
+              <div className="rounded-lg border bg-white p-6 shadow-sm">
                 <h2 className="mb-6 text-2xl font-bold">My Preferences</h2>
                 
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="mb-3 text-lg font-medium">Notifications</h3>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span>Email notifications</span>
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Notifications</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium">Email notifications</p>
+                          <p className="text-sm text-gray-600">Receive updates about bookings and promotions</p>
+                        </div>
                         <label className="relative inline-flex cursor-pointer items-center">
                           <input type="checkbox" checked className="peer sr-only" />
-                          <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full"></div>
+                          <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-600 peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                         </label>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span>SMS notifications</span>
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium">SMS notifications</p>
+                          <p className="text-sm text-gray-600">Get booking confirmations via SMS</p>
+                        </div>
                         <label className="relative inline-flex cursor-pointer items-center">
                           <input type="checkbox" className="peer sr-only" />
-                          <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full"></div>
+                          <div className="h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-600 peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                         </label>
                       </div>
                     </div>
                   </div>
                   
-                  <div>
-                    <h3 className="mb-3 text-lg font-medium">Movie Preferences</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="mb-1 block text-sm font-medium">Favorite Genres</label>
-                        <div className="flex flex-wrap gap-2">
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium">Movie Preferences</h3>
+                    <div className="space-y-6">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <label className="mb-2 block font-medium">Favorite Genres</label>
+                        <div className="flex flex-wrap gap-3">
                           {["Action", "Comedy", "Drama", "Thriller", "Sci-Fi", "Romance"].map(genre => (
-                            <div key={genre} className="flex items-center">
-                              <input
-                                type="checkbox"
-                                id={`genre-${genre}`}
-                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                              />
-                              <label htmlFor={`genre-${genre}`} className="ml-2 text-sm">{genre}</label>
-                            </div>
+                            <Button
+                              key={genre}
+                              variant="outline"
+                              className="rounded-full"
+                            >
+                              {genre}
+                            </Button>
                           ))}
                         </div>
                       </div>
                       
-                      <div>
-                        <label className="mb-1 block text-sm font-medium">Preferred Language</label>
-                        <div className="flex flex-wrap gap-4">
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <label className="mb-2 block font-medium">Preferred Language</label>
+                        <div className="flex flex-wrap gap-3">
                           {["English", "Hindi", "Telugu", "Tamil", "Malayalam", "Kannada"].map(lang => (
-                            <div key={lang} className="flex items-center">
-                              <input
-                                type="radio"
-                                name="language"
-                                id={`lang-${lang}`}
-                                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
-                              />
-                              <label htmlFor={`lang-${lang}`} className="ml-2 text-sm">{lang}</label>
-                            </div>
+                            <Button
+                              key={lang}
+                              variant="outline"
+                              className="rounded-full"
+                            >
+                              {lang}
+                            </Button>
                           ))}
                         </div>
                       </div>
