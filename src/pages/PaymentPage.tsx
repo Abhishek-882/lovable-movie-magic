@@ -260,7 +260,7 @@ const PaymentPage = () => {
                           <QrCode className="mx-auto h-52 w-52 text-gray-300" />
                           <div className="absolute inset-0 flex items-center justify-center">
                             <img 
-                              src="https://cdn.pixabay.com/photo/2021/06/17/08/45/upi-6342471_1280.png" 
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png" 
                               alt="UPI QR Code" 
                               className="h-48 w-48 object-contain"
                             />
