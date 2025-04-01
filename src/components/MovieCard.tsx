@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Movie } from "@/lib/types";
-import { useInView } from "react-intersection-observer";
 
 interface MovieCardProps {
   movie: Movie;
@@ -13,20 +12,41 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
   const [isTouched, setIsTouched] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    rootMargin: '200px 0px',
-  });
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLAnchorElement>(null);
 
-  // Fixed fallback image generation
+  // Simple intersection observer implementation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
+      }
+    };
+  }, []);
+
+  // Efficient fallback image generation
   const getFallbackImage = () => {
-    return `https://placehold.co/500x750?text=${encodeURIComponent(
-      movie.title.substring(0, 20)
-    )}&font=montserrat`;
+    const encodedTitle = encodeURIComponent(movie.title.substring(0, 20));
+    return `https://via.placeholder.com/500x750/cccccc/969696?text=${encodedTitle}`;
   };
 
   return (
     <Link 
+      ref={cardRef}
       to={`/movie/${movie.id}`}
       className={`group relative block overflow-hidden ${
         featured ? "rounded-xl" : "rounded-lg"
@@ -41,18 +61,17 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
       <div className="aspect-[2/3] w-full overflow-hidden bg-gray-100 relative">
         {/* Loading Skeleton */}
         {isLoading && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 animate-pulse"></div>
         )}
 
-        {/* Actual Image (only loads when in view) */}
-        {inView && (
+        {/* Actual Image - only renders when visible */}
+        {isVisible && (
           <img
-            ref={ref}
             src={imageError ? getFallbackImage() : movie.posterUrl}
             alt={movie.title}
             width={500}
             height={750}
-            className={`h-full w-full object-cover transition-transform duration-700 ${
+            className={`h-full w-full object-cover transition-transform duration-300 ${
               isHovered || isTouched ? "scale-105" : "scale-100"
             }`}
             loading="lazy"
@@ -69,8 +88,8 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
 
         {/* Fallback for when image fails to load */}
         {imageError && !isLoading && (
-          <div className="h-full w-full flex items-center justify-center bg-gray-200">
-            <span className="text-gray-500 text-sm text-center p-2">
+          <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+            <span className="text-gray-600 text-sm text-center p-2 font-medium">
               {movie.title}
             </span>
           </div>
