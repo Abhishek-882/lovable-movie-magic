@@ -1,35 +1,31 @@
-
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Hero from "@/components/Hero";
 import MovieGrid from "@/components/MovieGrid";
+import MovieSlider from "@/components/MovieSlider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
-import { 
-  getAllMovies,
-  getMoviesByStatus
-} from "@/data/movies";
+import { getMoviesByStatus } from "@/data/movies";
 
 const Index = () => {
   useEffect(() => {
-    // Scroll to top when the component mounts
     window.scrollTo(0, 0);
   }, []);
-  
-  // Get movies for different sections
+
   const nowShowingMovies = getMoviesByStatus('now_showing');
   const comingSoonMovies = getMoviesByStatus('coming_soon');
-  
-  // Get featured movies for the hero (first 3 movies from now showing)
   const featuredMovies = nowShowingMovies.slice(0, 3);
-  
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
       {/* Hero Section */}
       <Hero featuredMovies={featuredMovies} />
+      
+      {/* Movie Slider - Shows KGF2, RRR, Arjun Reddy */}
+      <MovieSlider movies={nowShowingMovies} />
       
       {/* Now Showing Section */}
       <MovieGrid 
@@ -144,7 +140,7 @@ const Index = () => {
   );
 };
 
-// Helper component for feature items
+// Feature Item Component
 const FeatureItem = ({ title, description }: { title: string; description: string }) => (
   <div className="flex">
     <div className="mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
