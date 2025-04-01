@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Movie } from "@/lib/types";
@@ -8,11 +7,11 @@ interface MovieCardProps {
   featured?: boolean;
 }
 
-const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
+// Named export version (preferred for consistency)
+export const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
   
-  // High-quality fallback images
   const fallbackImages = [
     "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&h=750&fit=crop",
     "https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=500&h=750&fit=crop",
@@ -21,9 +20,8 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
     "https://images.unsplash.com/photo-1512149177596-f817c7ef5d4c?w=500&h=750&fit=crop"
   ];
   
-  // Get a random fallback image based on movie id
   const getFallbackImage = () => {
-    const index = parseInt(movie.id) % fallbackImages.length;
+    const index = movie.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % fallbackImages.length;
     return fallbackImages[index];
   };
   
@@ -55,51 +53,58 @@ const MovieCard = ({ movie, featured = false }: MovieCardProps) => {
       }`} />
       
       {/* Status Badge */}
-      <div className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-1 backdrop-blur-sm">
-        <span className="text-xs font-medium text-white">
-          {movie.status === 'now_showing' ? 'Now Showing' : 'Coming Soon'}
-        </span>
-      </div>
+      {movie.status && (
+        <div className="absolute left-3 top-3 rounded-full bg-white/10 px-2.5 py-1 backdrop-blur-sm">
+          <span className="text-xs font-medium text-white">
+            {movie.status === 'now_showing' ? 'Now Showing' : 'Coming Soon'}
+          </span>
+        </div>
+      )}
       
       {/* Content */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        {/* Basic Info always visible */}
         <h3 className={`font-medium text-white transition-all duration-300 ${
           featured ? "text-xl" : "text-base"
         } ${isHovered ? "mb-2" : "mb-0"}`}>
           {movie.title}
         </h3>
         
-        {/* Extended Info on hover */}
         <div className={`overflow-hidden transition-all duration-300 ${
           isHovered ? "max-h-32 opacity-100" : "max-h-0 opacity-0"
         }`}>
-          <div className="mb-2 flex items-center gap-2 text-sm text-white/80">
-            <span>{movie.releaseDate.substring(0, 4)}</span>
-            <span className="text-white/60">•</span>
-            <span>{movie.runtime} min</span>
-          </div>
-          
-          <div className="mb-3 flex flex-wrap gap-1.5">
-            {movie.genres.slice(0, 3).map(genre => (
-              <span 
-                key={genre} 
-                className="rounded-full bg-white/10 px-2 py-0.5 text-xs backdrop-blur-sm text-white/90"
-              >
-                {genre}
-              </span>
-            ))}
-          </div>
-          
-          <div className="flex items-center">
-            <div className="rounded-full bg-primary/90 px-2.5 py-1 text-xs font-medium text-white">
-              ★ {movie.rating.toFixed(1)}
+          {movie.releaseDate && (
+            <div className="mb-2 flex items-center gap-2 text-sm text-white/80">
+              <span>{movie.releaseDate.substring(0, 4)}</span>
+              <span className="text-white/60">•</span>
+              <span>{movie.runtime} min</span>
             </div>
-          </div>
+          )}
+          
+          {movie.genres && movie.genres.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {movie.genres.slice(0, 3).map(genre => (
+                <span 
+                  key={genre} 
+                  className="rounded-full bg-white/10 px-2 py-0.5 text-xs backdrop-blur-sm text-white/90"
+                >
+                  {genre}
+                </span>
+              ))}
+            </div>
+          )}
+          
+          {movie.rating && (
+            <div className="flex items-center">
+              <div className="rounded-full bg-primary/90 px-2.5 py-1 text-xs font-medium text-white">
+                ★ {movie.rating.toFixed(1)}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Link>
   );
 };
 
+// Keep default export for backward compatibility
 export default MovieCard;
