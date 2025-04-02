@@ -91,7 +91,7 @@ const BookingHistoryPage = () => {
               showDate: showtime?.date || booking.bookingDate.split("T")[0],
               showTime: showtime?.time || "Unknown Time",
               posterUrl: movie?.posterUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=400&fit=crop",
-              qrCode: qrCodeUrl,
+              qrCode: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlpHuWyi_8-c9LpgtOmwr9sRkR1hgoRPXlpn4TyUM3K34-_m5ySuku2nWmAp9D2SFthz0&usqp=CAU",
               snackDetails
             };
           });
@@ -139,7 +139,7 @@ const BookingHistoryPage = () => {
         showDate: "2023-07-20",
         showTime: "6:45 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-Interstellar-PVR",
+        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
         snackDetails: [
           { name: "Large Popcorn", quantity: 1, price: 250 },
           { name: "Cola (Large)", quantity: 2, price: 360 }
@@ -162,7 +162,7 @@ const BookingHistoryPage = () => {
         showDate: "2023-08-25",
         showTime: "3:30 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-2-Inception-INOX",
+        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
         snackDetails: [
           { name: "Combo 1 (Popcorn + Cola)", quantity: 2, price: 900 }
         ]
@@ -182,7 +182,7 @@ const BookingHistoryPage = () => {
         showDate: "2023-09-15",
         showTime: "9:30 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-3-Dark-Knight-PVR",
+        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
         snackDetails: []
       }
     ];
