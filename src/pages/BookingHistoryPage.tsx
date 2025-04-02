@@ -81,7 +81,7 @@ const BookingHistoryPage = () => {
             // Ensure status is of the correct type
             const validStatus = (booking.status === "confirmed" || booking.status === "cancelled" || booking.status === "pending") 
               ? booking.status as "confirmed" | "cancelled" | "pending" 
-              : "pending" as const;
+              : "confirmed" as const;
             
             return {
               ...booking,
