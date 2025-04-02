@@ -5,98 +5,89 @@ import MovieGrid from "@/components/MovieGrid";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MovieCard from "@/components/MovieCard";
-import { getMoviesByStatus } from "@/data/movies";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { 
+  getAllMovies,
+  getMoviesByStatus
+} from "@/data/movies";
 
 const Index = () => {
   useEffect(() => {
+    // Scroll to top when the component mounts
     window.scrollTo(0, 0);
   }, []);
   
+  // Get movies for different sections
   const nowShowingMovies = getMoviesByStatus('now_showing');
   const comingSoonMovies = getMoviesByStatus('coming_soon');
+  
+  // Get featured movies for the hero (first 3 movies from now showing)
   const featuredMovies = nowShowingMovies.slice(0, 3);
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
+      {/* Hero Section */}
       <Hero featuredMovies={featuredMovies} />
       
       {/* Now Showing Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">Now Showing</h2>
-              <p className="text-gray-600 mt-1">Currently playing in theaters</p>
-            </div>
-            <Link
-              to="/movies"
-              className="text-red-600 hover:text-red-700 font-medium flex items-center"
-            >
-              View All <span className="ml-1">→</span>
-            </Link>
-          </div>
-          <MovieGrid movies={nowShowingMovies.slice(0, 4)} />
-        </div>
-      </section>
+      <MovieGrid 
+        title="Now Showing" 
+        movies={nowShowingMovies}
+      />
       
-      {/* Features Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Feature Section */}
+      <section className="bg-gradient-to-r from-red-50 to-white py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div className="flex flex-col justify-center">
-              <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
-                Premium Cinema Experience
-              </h2>
-              <p className="mb-8 text-lg text-gray-600">
-                Enjoy the magic of movies with our state-of-the-art theaters featuring 
-                the latest in audio and visual technology.
-              </p>
-              
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <FeatureItem 
-                  icon="🎬" 
-                  title="4K Laser Projection" 
-                  description="Crystal clear images with vibrant colors" 
-                />
-                <FeatureItem 
-                  icon="🔊" 
-                  title="Dolby Atmos Sound" 
-                  description="Immersive 360° surround sound" 
-                />
-                <FeatureItem 
-                  icon="🛋️" 
-                  title="Luxury Recliners" 
-                  description="Premium comfort with extra legroom" 
-                />
-                <FeatureItem 
-                  icon="🍿" 
-                  title="Gourmet Snacks" 
-                  description="Fresh popcorn and premium concessions" 
-                />
-              </div>
-              
-              <div className="mt-8">
-                <Link
-                  to="/about"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-red-600 hover:bg-red-700"
-                >
-                  Learn More About Cinemagic
-                </Link>
+              <div className="animate-fade-in">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-red-600 md:text-4xl">
+                  Experience Cinema Like Never Before
+                </h2>
+                <p className="mb-6 text-lg text-gray-600">
+                  Immerse yourself in the magic of movies with premium seating, 
+                  state-of-the-art sound systems, and crystal-clear projection.
+                </p>
+                <div className="space-y-4">
+                  <FeatureItem 
+                    title="Premium Comfort" 
+                    description="Luxurious reclining seats with ample legroom and personal space."
+                  />
+                  <FeatureItem 
+                    title="Immersive Audio" 
+                    description="Experience Dolby Atmos and other advanced sound systems." 
+                  />
+                  <FeatureItem 
+                    title="Crystal Clear Visuals" 
+                    description="4K laser projection for the sharpest, most vibrant picture quality."
+                  />
+                  <FeatureItem 
+                    title="Convenient Booking" 
+                    description="Reserve your perfect seat in advance with our easy booking system."
+                  />
+                </div>
+                <div className="mt-8">
+                  <Link
+                    to="/movies"
+                    className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-red-600 to-red-500 px-6 text-sm font-medium text-white shadow-sm transition-all hover:from-red-700 hover:to-red-600"
+                  >
+                    Explore Movies
+                  </Link>
+                </div>
               </div>
             </div>
-            
-            <div className="relative">
-              <div className="relative overflow-hidden rounded-xl shadow-xl aspect-w-16 aspect-h-9">
-                <img
-                  src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-                  alt="Cinema theater"
-                  className="object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent" />
+            <div className="mx-auto flex max-w-md items-center justify-center lg:max-w-none">
+              <div className="relative animate-floating">
+                <div className="absolute -left-6 -top-6 h-64 w-64 rounded-xl bg-red-100"></div>
+                <div className="absolute -bottom-8 -right-8 h-64 w-64 rounded-xl bg-red-50"></div>
+                <div className="relative overflow-hidden rounded-xl bg-white shadow-xl">
+                  <img
+                    src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                    alt="Cinema experience"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -104,44 +95,46 @@ const Index = () => {
       </section>
       
       {/* Coming Soon Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 md:py-16 bg-gradient-to-b from-white to-red-50">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900">Coming Soon</h2>
-              <p className="text-gray-600 mt-1">Exciting movies arriving soon</p>
-            </div>
-            <Link
-              to="/movies/coming-soon"
-              className="text-red-600 hover:text-red-700 font-medium flex items-center"
-            >
-              View All <span className="ml-1">→</span>
-            </Link>
-          </div>
+          <h2 className="mb-6 text-3xl font-bold tracking-tight text-red-600 md:text-4xl">Coming Soon</h2>
           
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {comingSoonMovies.slice(0, 4).map(movie => (
-              <MovieCard key={movie.id} movie={movie} />
+              <div key={movie.id} className="animate-fade-in">
+                <MovieCard movie={movie} featured />
+              </div>
             ))}
+          </div>
+          
+          <div className="mt-8 text-center">
+            <Link
+              to="/movies/coming-soon"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-gray-100 px-6 text-sm font-medium text-gray-900 transition-all hover:bg-gray-200"
+            >
+              View All Coming Soon
+            </Link>
           </div>
         </div>
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-red-600 to-red-700">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-white md:text-4xl">
-            Ready for an Unforgettable Experience?
-          </h2>
-          <p className="mb-8 text-lg text-red-100 max-w-2xl mx-auto">
-            Book your tickets now and enjoy the latest blockbusters in premium comfort.
-          </p>
-          <Link
-            to="/movies"
-            className="inline-flex items-center px-8 py-3 border border-transparent text-lg font-medium rounded-full shadow-sm text-red-600 bg-white hover:bg-gray-100"
-          >
-            Book Tickets Now
-          </Link>
+      <section className="bg-gradient-to-r from-red-600 to-red-500 py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+              Ready for the Ultimate Movie Experience?
+            </h2>
+            <p className="mb-8 text-lg text-white/90">
+              Book your tickets now and enjoy the magic of cinema in premium comfort.
+            </p>
+            <Link
+              to="/movies"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-medium text-red-600 shadow-sm transition-all hover:bg-gray-100"
+            >
+              Book Tickets Now
+            </Link>
+          </div>
         </div>
       </section>
       
@@ -150,12 +143,19 @@ const Index = () => {
   );
 };
 
-const FeatureItem = ({ icon, title, description }: { icon: string; title: string; description: string }) => (
-  <Card className="p-6 hover:shadow-md transition-shadow duration-300">
-    <div className="text-3xl mb-4">{icon}</div>
-    <h3 className="text-lg font-semibold mb-2 text-gray-900">{title}</h3>
-    <p className="text-gray-600">{description}</p>
-  </Card>
+// Helper component for feature items
+const FeatureItem = ({ title, description }: { title: string; description: string }) => (
+  <div className="flex">
+    <div className="mr-4 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+        <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+      </svg>
+    </div>
+    <div>
+      <h3 className="text-lg font-medium">{title}</h3>
+      <p className="mt-1 text-sm text-gray-600">{description}</p>
+    </div>
+  </div>
 );
 
 export default Index;
