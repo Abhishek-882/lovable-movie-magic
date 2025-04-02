@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Define a type for the extended booking with UI-specific properties
 type EnhancedBooking = Booking & {
   movieTitle: string;
   theaterName: string;
@@ -30,7 +29,6 @@ const BookingHistoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Redirect if not authenticated
     if (!isAuthenticated) {
       navigate("/");
       return;
@@ -42,23 +40,18 @@ const BookingHistoryPage = () => {
       setIsLoading(true);
       
       try {
-        // First, try to get bookings from localStorage
         const storedBookings = localStorage.getItem("userBookings");
         
         if (storedBookings) {
           const parsedBookings = JSON.parse(storedBookings);
           
-          // Process and enhance booking data
           const enhancedBookings = parsedBookings.map((booking: any) => {
             const movie = getMovieById(booking.movieId);
             const showtime = getShowtimeById(booking.showtimeId);
             
-            // Create a QR code for the booking
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-${booking.id}-${movie?.title}-${showtime?.theater || 'THEATER'}`;
             
-            // Map snacks data if available
             const snackDetails = booking.snacks ? booking.snacks.map((snack: SnackOrder) => {
-              // In a real app, you would fetch snack details from your database
               const snackNames: Record<string, string> = {
                 "1": "Large Popcorn",
                 "2": "Medium Popcorn",
@@ -78,10 +71,9 @@ const BookingHistoryPage = () => {
               };
             }) : undefined;
             
-            // Ensure status is of the correct type
-            const validStatus = (booking.status === "confirmed" || booking.status === "cancelled" || booking.status === "pending") 
-              ? booking.status as "confirmed" | "cancelled" | "pending" 
-              : "confirmed" as const;
+            // Mark as confirmed if payment is completed
+            const validStatus = booking.paymentCompleted ? "confirmed" : 
+              (booking.status === "cancelled" ? "cancelled" : "confirmed");
             
             return {
               ...booking,
@@ -91,14 +83,13 @@ const BookingHistoryPage = () => {
               showDate: showtime?.date || booking.bookingDate.split("T")[0],
               showTime: showtime?.time || "Unknown Time",
               posterUrl: movie?.posterUrl || "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=800&h=400&fit=crop",
-              qrCode: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlpHuWyi_8-c9LpgtOmwr9sRkR1hgoRPXlpn4TyUM3K34-_m5ySuku2nWmAp9D2SFthz0&usqp=CAU",
+              qrCode: qrCodeUrl,
               snackDetails
             };
           });
           
           setBookings(enhancedBookings);
         } else {
-          // If no local storage data, use mock data
           setBookings(getMockBookings(user.id));
         }
       } catch (error) {
@@ -108,7 +99,6 @@ const BookingHistoryPage = () => {
           description: "Using sample booking data instead.",
           variant: "destructive"
         });
-        
         setBookings(getMockBookings(user.id));
       } finally {
         setIsLoading(false);
@@ -118,8 +108,10 @@ const BookingHistoryPage = () => {
     fetchBookings();
   }, [isAuthenticated, navigate, user, toast]);
   
-  // Helper function to generate mock bookings
   const getMockBookings = (userId: string): EnhancedBooking[] => {
+    const currentDate = new Date();
+    const futureDate = new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000); // 5 days from now
+    
     return [
       {
         id: "1",
@@ -132,14 +124,15 @@ const BookingHistoryPage = () => {
           { snackId: "4", quantity: 2, price: 180 }
         ],
         totalAmount: 1160,
-        bookingDate: "2023-07-15",
+        bookingDate: currentDate.toISOString(),
+        paymentCompleted: true,
         status: "confirmed",
         movieTitle: "Interstellar",
         theaterName: "PVR ICON: GVK One Mall",
-        showDate: "2023-07-20",
+        showDate: futureDate.toISOString().split('T')[0],
         showTime: "6:45 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-1-Interstellar-PVR-ICON",
         snackDetails: [
           { name: "Large Popcorn", quantity: 1, price: 250 },
           { name: "Cola (Large)", quantity: 2, price: 360 }
@@ -155,14 +148,15 @@ const BookingHistoryPage = () => {
           { snackId: "8", quantity: 2, price: 450 }
         ],
         totalAmount: 1800,
-        bookingDate: "2023-08-20",
+        bookingDate: currentDate.toISOString(),
+        paymentCompleted: true,
         status: "confirmed",
         movieTitle: "Inception",
         theaterName: "INOX: Hyderabad Central",
-        showDate: "2023-08-25",
+        showDate: futureDate.toISOString().split('T')[0],
         showTime: "3:30 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-2-Inception-INOX",
         snackDetails: [
           { name: "Combo 1 (Popcorn + Cola)", quantity: 2, price: 900 }
         ]
@@ -175,21 +169,21 @@ const BookingHistoryPage = () => {
         seats: ["A1", "A2"],
         snacks: [],
         totalAmount: 600,
-        bookingDate: "2023-09-10",
+        bookingDate: currentDate.toISOString(),
+        paymentCompleted: true,
         status: "cancelled",
         movieTitle: "The Dark Knight",
         theaterName: "PVR: Forum Mall",
-        showDate: "2023-09-15",
+        showDate: futureDate.toISOString().split('T')[0],
         showTime: "9:30 PM",
         posterUrl: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        qrCode: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/QR_code_for_mobile_English_Wikipedia.svg/1200px-QR_code_for_mobile_English_Wikipedia.svg.png",
+        qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=BOOKING-3-Dark-Knight-PVR",
         snackDetails: []
       }
     ];
   };
   
   const handleDownloadTicket = (booking: EnhancedBooking) => {
-    // In a real app, you would generate a PDF here
     toast({
       title: "Ticket Download",
       description: "This feature will be available soon!",
@@ -203,15 +197,13 @@ const BookingHistoryPage = () => {
         description: "Cancelling your booking...",
       });
       
-      // Update UI to show cancelled status
       setBookings(prevBookings => {
         const updatedBookings = prevBookings.map(booking => 
           booking.id === bookingId 
-            ? { ...booking, status: "cancelled" as "cancelled" } 
+            ? { ...booking, status: "cancelled" } 
             : booking
         );
         
-        // Update localStorage
         localStorage.setItem("userBookings", JSON.stringify(updatedBookings));
         
         return updatedBookings;
@@ -313,7 +305,6 @@ const BookingHistoryPage = () => {
                       <span className="text-sm">{booking.seats.join(", ")}</span>
                     </div>
                     
-                    {/* Snacks info if any */}
                     {booking.snackDetails && booking.snackDetails.length > 0 && (
                       <div className="flex items-start gap-2">
                         <Popcorn className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-500" />
@@ -367,7 +358,7 @@ const BookingHistoryPage = () => {
                           Ticket
                         </Button>
                         
-                        {booking.status === 'confirmed' && (
+                        {booking.status === 'confirmed' && new Date(booking.showDate) > new Date() && (
                           <Button
                             variant="outline"
                             size="sm"
@@ -409,4 +400,4 @@ const BookingHistoryPage = () => {
   );
 };
 
-export default BookingHistoryPage; 
+export default BookingHistoryPage;
